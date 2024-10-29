@@ -4,5 +4,5 @@ public enum CardStatus {
     TODO,
     IN_PROGRESS,
     PENDING_CONFIRMATION,
-    COMPLETED;
+    COMPLETED
 }
