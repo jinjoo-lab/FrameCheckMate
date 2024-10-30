@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 1
+names: ['smoke']
+
+roboflow:
+  workspace: asdf-s5ldy
+  project: cigarettes-reality-2-usm30
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/asdf-s5ldy/cigarettes-reality-2-usm30/dataset/1
