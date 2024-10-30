@@ -1,11 +1,11 @@
-package com.framecheckmate.notification
+package com.framecheckmate.notificationservice
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class NotificationApplication
+class NotificationServiceApplication
 
 fun main(args: Array<String>) {
-    runApplication<NotificationApplication>(*args)
+    runApplication<NotificationServiceApplication>(*args)
 }
