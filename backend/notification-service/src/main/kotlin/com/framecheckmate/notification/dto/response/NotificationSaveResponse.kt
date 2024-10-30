@@ -1,4 +1,5 @@
 package com.framecheckmate.notification.dto.response
 
-class NotificationSaveResponse {
-}
+data class NotificationSaveResponse (
+    val name : String
+)
