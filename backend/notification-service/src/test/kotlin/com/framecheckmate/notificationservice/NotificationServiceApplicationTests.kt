@@ -1,10 +1,10 @@
-package com.framecheckmate.notification
+package com.framecheckmate.notificationservice
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class NotificationApplicationTests {
+class NotificationServiceApplicationTests {
 
     @Test
     fun contextLoads() {
