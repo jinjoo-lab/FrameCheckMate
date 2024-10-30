@@ -8,9 +8,7 @@
       <module name="com.framecheckmate.notification-service" target="17" />
       <module name="com.framecheckmate.notification-service.main~1" target="17" />
       <module name="com.framecheckmate.notification-service.test~1" target="17" />
-      <module name="notification-service" target="17" />
       <module name="notification-service.main" target="17" />
-      <module name="notification-service.test" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>
