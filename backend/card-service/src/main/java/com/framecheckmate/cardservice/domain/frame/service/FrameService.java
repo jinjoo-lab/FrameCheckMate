@@ -2,13 +2,16 @@ package com.framecheckmate.cardservice.domain.frame.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import org.springframework.core.io.Resource;
 import com.framecheckmate.cardservice.domain.frame.dto.response.FrameUploadResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.UUID;
 
 @Slf4j
@@ -29,5 +32,9 @@ public class FrameService {
 
         amazonS3.putObject(bucket, fileName, multipartFile.getInputStream(), metadata);
         return new FrameUploadResponseDTO(amazonS3.getUrl(bucket, fileName).toString(), fileName);
+    }
+
+    public Resource loadFileAsResource(String fileName) throws MalformedURLException {
+        return new UrlResource(amazonS3.getUrl(bucket, fileName).toString());
     }
 }
