@@ -1,0 +1,7 @@
+# cigarette.yaml
+
+train: C:/Users/SSAFY/Desktop/YOLOv8/cigarette/train/images
+val: C:/Users/SSAFY/Desktop/YOLOv8/cigarette/valid/images
+
+nc: 1
+names: ['cigarette']
