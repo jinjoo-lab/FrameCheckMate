@@ -12,6 +12,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="notification" target="17" />
-    </bytecodeTargetLevel>
+    </bytecodeTargetLevel>lear
   </component>
 </project>
