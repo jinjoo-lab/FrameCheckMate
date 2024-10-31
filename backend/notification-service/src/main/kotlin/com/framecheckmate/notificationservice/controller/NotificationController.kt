@@ -21,7 +21,7 @@ class NotificationController(val notificationService: NotificationService) {
 
     @GetMapping("/{email}")
     fun getAllNotificationsByEmail(@PathVariable(value = "email") email : String) : ResponseEntity<List<NotificationInfoResponse>> {
-        TODO()
+        return ResponseEntity.ok(notificationService.getNotificationsByEmail(email))
     }
 
 
