@@ -20,9 +20,14 @@ public class FrameController {
 
     private final FrameService frameService;
 
-    @PostMapping("/upload")
-    public ResponseEntity<FrameUploadResponseDTO> uploadFrame(@RequestBody MultipartFile file) throws IOException {
-        return ResponseEntity.ok(frameService.uploadFrame(file));
+    @PostMapping("/card/{cardId}")
+    public ResponseEntity<FrameUploadResponseDTO> uploadCardFrame(@PathVariable UUID cardId, @RequestBody MultipartFile file) throws IOException {
+        return ResponseEntity.ok(frameService.uploadFrame(cardId, FrameType.CARD, file));
+    }
+
+    @PostMapping("/original/{projectId}")
+    public ResponseEntity<FrameUploadResponseDTO> uploadOriginalFrame(@PathVariable UUID projectId, @RequestBody MultipartFile file) throws IOException {
+        return ResponseEntity.ok(frameService.uploadFrame(projectId, FrameType.ORIGINAL, file));
     }
 
     @GetMapping("/card/{cardId}")
