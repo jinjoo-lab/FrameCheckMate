@@ -18,7 +18,7 @@ import java.util.UUID;
 public class Comment {
     @Id
     private UUID commentKey;
-    private UUID cardKey;
+    private UUID cardId;
     private List<CommentDetail> comments = new ArrayList<>();
     @CreatedDate
     private LocalDateTime createdAt;

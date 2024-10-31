@@ -25,16 +25,15 @@ import java.util.List;
 @Builder
 public class Card {
     @Id
-    private UUID cardKey;
+    private UUID cardId;
+    private UUID workerId;
+    private UUID projectId;
+    private UUID frameId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private UUID workerId;
     private String description;
-    private List<Media> medias = new ArrayList<>();
     private List<ConfirmDetail> confirms = new ArrayList<>();
     private CardStatus status;
-    private Long order;
-    private String projectId;
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
