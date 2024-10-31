@@ -27,9 +27,14 @@ public class FrameController {
     @GetMapping("/download")
     // !!RequestParam: CardId로 수정 예정
     public ResponseEntity<Resource> downloadFrame(@RequestParam String fileName) throws MalformedURLException {
-        Resource resource = frameService.downloadFrame(fileName);
+        Resource resource = frameService.getFrameResource(fileName);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
+    }
+
+    @GetMapping("/view")
+    public ResponseEntity<String> viewFrame(@RequestParam String fileName) throws IOException {
+        return ResponseEntity.ok(frameService.getFrameResource(fileName).getURL().toString());
     }
 }
