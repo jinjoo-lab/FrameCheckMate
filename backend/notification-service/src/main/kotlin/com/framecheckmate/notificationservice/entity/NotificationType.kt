@@ -2,5 +2,9 @@ package com.framecheckmate.notificationservice.entity
 
 enum class NotificationType {
     MEMBER_SAVE,
-    JOB_ALLOCATION
+    TODO,
+    IN_PROGRESS,
+    PENDING_CONFIRMATION,
+    PENDING_CONFIRMATION_REJECTED,
+    COMPLETED
 }
