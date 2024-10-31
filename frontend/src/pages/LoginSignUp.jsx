@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import TopBar from "./TopBar";
+import TopBar from "../components/TopBar";
 
 const LoginSignUp = () => {
 

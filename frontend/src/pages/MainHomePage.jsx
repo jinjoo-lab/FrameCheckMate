@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoVideo } from "react-icons/go";
 import { ko } from "date-fns/locale";
-import TopBar from "./TopBar";
+import TopBar from "../components/TopBar";
 import Modal from 'react-modal';
 import styled from 'styled-components';
 
