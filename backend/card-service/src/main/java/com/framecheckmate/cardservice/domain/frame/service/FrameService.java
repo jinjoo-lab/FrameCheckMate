@@ -6,7 +6,11 @@ import org.springframework.core.io.Resource;
 import com.framecheckmate.cardservice.domain.frame.dto.response.FrameUploadResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,18 +27,18 @@ public class FrameService {
     @Value("${cloud.aws.s3.bucketName}")
     private String bucket;
 
-    public FrameUploadResponseDTO saveFile(MultipartFile multipartFile) throws IOException {
-        String fileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename();
+    public FrameUploadResponseDTO uploadFrame(MultipartFile file) throws IOException {
+        String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
 
         ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(multipartFile.getSize());
-        metadata.setContentType(multipartFile.getContentType());
+        metadata.setContentLength(file.getSize());
+        metadata.setContentType(file.getContentType());
 
-        amazonS3.putObject(bucket, fileName, multipartFile.getInputStream(), metadata);
+        amazonS3.putObject(bucket, fileName, file.getInputStream(), metadata);
         return new FrameUploadResponseDTO(amazonS3.getUrl(bucket, fileName).toString(), fileName);
     }
 
-    public Resource loadFileAsResource(String fileName) throws MalformedURLException {
+    public Resource downloadFrame(String fileName) throws MalformedURLException {
         return new UrlResource(amazonS3.getUrl(bucket, fileName).toString());
     }
 }
