@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import TopBar from "./TopBar";
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // eslint-disable-line no-unused-vars
 import AllocateWork from './AllocateWork';
 import styled from 'styled-components';
 
