@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import TopBar from "./TopBar";
+import React, { useState, useEffect, useRef } from 'react'; // eslint-disable-line no-unused-vars
+import TopBar from "../components/TopBar";
 import { useNavigate, Link } from 'react-router-dom';
 import ReactPlayer from "react-player";
 import { GoVideo } from "react-icons/go";

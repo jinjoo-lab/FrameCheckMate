@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft } from "react-icons/fa";
 import styled from 'styled-components';
-import TopBar from "./TopBar";
+import TopBar from "../components/TopBar";
 
 const MainWorkPage = () => {
 
