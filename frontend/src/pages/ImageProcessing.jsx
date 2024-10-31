@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import TopBar from "./TopBar";
-import { useNavigate, Link } from 'react-router-dom';
-import ReactPlayer from "react-player";
+import React, { useState, useEffect, useRef } from 'react'; // eslint-disable-line no-unused-vars
+import TopBar from "../components/TopBar";
+import { useNavigate, Link } from 'react-router-dom'; // eslint-disable-line no-unused-vars
 import styled from 'styled-components'
 const ImageProcessing = () => {
 
