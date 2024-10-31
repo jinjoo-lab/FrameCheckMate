@@ -37,6 +37,11 @@ const MainHomePage = () => {
                 backgroundColor:'white', borderRadius:'20px', border:'1px solid black' },
   };
 
+  const workView = (event) => {
+    event.preventDefault(); // 페이지 새로 고침 방지
+    navigate('/mainWorkPage');
+  }
+
   const [groupName, setGroupName] = useState('')
 
   const [titleData, setTitleData] = useState([
@@ -52,7 +57,7 @@ const MainHomePage = () => {
         <GroupScroll>
             {titleData.map((list) => 
               <GroupView key={list.number}>
-                <GroupText>{list.name}</GroupText>
+                <GroupText onClick={workView}>{list.name}</GroupText>
                 { list.confirm ? 
                   <PlayButton onClick={resultView}> 
                     <GoVideo size={50} /> 
@@ -95,8 +100,8 @@ const GroupScroll = styled.div`
 const GroupView = styled.div`
   display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid black; margin:15px 0px; width:600px
 `
-const GroupText = styled.div`
-  font-size:30px; font-weight:bold;
+const GroupText = styled.p`
+  font-size:30px; font-weight:bold; margin:0; cursor:pointer;
 `
 const PlayButton = styled.button`
   border:none; outline:none; background-color:inherit; cursor:pointer;

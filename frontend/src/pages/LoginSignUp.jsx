@@ -144,6 +144,6 @@ const ButtonsAligns = styled.div`
   display:flex; justify-content:center; align-items:center; margin-top:30px;
 `
 const SubmitButton = styled.button`
-  width:150px; border:none; border-radius:5px; padding:10px 20px; background-color:black; color:white; font-weight:bold;
+  width:150px; border:none; border-radius:5px; padding:10px 20px; background-color:black; color:white; font-weight:bold; cursor:pointer;
 `
 export default LoginSignUp;
