@@ -1,6 +1,7 @@
 package com.framecheckmate.cardservice.domain.frame.entity;
 
-import jakarta.persistence.Id;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @Builder
 public class Frame {
     @Id
-    private UUID frameId;
+    private ObjectId frameId;
     private UUID projectId;
     Long sequence;
     List<FrameLog> logs;
