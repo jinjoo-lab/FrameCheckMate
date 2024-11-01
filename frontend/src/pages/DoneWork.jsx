@@ -36,7 +36,7 @@ const ButtonsAlign = styled.div`
     display:flex; justify-content:center; flex-direction:row;  
 `
 const DoneCloseButton = styled.div`
-    width:150px; border:none; border-radius:5px; padding:10px 20px; margin:10px 5px; background-color:gray; text-align:center; color:white; font-weight:bold;
+    width:150px; border:none; border-radius:5px; padding:10px 20px; margin:10px 5px; background-color:gray; text-align:center; color:white; font-weight:bold; cursor:pointer;
 `
 
 export default DoneWork

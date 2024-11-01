@@ -18,7 +18,7 @@ const UploadVideo = () => {
         if (file) {
           const url = URL.createObjectURL(file);
           setFileURL(url);
-          setIsPlaying(true); // 파일 선택 후 자동으로 재생
+          setIsPlaying(false); // 파일 선택 후 자동으로 재생
         }
       };
 
@@ -29,7 +29,6 @@ const UploadVideo = () => {
     };
 
     const closeButton = () => {
-        // 닫기 (프로젝트 상세 페이지로)
         navigate('/mainWorkPage');
       }
 
@@ -41,26 +40,10 @@ const UploadVideo = () => {
         <TopBar title='영상 처리' logoutView={true}/>
         <RowContainer>
           <div>영상 업로드</div>
-            <UploadStyle>
-                +
-              <input 
-                type="file" 
-                accept="video/*" 
-                style={{ display: "none" }} 
-                onChange={videoPlaying} />
-            </UploadStyle>
-          <div>
-            <WorkingButton 
-              onClick={uploadButton}>
-              분석하기
-            </WorkingButton>
-            <WorkingCloseButton 
-              onClick={closeButton}>
-              닫기
-            </WorkingCloseButton>
-          </div>
-          {fileURL && (
-            <div style={{ marginTop: "20px" }}>
+          { fileURL 
+          ? (
+            <>
+            <div style={{ marginTop: "20px", }}>
               <ReactPlayer
                 url={fileURL}
                 playing={isPlaying} // 재생 여부
@@ -70,6 +53,31 @@ const UploadVideo = () => {
                 onDuration={goDuration}
               />
             </div>
+            <WorkingButton 
+              onClick={uploadButton}>
+              분석하기
+            </WorkingButton>
+            <WorkingCloseButton 
+              onClick={closeButton}>
+              닫기
+            </WorkingCloseButton>
+            </>
+          ) 
+          : (
+            <>
+              <UploadStyle>
+                +
+              <input 
+                type="file" 
+                accept="video/*" 
+                style={{ display: "none" }} 
+                onChange={videoPlaying} />
+              </UploadStyle>
+              <WorkingCloseButton 
+                onClick={closeButton}>
+                닫기
+              </WorkingCloseButton>
+            </>
           )}
         </RowContainer>
       </div>

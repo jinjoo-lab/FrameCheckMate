@@ -8,16 +8,22 @@ const TopBar = ({ title, logoutView }) => {
 
   const navigate = useNavigate();
 
+  const mainGo = (event) => {
+    event.preventDefault(); // 페이지 새로 고침 방지
+    navigate("/mainHomePage");
+  }
   const logoutTry = (event) => {
     event.preventDefault(); // 페이지 새로 고침 방지
-
     navigate("/loginSignup");
   };
+
+
   return (
     <div>
       {/* 상단 검은 배너 */}
       <Banner>
-        <TitleStyle>
+        <TitleStyle
+          onClick={mainGo}>
           Frame Checkmate
         </TitleStyle>
         { logoutView && (
@@ -43,11 +49,11 @@ const TopBar = ({ title, logoutView }) => {
 const Banner = styled.div`
   background-color:black; color:white; height:60px; display:flex; justify-content:space-between; align-items:center;
 `
-const TitleStyle = styled.div`
-  font-weight:bold; font-size:30px; margin-left:15px;
+const TitleStyle = styled.a`
+  font-weight:bold; font-size:30px; margin-left:15px; cursor:pointer;
 `
 const LogoutButton = styled.button`
-  margin-right: 15px; font-weight: bold; background: none; border: none; padding: 0; color: inherit;
+  margin-right: 15px; font-weight: bold; background: none; border: none; padding: 0; color: inherit; cursor:pointer;
 `
 const Header = styled.div`
   height:70px; margin:20px 0px; justify-content:center; align-items:center; display:flex;
