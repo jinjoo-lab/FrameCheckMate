@@ -1,5 +1,6 @@
 package com.framecheckmate.cardservice.domain.frame.controller;
 
+import com.framecheckmate.cardservice.domain.frame.dto.request.FrameSplitRequestDTO;
 import com.framecheckmate.cardservice.domain.frame.dto.response.FrameUploadResponseDTO;
 import com.framecheckmate.cardservice.domain.frame.service.FrameService;
 import com.framecheckmate.cardservice.domain.frame.type.FrameType;
@@ -67,5 +68,10 @@ public class FrameController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
+    }
+
+    @PostMapping("/api/frame/split")
+    public ResponseEntity<String> splitFrame(@RequestParam FrameSplitRequestDTO requestDTO) throws IOException, InterruptedException {
+        return ResponseEntity.ok(frameService.splitFrame(requestDTO));
     }
 }
