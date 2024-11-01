@@ -1,4 +1,0 @@
-Time: 3.00s
-Time: 8.00s
-Time: 11.00s
-Time: 12.00s

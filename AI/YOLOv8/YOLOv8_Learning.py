@@ -2,6 +2,9 @@
 
 from ultralytics import YOLO
 
+# 기존 YOLOv8m 모델 로드 (칼 탐지 포함)
+model = YOLO('yolov8m.pt')  # 기존에 칼이 학습된 모델
+
 # 모델 학습 -> 학습된 모델은 'runs/detect/train/weights/best.pt'에 저장됨
 model.train(
     data='cigarette.yaml',   # 데이터셋 구성 파일 경로
