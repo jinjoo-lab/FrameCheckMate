@@ -1,4 +1,4 @@
-package com.framecheckmate.cardservice.domain.frame.repository;
+package com.framecheckmate.cardservice.domain.card.repository;
 
 import com.framecheckmate.cardservice.domain.card.entity.Card;
 import org.springframework.data.mongodb.repository.MongoRepository;
