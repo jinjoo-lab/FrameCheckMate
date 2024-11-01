@@ -1,14 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import { ko } from "date-fns/locale";
 import styled from 'styled-components';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import ReactPlayer from "react-player";
 
 const AllocateWork = ({ workingBefore, uploadView }) => {
 
     const navigate = useNavigate();
+
+    const [fileURL, setFileURL] = useState('');
+    const [isPlaying, setIsPlaying] = useState(false);
+    const playerRef = useRef(null); // ReactPlayer에 대한 ref 생성
+    const [playTime, setPlayTime] = useState();
+
+    const videoPlaying = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const url = URL.createObjectURL(file);
+          setFileURL(url);
+          setIsPlaying(true); // 파일 선택 후 자동으로 재생
+        }
+      };
+
+    // 동영상 총 시간 계산
+    const goDuration = (a) => {
+        setPlayTime(a);
+        console.log(`총 시간${a}`);
+    };
 
     // 작업자 
     const [ workContent, setWorkContet ] = useState('')
@@ -18,6 +39,12 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
     const [ startDate, setStartDate ] = useState(null);
     const [ endDate, setEndDate ] = useState(null);
 
+    // 현재 작업자 정보
+    const [ nowWorker, setNowWorker ] = useState('dd')
+    const [ nowContent, setNowContent ] = useState('dd')
+    const [ nowWorkDate, setNowWorkDate ] = useState('dd')
+
+
     const uploadVideo = () => {
         
     }
@@ -26,57 +53,138 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 
     }
 
+    const customHeader = ({ date, decreaseMonth, increaseMonth }) => {
+        const month = date.getMonth();
+        const year = date.getFullYear();
+
+        return (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <button style={{margin:'0px 5px'}} onClick={decreaseMonth}>{"<"}</button>
+                <span>{year}년 {month + 1}월</span>
+                <button style={{margin:'0px 5px'}} onClick={increaseMonth}>{">"}</button>
+            </div>
+        );
+    };
+
+    // 날짜 변환해서 보내줘야 함
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 1월은 0이므로 +1
+        const day = String(date.getDate()).padStart(2, '0');
+    
+        return `${year}-${month}-${day}`;
+    };
+
+    useEffect(() => {
+
+    },[])
+
+
     return(
         <div>
-            <div>작업자 배정</div>
-            <WorkerInput 
-                type="text" 
-                onChange={(event) => setWorker(event.target.value)}/>
-                
+            {
+                workingBefore
+                ?(
+                    <>
+                        <div>작업자 배정</div>
+                        <WorkerInput 
+                            type="text" 
+                            onChange={(event) => setWorker(event.target.value)}/>
+                    </>
+                )
+                :(
+                    <>
+                        <div>작업자</div>
+                        <div style={{width:"100%", height:"30px", border:"1px solid black", margin:"10px 0px"}}>
+                            <div style={{padding:"5px"}}>
+                                {nowWorker}
+                            </div>
+                        </div>
+                    </>
+                )
+            }
+            
             <div>작업 내용</div>
-            <WorkerInput
-              type="text" 
-              onChange={(event) => setWorkContet(event.target.value)}/>
+            {
+                workingBefore
+                ?(
+                    <WorkerInput
+                        type="text" 
+                        onChange={(event) => setWorkContet(event.target.value)}/>
+                )
+                :(
+                    <div style={{width:"100%", height:"30px", border:"1px solid black", margin:"10px 0px"}}>
+                        <div style={{padding:"5px"}}>
+                            {nowContent}
+                        </div>
+                    </div>
+                )
+            }
 
             <div>작업 기간</div>
-            <div style={{ display: "flex", alignItems:"center", margin:"10px 0px"}}>
-                <DateStyle />
-                <DatePicker
-                    selected={startDate}
-                    onChange={(date) => {
-                        if (endDate && endDate < date) {
-                            setEndDate(null); // 시작 날짜가 종료 날짜 이후로 선택되면 종료 날짜 초기화 시키기
-                        }
-                        setStartDate(date);
-                    }}
-                    selectsStart
-                    startDate={startDate}
-                    minDate={new Date()}
-                    endDate={endDate}
-                    locale={ko}
-                    dateFormat="yyyy-MM-dd"
-                    placeholderText="시작 날짜"
-                    isClearable
-                    onKeyDown={(event) => event.preventDefault()}
-                />
-                <DatePicker
-                    selected={endDate}
-                    onChange={(date) => setEndDate(date)}
-                    selectsEnd
-                    startDate={startDate}
-                    endDate={endDate}
-                    minDate={startDate} // 시작 날짜 이후로만 선택하도록 하기
-                    locale={ko}
-                    dateFormat="yyyy-MM-dd"
-                    placeholderText="종료 날짜"
-                    isClearable
-                    onKeyDown={(event) => event.preventDefault()}
-                    disabled={!startDate}
-                />
-            </div>
+            {
+                workingBefore
+                ?(
+                    <div style={{ display: "flex", alignItems:"center", margin:"10px 0px"}}>
+                    <DateStyle />
+                    <DatePicker
+                        selected={startDate}
+                        onChange={(date) => {
+                            if (endDate && endDate < date) {
+                                setEndDate(null); // 시작 날짜가 종료 날짜 이후로 선택되면 종료 날짜 초기화 시키기
+                            }
+                            setStartDate(date);
+                        }}
+                        selectsStart
+                        startDate={startDate}
+                        minDate={new Date()}
+                        endDate={endDate}
+                        locale={ko}
+                        dateFormat="yyyy-MM-dd"
+                        placeholderText="시작 날짜"
+                        isClearable
+                        onKeyDown={(event) => event.preventDefault()}
+                        renderCustomHeader={customHeader}
+                    />
+                    <DatePicker
+                        selected={endDate}
+                        onChange={(date) => setEndDate(date)}
+                        selectsEnd
+                        startDate={startDate}
+                        endDate={endDate}
+                        minDate={startDate} // 시작 날짜 이후로만 선택하도록 하기
+                        locale={ko}
+                        dateFormat="yyyy-MM-dd"
+                        placeholderText="종료 날짜"
+                        isClearable
+                        onKeyDown={(event) => event.preventDefault()}
+                        disabled={!startDate}
+                        renderCustomHeader={customHeader}
+                    />
+                </div>
+                )
+                :(
+                    <div style={{width:"100%", height:"30px", border:"1px solid black", margin:"10px 0px"}}>
+                        <div style={{padding:"5px"}}>
+                            {nowWorkDate}
+                        </div>
+                    </div>
+                )
+            }
 
             <div>작업 영상</div>
-            <div style={{ width:'100%', height:'100px', border:'1px solid black', margin:"10px 0px" }}>해당 영상 플레이어 넣기</div>
+            <div style={{ marginTop: "20px", width:"100%", height:"200px", border:"1px solid black"}}>
+              <ReactPlayer
+                url={fileURL}
+                playing={isPlaying} // 재생 여부
+                controls={true}
+                width="100%"
+                height="100%"
+                ref={playerRef} // 여기서 ref 사용
+                onDuration={goDuration}
+              />
+            </div>
+            
             { workingBefore ? null : (
                 <div style={{ display:"flex", flexDirection:"row", justifyContent:'center' }}>
                     <DownloadButton onClick={downloadVideo}>

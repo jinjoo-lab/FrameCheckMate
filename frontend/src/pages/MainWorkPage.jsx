@@ -230,7 +230,10 @@ const MainWorkPage = () => {
                             )}
                         </CardScroll>
                     )}
-                    <p onClick={resultPage} style={{margin:"0", cursor:"pointer"}}>최종 생성</p>
+                    <MakeButton 
+                        onClick={resultPage}>
+                        최종 생성
+                    </MakeButton>
                 </CardContainer>
 
             </BigContainer>
@@ -264,6 +267,9 @@ const MoveButton = styled.button`
 `
 const CardView = styled.div`
     display:flex; justify-content:center; align-items:center;
+`
+const MakeButton = styled.button`
+    width:150px; border:none; border-radius:5px; font-size:25px; padding:10px 20px; background-color:black; color:white; font-weight:bold; text-align:center; cursor:pointer;
 `
 
 export default MainWorkPage

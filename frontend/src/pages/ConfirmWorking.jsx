@@ -36,9 +36,9 @@ const ButtonAlign = styled.div`
     width:100%; display:flex; justify-content:center; flex-direction:row;  
 `
 const ConfirmButton = styled.div`
-    width:150px; border:none; border-radius:5px; padding:10px 20px; margin:10px 5px; background-color:black; text-align:center; color:white; font-weight:bold;
+    width:150px; border:none; border-radius:5px; padding:10px 20px; margin:10px 5px; background-color:black; text-align:center; color:white; font-weight:bold; cursor:pointer;
 `
 const ConfirmCloseButton = styled.div`
-    width:150px; border:none; border-radius:5px; padding:10px 20px; margin:10px 5px; background-color:gray; text-align:center; color:white; font-weight:bold;
+    width:150px; border:none; border-radius:5px; padding:10px 20px; margin:10px 5px; background-color:gray; text-align:center; color:white; font-weight:bold; cursor:pointer;
 `
 export default ConfirmWorking
