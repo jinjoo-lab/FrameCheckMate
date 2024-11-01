@@ -221,8 +221,8 @@ public class FrameService {
                 .map(Frame::getLastLogFrameName)
                 .collect(Collectors.toList());
 
-        for (String frameFile : frameFiles) {
-            File downloadedFile = downloadFileFromS3(frameFile);
+        for (int i = 1; i < frameFiles.size(); i++) {
+            File downloadedFile = downloadFileFromS3(frameFiles.get(i));
             fileService.moveFileToInputDir(downloadedFile);
         }
 
