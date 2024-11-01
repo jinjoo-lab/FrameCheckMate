@@ -75,8 +75,8 @@ public class FrameController {
         return ResponseEntity.ok(frameService.splitFrame(requestDTO));
     }
 
-    @PostMapping("/merge")
-    public ResponseEntity<String> mergeFrame(@RequestBody UUID projectId) throws IOException, InterruptedException {
+    @PostMapping("/merge/{projectId}")
+    public ResponseEntity<String> mergeFrame(@PathVariable UUID projectId) throws IOException, InterruptedException {
         return ResponseEntity.ok(frameService.mergeFrame(projectId));
     }
 }
