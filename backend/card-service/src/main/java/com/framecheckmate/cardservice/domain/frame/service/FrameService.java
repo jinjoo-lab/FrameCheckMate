@@ -10,6 +10,7 @@ import com.framecheckmate.cardservice.domain.card.type.CardStatus;
 import com.framecheckmate.cardservice.domain.frame.dto.request.FrameSplitRequestDTO;
 import com.framecheckmate.cardservice.domain.frame.entity.Frame;
 import com.framecheckmate.cardservice.domain.card.repository.CardRepository;
+import com.framecheckmate.cardservice.domain.frame.entity.FrameLog;
 import com.framecheckmate.cardservice.domain.frame.repository.FrameRepository;
 import com.framecheckmate.cardservice.domain.frame.type.FrameType;
 import org.springframework.core.io.Resource;
@@ -51,7 +52,6 @@ public class FrameService {
 
     private void uploadOriginalFrame(UUID projectId, String fileName) {
         Frame originalFrame = Frame.builder()
-                .frameId(UUID.randomUUID())
                 .projectId(projectId)
                 .sequence(-1L)
                 .logs(new ArrayList<>())
@@ -191,7 +191,6 @@ public class FrameService {
     private UUID createFrame(UUID projectId, String fileName, Long seq) {
         UUID frameId = UUID.randomUUID();
         Frame frame = Frame.builder()
-                .frameId(frameId)
                 .projectId(projectId)
                 .sequence(seq)
                 .logs(new ArrayList<>())
