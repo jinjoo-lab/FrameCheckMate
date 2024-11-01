@@ -160,23 +160,23 @@ public class FrameService {
         if (process.waitFor() != 0) {
             throw new RuntimeException("Failed to trim video.");
         }
-        return ffmpegConfig.getOutputPath() + fileName + "_" + seq;
+        return ffmpegConfig.getOutputPath() + "\\" + seq + "_" + fileName;
     }
 
     private String[] buildSplitFFmpegCommand(String fileName, String startTime, String endTime, Long seq) {
         return new String[]{
                 ffmpegConfig.getFFmpegPath().toString(),
-                "-i", ffmpegConfig.getInputPath() + fileName,
+                "-i", ffmpegConfig.getInputPath() + "\\" + fileName,
                 "-ss", startTime,
                 "-to", endTime,
                 "-c", "copy",
-                ffmpegConfig.getOutputPath() + fileName + "_" + seq
+                ffmpegConfig.getOutputPath() + "\\" + seq + "_" + fileName
         };
     }
 
     private String uploadToS3(String filePath, String fileName, Long seq) throws IOException {
         File file = new File(filePath);
-        String s3FileName = fileName + "_" + seq;
+        String s3FileName = seq + "_" + fileName;
 
         try (FileInputStream fileInputStream = new FileInputStream(file)) {
             ObjectMetadata metadata = new ObjectMetadata();
@@ -196,7 +196,7 @@ public class FrameService {
                 .sequence(seq)
                 .logs(new ArrayList<>())
                 .build();
-        frame.addLog(seq, fileName);
+        frame.addLog(1L, fileName);
         frameRepository.save(frame);
         return frameId;
     }
