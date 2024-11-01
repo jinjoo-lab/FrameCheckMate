@@ -62,7 +62,7 @@ public class FrameService {
 
     private void uploadMergedFrame(UUID projectId, String fileName) {
         Frame mergedFrame = frameRepository.findByProjectIdAndSequence(projectId, -1);
-        mergedFrame.addLog(mergedFrame.getLogs().size() + 1L, fileName);
+        mergedFrame.addLog(mergedFrame.getLogs().size() + 1L, "-1_" + fileName);
         frameRepository.save(mergedFrame);
     }
 
