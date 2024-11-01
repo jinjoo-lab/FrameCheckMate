@@ -70,8 +70,13 @@ public class FrameController {
                 .body(resource);
     }
 
-    @PostMapping("/api/frame/split")
-    public ResponseEntity<String> splitFrame(@RequestParam FrameSplitRequestDTO requestDTO) throws IOException, InterruptedException {
+    @PostMapping("/split")
+    public ResponseEntity<String> splitFrame(@RequestBody FrameSplitRequestDTO requestDTO) throws IOException, InterruptedException {
         return ResponseEntity.ok(frameService.splitFrame(requestDTO));
+    }
+
+    @PostMapping("/merge/{projectId}")
+    public ResponseEntity<String> mergeFrame(@PathVariable UUID projectId) throws IOException, InterruptedException {
+        return ResponseEntity.ok(frameService.mergeFrame(projectId));
     }
 }

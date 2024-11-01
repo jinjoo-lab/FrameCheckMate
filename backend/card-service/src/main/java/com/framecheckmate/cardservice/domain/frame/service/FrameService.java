@@ -2,6 +2,8 @@ package com.framecheckmate.cardservice.domain.frame.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.util.IOUtils;
 import com.framecheckmate.cardservice.config.FFmpegConfig;
 import com.framecheckmate.cardservice.domain.card.entity.Card;
 import com.framecheckmate.cardservice.domain.card.type.CardStatus;
@@ -19,14 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -64,7 +62,7 @@ public class FrameService {
 
     private void uploadMergedFrame(UUID projectId, String fileName) {
         Frame mergedFrame = frameRepository.findByProjectIdAndSequence(projectId, -1);
-        mergedFrame.addLog(mergedFrame.getLogs().size() + 1L, fileName);
+        mergedFrame.addLog(mergedFrame.getLogs().size() + 1L, "-1_" + fileName);
         frameRepository.save(mergedFrame);
     }
 
@@ -143,7 +141,7 @@ public class FrameService {
             FrameSplitRequestDTO.Segment segment = segments.get(i);
             String splitFileName = processSegment(fileName, segment, i + 1L);
             UUID frameId = createFrame(projectId, splitFileName, i + 1L);
-            createCard(frameId, segment.getDetect());
+            createCard(projectId, frameId, segment.getDetect());
         }
         return "Frame split operation completed for project ID: " + projectId;
     }
@@ -154,7 +152,7 @@ public class FrameService {
     }
 
     public String splitFrameSegment(String fileName, String startTime, String endTime, Long seq) throws IOException, InterruptedException {
-        String[] command = buildFFmpegCommand(fileName, startTime, endTime, seq);
+        String[] command = buildSplitFFmpegCommand(fileName, startTime, endTime, seq);
 
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.redirectErrorStream(true);
@@ -162,23 +160,23 @@ public class FrameService {
         if (process.waitFor() != 0) {
             throw new RuntimeException("Failed to trim video.");
         }
-        return ffmpegConfig.getOutputPath() + fileName + "_" + seq;
+        return ffmpegConfig.getOutputPath() + "\\" + seq + "_" + fileName;
     }
 
-    private String[] buildFFmpegCommand(String fileName, String startTime, String endTime, Long seq) {
+    private String[] buildSplitFFmpegCommand(String fileName, String startTime, String endTime, Long seq) {
         return new String[]{
                 ffmpegConfig.getFFmpegPath().toString(),
-                "-i", ffmpegConfig.getInputPath() + fileName,
+                "-i", ffmpegConfig.getInputPath() + "\\" + fileName,
                 "-ss", startTime,
                 "-to", endTime,
                 "-c", "copy",
-                ffmpegConfig.getOutputPath() + fileName + "_" + seq
+                ffmpegConfig.getOutputPath() + "\\" + seq + "_" + fileName
         };
     }
 
     private String uploadToS3(String filePath, String fileName, Long seq) throws IOException {
         File file = new File(filePath);
-        String s3FileName = fileName + "_" + seq;
+        String s3FileName = seq + "_" + fileName;
 
         try (FileInputStream fileInputStream = new FileInputStream(file)) {
             ObjectMetadata metadata = new ObjectMetadata();
@@ -198,19 +196,85 @@ public class FrameService {
                 .sequence(seq)
                 .logs(new ArrayList<>())
                 .build();
-        frame.addLog(seq, fileName);
+        frame.addLog(1L, fileName);
         frameRepository.save(frame);
         return frameId;
     }
 
-    private UUID createCard(UUID frameId, Boolean detect) {
+    private UUID createCard(UUID projectId, UUID frameId, Boolean detect) {
         UUID cardId = UUID.randomUUID();
         Card card = Card.builder()
                 .cardId(cardId)
                 .frameId(frameId)
+                .projectId(projectId)
                 .status(detect ? CardStatus.TODO : CardStatus.PENDING_CONFIRMATION)
                 .build();
         cardRepository.save(card);
         return cardId;
+    }
+
+    public String mergeFrame(UUID projectId) throws IOException, InterruptedException {
+        List<Frame> frames = frameRepository.findByProjectId(projectId);
+
+        List<String> frameFiles = frames.stream()
+                .sorted(Comparator.comparingLong(Frame::getSequence))
+                .map(Frame::getLastLogFrameName)
+                .collect(Collectors.toList());
+
+        for (int i = 1; i < frameFiles.size(); i++) {
+            File downloadedFile = downloadFileFromS3(frameFiles.get(i));
+            fileService.moveFileToInputDir(downloadedFile);
+        }
+
+        File tempListFile = createFFmpegConcatFile(frameFiles);
+
+        String mergedFileName = "merged_" + projectId + ".mp4";
+        String outputFilePath = ffmpegConfig.getOutputPath() + mergedFileName;
+        mergeFrames(tempListFile, outputFilePath);
+        uploadToS3(outputFilePath, mergedFileName, -1L);
+        uploadMergedFrame(projectId, mergedFileName);
+
+        return "Frame merge operation completed for project ID: " + projectId;
+    }
+
+    private File downloadFileFromS3(String fileName) throws IOException {
+        S3Object s3Object = amazonS3.getObject(bucket, fileName);
+        File downloadedFile = new File(System.getProperty("user.home") + "/Downloads/" + fileName);
+        try (FileOutputStream fos = new FileOutputStream(downloadedFile)) {
+            IOUtils.copy(s3Object.getObjectContent(), fos);
+        }
+        return downloadedFile;
+    }
+
+    private File createFFmpegConcatFile(List<String> frameFiles) throws IOException {
+        File tempListFile = new File(ffmpegConfig.getOutputPath() + "file_list.txt");
+        try (FileWriter writer = new FileWriter(tempListFile)) {
+            for (int i = 1; i < frameFiles.size(); i++) {
+                writer.write("file '" + ffmpegConfig.getInputPath() + frameFiles.get(i) + "'\n");
+            }
+        }
+        return tempListFile;
+    }
+
+    private String[] buildMergeFFmpegCommand(File fileList, String outputFilePath) {
+        return new String[]{
+                ffmpegConfig.getFFmpegPath().toString(),
+                "-f", "concat",
+                "-safe", "0",
+                "-i", fileList.getAbsolutePath(),
+                "-c", "copy",
+                outputFilePath
+        };
+    }
+
+    private void mergeFrames(File fileList, String outputFilePath) throws IOException, InterruptedException {
+        String[] command = buildMergeFFmpegCommand(fileList, outputFilePath);
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+        if (process.waitFor() != 0) {
+            throw new RuntimeException("Failed to merge video.");
+        }
     }
 }

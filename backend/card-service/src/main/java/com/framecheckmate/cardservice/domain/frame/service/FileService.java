@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @Slf4j
 @Service
@@ -30,5 +31,10 @@ public class FileService {
         Files.delete(downloadPath);
 
         System.out.println("File moved successfully to: " + targetPath);
+    }
+
+    public void moveFileToInputDir(File file) throws IOException {
+        File targetFile = new File(ffmpegConfig.getInputPath() + file.getName());
+        Files.move(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 }
