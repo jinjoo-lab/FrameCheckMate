@@ -2,6 +2,7 @@ package com.framecheckmate.cardservice.domain.frame.entity;
 
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Frame {
     @Id
     private UUID frameId;
@@ -21,10 +23,14 @@ public class Frame {
     Long sequence;
     List<FrameLog> logs;
 
-public String getLastLogFrameName() {
+    public String getLastLogFrameName() {
         return logs.stream()
                 .max(Comparator.comparing(FrameLog::getLogSequence))
                 .map(FrameLog::getFrameName)
                 .orElse(null);
+    }
+
+    public void addLog(Long logSequence, String fileName) {
+        this.logs.add(new FrameLog(logSequence, fileName));
     }
 }
