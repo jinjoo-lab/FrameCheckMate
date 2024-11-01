@@ -2,59 +2,52 @@ import React, { useState, useEffect, useRef } from 'react';
 import TopBar from "../components/TopBar";
 import { useNavigate, Link } from 'react-router-dom'; // eslint-disable-line no-unused-vars
 import styled from 'styled-components'
+import ReactPlayer from "react-player";
 
 const ImageProcessingResult = () => {
 
     const navigate = useNavigate();
 
-    const [fileURL, setFileURL] = useState("");
     const [isPlaying, setIsPlaying] = useState(false);
     const playerRef = useRef(null); // ReactPlayer에 대한 ref 생성
     const [playTime, setPlayTime] = useState();
-
-    const videoPlaying = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const url = URL.createObjectURL(file);
-          console.log(url);
-          setFileURL(url);
-          setIsPlaying(true); // 파일 선택 후 자동으로 재생
-        }
-      };
     
-      const seekToFiveSeconds = () => {
-        if (playerRef.current) {
-          playerRef.current.seekTo(8); // 5초로 이동
-        }
-      };
-
-    // 동영상 총 시간 계산
-    const goDuration = (a) => {
-        setPlayTime(a);
-        console.log(`총 시간${a}`);
+    const timeView = (seconds) => {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = seconds % 60;
+    
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     };
+
+    const moveSeconds = (event, seconds) => {
+      event.preventDefault(); // 페이지 새로 고침 방지
+      setIsPlaying(true);
+      if (playerRef.current) {
+        playerRef.current.seekTo(seconds);
+      }
+      setPlayTime(seconds);
+    };
+
+    const [splitResult, setSplitResult] = useState([])
+
+    const splitImport = () => {
+      const response = [
+        {number:1, type:'a', file:'', time:'00:01:00~00:02:00'},
+        {number:2, type:'b', file:'', time:'00:02:00~00:03:00'},
+        {number:3, type:'c', file:'', time:'00:03:00~00:06:00'},
+        {number:4, type:'d', file:'', time:'00:06:00~00:10:00'},
+      ]
+  
+      setSplitResult(response)
+    }
 
     const mainButton = () => {
         navigate('/mainWorkPage');
       }
 
-    const [cardList, setCardList] = useState([
-        {number:1, type:'a', content:'영상1', time:'00:01:00~00:02:00'},
-        {number:2, type:'b', content:'영상2', time:'00:02:00~00:03:00'},
-        {number:3, type:'c', content:'영상3', time:'00:03:00~00:06:00'},
-        {number:4, type:'d', content:'영상4', time:'00:06:00~00:10:00'},
-        {number:5, type:'a', content:'영상5', time:'00:10:00~00:12:00'},
-        {number:6, type:'c', content:'영상6', time:'00:12:00~00:13:00'},
-        {number:7, type:'c', content:'영상7', time:'00:13:00~00:14:00'},
-        {number:8, type:'b', content:'영상8', time:'00:14:00~00:17:00'},
-        {number:9, type:'b', content:'영상9', time:'00:17:00~00:18:00'},
-        {number:10, type:'a', content:'영상10', time:'00:18:00~00:30:00'},
-    ])
-
-    const [videoView, setVideoView] = useState([])
-
     useEffect (() => {
-        setVideoView(cardList)
+      splitImport()
     }, [])
 
     return(
@@ -62,18 +55,47 @@ const ImageProcessingResult = () => {
         <TopBar title='최종 분할 결과' logoutView={true}/>
         <RowContainer>
         <VideoScroll>
-         {videoView.map((list) => 
-          <VideoBox key={list.number}>
-            <VideoList>
-                <VideoContents>{list.content}</VideoContents>
-                <VideoContents>{list.time}</VideoContents>
-            </VideoList>
-          </VideoBox>
-        )}
+          { splitResult.length != 0 
+          ? (
+            <>
+              {splitResult.map((list) => 
+                <VideoBox key={list.number}>
+                  <VideoList>
+                    { list.file
+                    ? (                    
+                    <div style={{width:'40%', height:'40%'}}>
+                      <ReactPlayer
+                        url={list.file}
+                        playing={isPlaying} // 재생 여부
+                        controls={true}
+                        width="100%"
+                        height="100%"
+                        ref={playerRef} // 여기서 ref 사용
+                        // onReady={() => setIsPlaying(true)} 
+                      />
+                    </div>
+                    )
+                    : (
+                      <div style={{width:'200px', height:'150px', border:'1px solid black'}}></div>
+                      )}
+
+
+                    <VideoContents>{list.time}</VideoContents>
+                  </VideoList>
+                </VideoBox>
+              )}
+            </>
+          ) 
+          : (
+            <NoReview>
+              <p>결과를 기다리는 중입니다</p>
+            </NoReview>
+          )}
+
         </VideoScroll>
-            <WorkingButton 
-              onClick={mainButton}>작업페이지 이동
-            </WorkingButton>
+          <WorkingButton 
+            onClick={mainButton}>작업페이지 이동
+          </WorkingButton>
         </RowContainer>
       </div>
     )
@@ -96,5 +118,8 @@ border-bottom:2px solid black; width:85%; display:flex; flex-direction:row; just
 `
 const VideoContents = styled.div`
   font-size:12px; font-weight:bold; white-space:normal
+`
+const NoReview = styled.div`
+  display:flex; justify-content:center; align-items:center; height:100vh;
 `
 export default ImageProcessingResult

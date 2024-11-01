@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoVideo } from "react-icons/go";
 import { ko } from "date-fns/locale";
@@ -44,10 +44,21 @@ const MainHomePage = () => {
 
   const [groupName, setGroupName] = useState('')
 
-  const [titleData, setTitleData] = useState([
-    {number:1, name:'영상 수정', confirm:false},{number:2, name:'드라마 편집', confirm:true},
-    {number:3, name:'모자이크 처리', confirm:true},{number:4, name:'모자이크 처리', confirm:false},
-    {number:5, name:'모자이크 처리', confirm:true}, {number:6, name:'모자이크 처리', confirm:true}])
+  const [groupList, setGroupList] = useState([])
+
+  const groupImport = () => {
+    const response = [
+      {number:1, name:'영상 수정', confirm:false},{number:2, name:'드라마 편집', confirm:true},
+      {number:3, name:'모자이크 처리', confirm:true},{number:4, name:'모자이크 처리', confirm:false},
+      {number:5, name:'모자이크 처리', confirm:true}, {number:6, name:'모자이크 처리', confirm:true}
+    ]
+
+    setGroupList(response)
+  }
+
+  useEffect(() => {
+    groupImport()
+  },[])
 
   return(
     <div>
@@ -55,7 +66,7 @@ const MainHomePage = () => {
       <RowContainer> 
         {/* 그룹 목록 */}
         <GroupScroll>
-            {titleData.map((list) => 
+            { groupList.map((list) => 
               <GroupView key={list.number}>
                 <GroupText onClick={workView}>{list.name}</GroupText>
                 { list.confirm ? 
@@ -73,12 +84,13 @@ const MainHomePage = () => {
       {/* 모달 */}
       <Modal
         isOpen={modalIsOpen}
+        ariaHideApp={false} 
         style={customStyles}>
         <ModalContainer> 
           <h2>그룹 생성</h2>
           <ModalContent>
             <h3>그룹 이름</h3>
-            <GroupInput type="text" onChange={setGroupName} />
+            <GroupInput type="text" onChange={(event) => setGroupName(event.target.value)} />
             <ButtonAlignBox>
               <GroupButton onClick={makeGroup}>그룹 만들기</GroupButton>
               <ModalClose onClick={closeModal}>닫기</ModalClose>
@@ -98,10 +110,10 @@ const GroupScroll = styled.div`
   width:80%; height:300px; overflow-y:auto; margin:40px 20px; display:flex; flex-direction:column;  align-items:center;
 `
 const GroupView = styled.div`
-  display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid black; margin:15px 0px; width:600px
+  display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid black; margin:15px 0px; width:80%;
 `
 const GroupText = styled.p`
-  font-size:30px; font-weight:bold; margin:0; cursor:pointer;
+  font-size:25px; font-weight:bold; margin:0; cursor:pointer;
 `
 const PlayButton = styled.button`
   border:none; outline:none; background-color:inherit; cursor:pointer;

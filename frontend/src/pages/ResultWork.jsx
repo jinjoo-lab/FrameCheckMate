@@ -13,16 +13,6 @@ const ResultWork = () => {
     const playerRef = useRef(null); // ReactPlayer에 대한 ref 생성
     const [playTime, setPlayTime] = useState();
 
-    const playingVideo = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const url = URL.createObjectURL(file);
-          console.log(url);
-          setFileURL(url);
-          setIsPlaying(true); // 파일 선택 후 자동으로 재생
-        }
-      };
-
     const closeButton = () => {
         navigate('/mainWorkPage');
       }
@@ -30,6 +20,18 @@ const ResultWork = () => {
     const uploadButton = () => {
         navigate('/imageProcessing')
     }
+
+    const videoImport = () => {
+      const response = [{fileUrl:'', fileName:'이름'}]
+      setFileURL(response.fileURL)
+    }
+
+    useEffect(() => {
+
+      videoImport()
+
+    },[])
+
     return(
       <div>
         <TopBar title='최종 생성 영상 확인' logoutView={true}/>
@@ -39,12 +41,12 @@ const ResultWork = () => {
                 url={fileURL}
                 playing={isPlaying} // 재생 여부
                 controls={true}
-                width="100%"
+                width="60%"
                 ref={playerRef} // 여기서 ref 사용
                 style={{width:"300px", border:"1px solid black"}}
               />
           ): <div
-              style={{ padding:'200px'}}>
+              style={{ padding:'200px', border:'1px solid black'}}>
               영상 확인 중입니다
             </div>}
 
