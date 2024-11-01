@@ -7,42 +7,52 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, workingB
 
     const navigate = useNavigate();
 
-    const [confirmData, setConfirmData] = useState([
-        {number:1, name:'김김김', content:'다시 해주세요'},
-        {number:2, name:'김김김', content:'다시'},
-        {number:3, name:'김김김', content:'다시 수정해주세요'},
-        {number:4, name:'김김김', content:'다시 수정해주세요'},
-        {number:5, name:'김김김', content:'다시 수정해주세요'},
-        {number:6, name:'김김김', content:'다시 수정해주세요'},
-    ])
-
-    const [commentData, setCommentData] = useState([
-        {number:1, name:'김김김', content:'좋아요'},
-        {number:2, name:'이이이', content:'별로'},
-        {number:3, name:'박박박', content:'좋음'},
-    ])
-
     const [confirmList, setConfirmList] = useState([])
     const [commentList, setCommentList] = useState([])
 
     const [confirms, setConfirms] = useState('')
     const [comments, setComments] = useState('')
 
-    useEffect (() => {
-        setConfirmList(confirmData)
-        setCommentList(commentData)
-    }, [])
+    const confirmSubmit = () => {
+
+    }
 
     const commentSubmit = () => {
 
     }
 
-    const confirmSubmit = () => {
+    const confirmImport = () => {
+        const response = [
+            {number:1, name:'김김김', content:'다시 해주세요'},
+            {number:2, name:'김김김', content:'다시'},
+            {number:3, name:'김김김', content:'다시 수정해주세요'},
+            {number:4, name:'김김김', content:'다시 수정해주세요'},
+        ]
+
+        setConfirmList(response)
 
     }
 
+    const commentImport = () => {
+        const response = [
+            {number:1, name:'김김김', content:'좋아요'},
+            {number:2, name:'이이이', content:'별로'},
+            {number:3, name:'박박박', content:'좋음'},
+        ]
+
+        setCommentList(response)
+
+    }
+
+    useEffect(() => {
+        /* 처음에 컨펌 목록, 코멘트 목록 불러오기 */
+        confirmImport()
+        commentImport()
+
+    }, [])
+
     return(
-        <ReviewContainer>
+        <FeedbackContainer>
             <div style={{ width:'45%' }}> 
                 <AllocateWork workingBefore={workingBefore} uploadView={uploadView} />
             </div>
@@ -50,14 +60,27 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, workingB
 
                 <div style={{ margin:'10px 5px'}}>컨펌 내용</div>
                 <ReviewScroll>
-                    { confirmList.map((list) => 
-                        <ReviewAlign key={list.number}>
-                            <ReviewStyle>
-                                <ReviewText>{list.name}</ReviewText>
-                                <ReviewText>{list.content}</ReviewText>
-                            </ReviewStyle>
-                        </ReviewAlign>
-                    )}
+                    { confirmList.length == 0 
+                    ? (
+                        <NoReview>
+                            <p>컨펌 내용이 없습니다</p>
+                        </NoReview>
+                    )
+                    : (
+                        <>
+                        { confirmList.map((list) => 
+                            <ReviewAlign key={list.number}>
+                                <ReviewStyle>
+                                    <ReviewText>{list.name}</ReviewText>
+                                    <ReviewText>{list.content}</ReviewText>
+                                </ReviewStyle>
+                            </ReviewAlign>
+                        )}
+                        </>
+                    )
+
+                    }
+
                 </ReviewScroll>
                 { confirmView 
                     ? (
@@ -73,13 +96,23 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, workingB
 
                 <div style={{ margin:'10px 5px'}}>코멘트</div>
                 <ReviewScroll>
-                    {commentList.map((list) => 
-                        <ReviewAlign key={list.number}>
-                            <ReviewStyle>
-                                <ReviewText>{list.name}</ReviewText>
-                                <ReviewText>{list.content}</ReviewText>
-                            </ReviewStyle>
-                        </ReviewAlign>
+                    { commentList.length == 0 
+                    ? (
+                        <NoReview>
+                            <p>코멘트가 없습니다</p>
+                        </NoReview>
+                    )
+                    : (
+                        <>
+                        { commentList.map((list) => 
+                            <ReviewAlign key={list.number}>
+                                <ReviewStyle>
+                                    <ReviewText>{list.name}</ReviewText>
+                                    <ReviewText>{list.content}</ReviewText>
+                                </ReviewStyle>
+                            </ReviewAlign>
+                        )}
+                        </>
                     )}
                 </ReviewScroll>
                 { commentView 
@@ -95,11 +128,11 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, workingB
                 }
 
             </div>
-        </ReviewContainer>
+        </FeedbackContainer>
     )
 }
 
-const ReviewContainer = styled.div`
+const FeedbackContainer = styled.div`
     display:flex; justify-content:space-between; align-items:center;
 `
 const ReviewScroll = styled.div`
@@ -110,6 +143,9 @@ const ReviewStyle = styled.div`
 `
 const ReviewText = styled.div`
     font-size:12px; font-weight:bold; white-space:normal
+`
+const NoReview = styled.div`
+    display:flex; justify-content:center; align-items:center; height:100vh;
 `
 const ReviewAlign = styled.div`
     display:flex; justify-content:center; align-items:center; margin:15px 0px; width:90%; padding:0px 5px;

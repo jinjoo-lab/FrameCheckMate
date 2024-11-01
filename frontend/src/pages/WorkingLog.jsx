@@ -9,42 +9,45 @@ const WorkingLog = () => {
 
     const navigate = useNavigate();
 
-    const [titleData, setTitleData] = useState([
-        {number:1, name:'영상 수정', confirm:false},{number:2, name:'드라마 편집', confirm:true},
-        {number:3, name:'모자이크 처리', confirm:true}, {number:4, name:'모자이크 처리', confirm:true},
-        {number:5, name:'모자이크 처리', confirm:true}, {number:6, name:'모자이크 처리', confirm:true},
-        {number:7, name:'모자이크 처리', confirm:true}, {number:8, name:'모자이크 처리', confirm:true},
-        {number:9, name:'모자이크 처리', confirm:true}, {number:10, name:'모자이크 처리', confirm:true},
-        {number:11, name:'모자이크 처리', confirm:true}, {number:12, name:'모자이크 처리', confirm:true},
-    ])
+    const [logList, setLogList] = useState([])
     const [fileURL, setFileURL] = useState("");
     const [isPlaying, setIsPlaying] = useState(false);
     const playerRef = useRef(null); // ReactPlayer에 대한 ref 생성
     const [playTime, setPlayTime] = useState();
 
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const url = URL.createObjectURL(file);
-          console.log(url);
-          setFileURL(url);
-          setIsPlaying(true); // 파일 선택 후 자동으로 재생
-        }
-      };
+    const logImport = () => {
 
-    // 동영상 총 시간 계산
-    const goDuration = (a) => {
-        setPlayTime(a);
-        console.log(`총 시간${a}`);
-    };
+        const response = [
+            {number:1, name:'영상 수정', file:false},{number:2, name:'드라마 편집', file:true},
+            {number:3, name:'모자이크 처리', file:true}, {number:4, name:'모자이크 처리', file:false},
+            {number:5, name:'모자이크 처리', file:false}, {number:6, name:'모자이크 처리', file:false},
+        ]
+
+        setLogList(response)
+    }
 
     const closeButton = () => {
         navigate('/mainWorkPage');
       }
 
-    const uploadButton = () => {
-        navigate('/imageProcessing')
+    const uploadButton = (event, fileURL) => {
+        event.preventDefault() // 페이지 새로 고침 방지
+
+        console.log(fileURL)
     }
+
+    const playVideo = (event, file) => {
+        event.preventDefault(); // 페이지 새로 고침 방지
+
+        setFileURL(file)
+    }
+
+    useEffect(() => {
+
+        logImport()
+
+    }, [])
+
     return(
         <div>
             <TopBar title='작업 로그' logoutView={true}/>
@@ -52,32 +55,41 @@ const WorkingLog = () => {
                 <WorkingContainer>
                     <LogContainer>
                         <ListBox>
-                            { titleData.map((list) => 
-                                <ListStyle key={list.number}>
-                                    <div>{list.name}</div>
-                                    {list.confirm ? 
-                                    <PlayButton> <GoVideo size={15} /> </PlayButton>
-                                    : null
-                                    }
-                                </ListStyle>
+                            { logList.length == 0
+                            ? (
+                                <div>작업 로그가 없습니다</div>
+                            ) 
+                            : (
+                                <>
+                                { logList.map((list) => 
+                                    <ListStyle key={list.number}>
+                                        <div>{list.name}</div>
+                                        {list.file ? 
+                                        <PlayButton onClick={(event) => playVideo(event, list.file)}> <GoVideo size={15} /> </PlayButton>
+                                        : null
+                                        }
+                                    </ListStyle>
+                                    )
+                                }
+                                </>
                                 )
                             }
+
                         </ListBox>
                     </LogContainer>
                         { fileURL ? (
                             <LogContainer>
-                            <ReactPlayer
-                                url={fileURL}
-                                playing={isPlaying} // 재생 여부
-                                controls={true}
-                                width="100%"
-                                height="80%"
-                                ref={playerRef} // 여기서 ref 사용
-                                onDuration={goDuration}
-                            />
-                            <WorkingButton onClick={uploadButton}>
-                                다운로드
-                            </WorkingButton>
+                                <ReactPlayer
+                                    url={fileURL}
+                                    playing={isPlaying} // 재생 여부
+                                    controls={true}
+                                    width="100%"
+                                    height="80%"
+                                    ref={playerRef} // 여기서 ref 사용
+                                />
+                                <WorkingButton onClick={(event) => {uploadButton(event, fileURL)}}>
+                                    다운로드
+                                </WorkingButton>
                             </LogContainer>
                             ): 
                             <LogContainer>확인할 영상을 선택해주세요</LogContainer>
@@ -99,13 +111,13 @@ const WorkingContainer = styled.div`
     display:flex; width:90%; flex-direction:row; justify-content:center; align-items:center;
 `
 const LogContainer = styled.div`
-    border:1px solid black; display:flex; width:40%; height:300px; padding:10px; margin:5px; justify-content:center; align-items:center;
+    border:1px solid black; display:flex; flex-direction:column; width:40%; height:300px; padding:10px; margin:5px; justify-content:center; align-items:center;
 `
 const ListBox = styled.div`
-    width:100%; height:100%; overflow-y:auto; padding:5px; display:flex; justify-content:center; align-items:center; flex-direction:column;
+    width:100%; height:100%; overflow-y:auto; padding:5px; display:flex; align-items:center; flex-direction:column;
 `
 const ListStyle = styled.div`
-    display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid black; margin:5px 0px; width:200px;
+    display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid black; margin:5px 0px; width:300px;
 `
 const PlayButton = styled.button`
     border:none; outline:none; background-color:inherit; cursor:pointer;
