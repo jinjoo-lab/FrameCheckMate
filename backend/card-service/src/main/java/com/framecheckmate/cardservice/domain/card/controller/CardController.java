@@ -1,6 +1,7 @@
 package com.framecheckmate.cardservice.domain.card.controller;
 
 import com.framecheckmate.cardservice.domain.card.dto.request.AssignCardWorkRequest;
+import com.framecheckmate.cardservice.domain.card.dto.request.ConfirmRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.CreateCardRequest;
 import com.framecheckmate.cardservice.domain.card.entity.Card;
 import com.framecheckmate.cardservice.domain.card.service.CardService;
@@ -49,5 +50,10 @@ public class CardController {
     @PatchMapping("/{cardId}/completion")
     public ResponseEntity<Card> moveToCompletion(@PathVariable UUID cardId) {
         return ResponseEntity.ok(cardService.moveToCompletion(cardId));
+    }
+
+    @PostMapping("/{cardId}/confirm")
+    public ResponseEntity<Card> addConfirm(@PathVariable UUID cardId, @RequestBody ConfirmRequest confirmRequest) {
+        return ResponseEntity.ok(cardService.addConfirm(cardId, confirmRequest));
     }
 }
