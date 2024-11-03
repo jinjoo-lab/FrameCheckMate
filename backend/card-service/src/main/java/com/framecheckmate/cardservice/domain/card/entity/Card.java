@@ -2,10 +2,7 @@ package com.framecheckmate.cardservice.domain.card.entity;
 
 import com.framecheckmate.cardservice.domain.card.type.CardStatus;
 import com.framecheckmate.cardservice.domain.card.type.ConfirmDetail;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Id;
@@ -16,10 +13,10 @@ import java.util.List;
 import java.time.LocalDateTime;
 
 @Document(collection = "cards")
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class Card {
     @Id
     private UUID cardId;

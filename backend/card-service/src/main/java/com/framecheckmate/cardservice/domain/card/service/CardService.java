@@ -48,28 +48,13 @@ public class CardService {
 
     public Card assignCardWork(UUID cardId, AssignCardWorkRequest assignCardWorkRequest) {
         Card existingCard = findCardById(cardId);
-
-        /**
-         * to-do: 입력 값 검증
-         */
-        // validateDateRange(request.getStartDate(), request.getEndDate());
-
-        return cardRepository.save(buildUpdatedCard(cardId, assignCardWorkRequest, existingCard));
-    }
-
-    private Card buildUpdatedCard(UUID cardId, AssignCardWorkRequest request, Card existingCard) {
-        return Card.builder()
-                .cardId(cardId)
-                .workerId(request.getWorkerId())
-                .projectId(existingCard.getProjectId())
-                .frameId(existingCard.getFrameId())
-                .startDate(request.getStartDate())
-                .endDate(request.getEndDate())
-                .description(request.getDescription())
-                .createdAt(existingCard.getCreatedAt())
-                .confirms(existingCard.getConfirms())
-                .status(existingCard.getStatus())
+        Card updateCard = existingCard.toBuilder()
+                .workerId(assignCardWorkRequest.getWorkerId())
+                .startDate(assignCardWorkRequest.getStartDate())
+                .endDate(assignCardWorkRequest.getEndDate())
+                .description(assignCardWorkRequest.getDescription())
                 .build();
+        return cardRepository.save(updateCard);
     }
 
     public Card createCard(CreateCardRequest request) {
@@ -78,8 +63,8 @@ public class CardService {
                 .frameId(request.getFrameId())
                 .projectId(request.getProjectId())
                 .createdAt(LocalDateTime.now())
-                .status(CardStatus.TODO) // 초기 상태값이 필요하다면
-                .confirms(new ArrayList<>()) // 빈 리스트로 초기화
+                .status(CardStatus.TODO)
+                .confirms(new ArrayList<>())
                 .build();
 
         return cardRepository.save(card);
@@ -106,10 +91,12 @@ public class CardService {
         Card card = findCardById(cardId);
         Long maxOrder = cardRepository.findMaxOrderByStatus(status).orElse(0L);
 
-        card.setStatus(status);
-        card.setOrder(maxOrder + 1);
+        Card updatedCard = card.toBuilder()
+                .status(status)
+                .order(maxOrder + 1)
+                .build();
 
-        return cardRepository.save(card);
+        return cardRepository.save(updatedCard);
     }
 
     @Transactional
