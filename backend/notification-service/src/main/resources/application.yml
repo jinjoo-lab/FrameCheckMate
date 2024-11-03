@@ -1,0 +1,26 @@
+spring:
+  config:
+    import:
+      - optional:file:.env[.properties]
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/notification
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: ${NAVER_MAIL_USER}
+    password: ${NAVER_MAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
+  jpa:
+    hibernate:
+      ddl-auto: create
+    generate-ddl: true
+    show-sql: true
+    database: mysql

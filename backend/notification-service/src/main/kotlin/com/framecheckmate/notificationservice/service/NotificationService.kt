@@ -11,13 +11,16 @@ import kotlin.streams.toList
 
 @Service
 class NotificationService(
-    val notificationRepository : NotificationRepository,
-    val notificationMapper : NotificationMapper
+    private val customMailSender: CustomMailSender,
+    private val notificationRepository : NotificationRepository,
+    private val notificationMapper : NotificationMapper
 ) {
 
     @Transactional
     fun saveNotification(notificationSaveRequest: NotificationSaveRequest) : NotificationSaveResponse {
-           return notificationMapper.entityToSaveResponse(
+        customMailSender.snedMail(notificationSaveRequest.email,notificationSaveRequest.type.koName,notificationSaveRequest.type.typeContent)
+
+        return notificationMapper.entityToSaveResponse(
                notificationRepository.save(notificationMapper.saveRequestToEntity(notificationSaveRequest))
            )
     }

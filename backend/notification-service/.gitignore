@@ -4,8 +4,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-
 ### STS ###
+src.main.resources.dev.env
+.env
 .apt_generated
 .classpath
 .factorypath
