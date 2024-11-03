@@ -36,4 +36,8 @@ public class Card {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public void addConfirm(String content) {
+        confirms.add(new ConfirmDetail(content));
+    }
 }

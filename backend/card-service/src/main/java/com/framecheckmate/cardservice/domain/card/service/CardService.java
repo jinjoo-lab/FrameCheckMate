@@ -2,6 +2,7 @@ package com.framecheckmate.cardservice.domain.card.service;
 
 
 import com.framecheckmate.cardservice.domain.card.dto.request.AssignCardWorkRequest;
+import com.framecheckmate.cardservice.domain.card.dto.request.ConfirmRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.CreateCardRequest;
 import com.framecheckmate.cardservice.domain.card.entity.Card;
 import com.framecheckmate.cardservice.domain.card.repository.CardRepository;
@@ -87,6 +88,13 @@ public class CardService {
         card.setStatus(status);
         card.setOrder(maxOrder + 1);
 
+        return cardRepository.save(card);
+    }
+
+    @Transactional
+    public Card addConfirm(UUID cardId, ConfirmRequest confirmRequest) {
+        Card card = findCardById(cardId);
+        card.addConfirm(confirmRequest.getContent());
         return cardRepository.save(card);
     }
 
