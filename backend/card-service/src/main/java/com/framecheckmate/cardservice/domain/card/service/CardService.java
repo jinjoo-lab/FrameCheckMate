@@ -16,9 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -27,6 +26,25 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final CommentRepository commentRepository;
+
+    public Card getCardById(UUID cardId) {
+        return findCardById(cardId);
+    }
+
+    private Card findCardById(UUID cardId) {
+        return Optional.ofNullable(cardRepository.findByCardId(cardId))
+                .orElseThrow(() -> new EntityNotFoundException("Card not found with id: " + cardId));
+    }
+
+    public Map<CardStatus, List<Card>> getAllCardsGroupedByStatus() {
+        List<Card> cards = cardRepository.findAll();
+        return cards.stream()
+                .collect(Collectors.groupingBy(Card::getStatus,
+                        Collectors.collectingAndThen(Collectors.toList(), list -> {
+                            list.sort(Comparator.comparingLong(Card::getOrder));
+                            return list;
+                        })));
+    }
 
     public Card assignCardWork(UUID cardId, AssignCardWorkRequest assignCardWorkRequest) {
         Card existingCard = findCardById(cardId);
@@ -99,11 +117,6 @@ public class CardService {
         Card card = findCardById(cardId);
         card.addConfirm(confirmRequest.getContent());
         return cardRepository.save(card);
-    }
-
-    private Card findCardById(UUID cardId) {
-        return Optional.ofNullable(cardRepository.findByCardId(cardId))
-                .orElseThrow(() -> new EntityNotFoundException("Card not found with id: " + cardId));
     }
 
     @Transactional
