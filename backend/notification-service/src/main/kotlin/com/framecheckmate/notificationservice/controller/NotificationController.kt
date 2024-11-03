@@ -3,16 +3,16 @@ package com.framecheckmate.notificationservice.controller
 import com.framecheckmate.notificationservice.dto.request.NotificationSaveRequest
 import com.framecheckmate.notificationservice.dto.response.NotificationInfoResponse
 import com.framecheckmate.notificationservice.dto.response.NotificationSaveResponse
+import com.framecheckmate.notificationservice.service.CustomMailSender
 import com.framecheckmate.notificationservice.service.NotificationService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
-class NotificationController(val notificationService: NotificationService) {
+@RequestMapping("/notifications")
+class NotificationController(
+    val notificationService: NotificationService,
+) {
 
     @PostMapping()
     fun sendNotification(@RequestBody notificationSaveRequest: NotificationSaveRequest): ResponseEntity<NotificationSaveResponse> {
@@ -23,6 +23,4 @@ class NotificationController(val notificationService: NotificationService) {
     fun getAllNotificationsByEmail(@PathVariable(value = "email") email : String) : ResponseEntity<List<NotificationInfoResponse>> {
         return ResponseEntity.ok(notificationService.getNotificationsByEmail(email))
     }
-
-
 }
