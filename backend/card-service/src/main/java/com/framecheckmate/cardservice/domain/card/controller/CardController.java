@@ -7,10 +7,13 @@ import com.framecheckmate.cardservice.domain.card.dto.request.CreateCardRequest;
 import com.framecheckmate.cardservice.domain.card.entity.Card;
 import com.framecheckmate.cardservice.domain.card.entity.Comment;
 import com.framecheckmate.cardservice.domain.card.service.CardService;
+import com.framecheckmate.cardservice.domain.card.type.CardStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -19,6 +22,16 @@ import java.util.UUID;
 public class CardController {
 
     private final CardService cardService;
+
+    @GetMapping("{cardId}")
+    public ResponseEntity<Card> getCardById(@PathVariable("cardId") UUID cardId) {
+        return ResponseEntity.ok(cardService.getCardById(cardId));
+    }
+
+    @GetMapping
+    public ResponseEntity<Map<CardStatus, List<Card>>> getAllCards() {
+        return ResponseEntity.ok(cardService.getAllCardsGroupedByStatus());
+    }
 
     @PostMapping("{cardId}/assign")
     public ResponseEntity<Card> assignCardWork(@PathVariable("cardId") UUID cardId,
