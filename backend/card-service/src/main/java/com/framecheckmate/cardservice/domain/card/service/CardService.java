@@ -2,10 +2,13 @@ package com.framecheckmate.cardservice.domain.card.service;
 
 
 import com.framecheckmate.cardservice.domain.card.dto.request.AssignCardWorkRequest;
+import com.framecheckmate.cardservice.domain.card.dto.request.CommentRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.ConfirmRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.CreateCardRequest;
 import com.framecheckmate.cardservice.domain.card.entity.Card;
+import com.framecheckmate.cardservice.domain.card.entity.Comment;
 import com.framecheckmate.cardservice.domain.card.repository.CardRepository;
+import com.framecheckmate.cardservice.domain.card.repository.CommentRepository;
 import com.framecheckmate.cardservice.domain.card.type.CardStatus;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +26,7 @@ import java.util.UUID;
 public class CardService {
 
     private final CardRepository cardRepository;
-
+    private final CommentRepository commentRepository;
 
     public Card assignCardWork(UUID cardId, AssignCardWorkRequest assignCardWorkRequest) {
         Card existingCard = findCardById(cardId);
@@ -101,5 +104,16 @@ public class CardService {
     private Card findCardById(UUID cardId) {
         return Optional.ofNullable(cardRepository.findByCardId(cardId))
                 .orElseThrow(() -> new EntityNotFoundException("Card not found with id: " + cardId));
+    }
+
+    @Transactional
+    public Comment addComment(UUID cardId, CommentRequest commentRequest) {
+        Comment comment = commentRepository.findByCardId(cardId).orElse(new Comment(cardId));
+        comment.addComment(commentRequest.getUserId(), commentRequest.getContent());
+        return commentRepository.save(comment);
+    }
+
+    public Comment getComments(UUID cardId) {
+        return commentRepository.findByCardId(cardId).orElse(null);
     }
 }

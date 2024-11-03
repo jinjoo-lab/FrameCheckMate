@@ -3,11 +3,9 @@ package com.framecheckmate.cardservice.domain.card.entity;
 import com.framecheckmate.cardservice.domain.card.type.CommentDetail;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,9 +15,17 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Comment {
     @Id
-    private UUID commentKey;
+    private UUID commentId;
     private UUID cardId;
-    private List<CommentDetail> comments = new ArrayList<>();
-    @CreatedDate
-    private LocalDateTime createdAt;
+    private List<CommentDetail> comments;
+
+    public Comment(UUID cardId) {
+        this.commentId = UUID.randomUUID();
+        this.cardId = cardId;
+        this.comments = new ArrayList<>();
+    }
+
+    public void addComment(UUID userId, String content) {
+        comments.add(new CommentDetail(userId, content));
+    }
 }
