@@ -1,9 +1,11 @@
 package com.framecheckmate.cardservice.domain.card.controller;
 
 import com.framecheckmate.cardservice.domain.card.dto.request.AssignCardWorkRequest;
+import com.framecheckmate.cardservice.domain.card.dto.request.CommentRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.ConfirmRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.CreateCardRequest;
 import com.framecheckmate.cardservice.domain.card.entity.Card;
+import com.framecheckmate.cardservice.domain.card.entity.Comment;
 import com.framecheckmate.cardservice.domain.card.service.CardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -55,5 +57,15 @@ public class CardController {
     @PostMapping("/{cardId}/confirm")
     public ResponseEntity<Card> addConfirm(@PathVariable UUID cardId, @RequestBody ConfirmRequest confirmRequest) {
         return ResponseEntity.ok(cardService.addConfirm(cardId, confirmRequest));
+    }
+
+    @PostMapping("/{cardId}/comment")
+    public ResponseEntity<Comment> addComment(@PathVariable UUID cardId, @RequestBody CommentRequest commentRequest) {
+        return ResponseEntity.ok(cardService.addComment(cardId, commentRequest));
+    }
+
+    @GetMapping("/{cardId}/comment")
+    public ResponseEntity<Comment> addComment(@PathVariable UUID cardId) {
+        return ResponseEntity.ok(cardService.getComments(cardId));
     }
 }
