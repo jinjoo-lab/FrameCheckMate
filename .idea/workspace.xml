@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5622bd6b-3f4b-4bc4-a409-f966abc431b6" name="Changes" comment="" />
+    <list default="true" id="5622bd6b-3f4b-4bc4-a409-f966abc431b6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/framecheckmate/userservice/entity/MemberEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/framecheckmate/userservice/entity/MemberEntity.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,12 +30,12 @@
     }
   }
 }</component>
-  <component name="GitLabMergeRequestsSettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;first&quot;: &quot;https://lab.ssafy.com/s11-final/S11P31A607.git&quot;,
-    &quot;second&quot;: &quot;6867298d-63b7-46ee-998f-23bcdafc9356&quot;
+  <component name="GitLabMergeRequestsSettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "first": "https://lab.ssafy.com/s11-final/S11P31A607.git",
+    "second": "2704b779-d1f4-4be1-9c61-64c6cca22f54"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -46,7 +48,6 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feat/BE/S11P31A607-207-user-service",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/SSAFY/IdeaProjects/S11P31A607",
     "node.js.detected.package.eslint": "true",
@@ -75,6 +76,7 @@
       <updated>1730190379544</updated>
       <workItem from="1730190380635" duration="1379000" />
       <workItem from="1730248090845" duration="2587000" />
+      <workItem from="1730680758307" duration="158000" />
     </task>
     <servers />
   </component>
