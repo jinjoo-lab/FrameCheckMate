@@ -76,12 +76,17 @@ const LoginSignUp = () => {
         password:signPw,
         name:signName
       }
-      // try{
-      //   const response = await axiosClient.post('/member/signup', signupData);
-      //   console.log(response)
-      // } catch(error) {
-      //   console.log(`회원가입 에러 ${error}`)
-      // }
+      try {
+        // 회원가입 API 호출 예시 (주석을 해제하고 사용)
+        // const response = await axiosClient.post('/member/signup', signupData);
+        
+        // 회원가입 성공 시 자동 로그인 후 페이지 이동
+        setLoginId(signId); // 자동 로그인에 필요한 값 설정
+        setLoginPw(signPw);
+        navigate('/MainWorkPage');
+      } catch (error) {
+        console.log(`회원가입 에러 ${error}`);
+      }
     }
   };
   
