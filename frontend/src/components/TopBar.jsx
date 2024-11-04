@@ -47,18 +47,38 @@ const TopBar = ({ title, logoutView }) => {
 };
 
 const Banner = styled.div`
-  background-color:black; color:white; height:60px; display:flex; justify-content:space-between; align-items:center;
+  background-color:black; 
+  color:white; 
+  height:60px; 
+  display:flex; 
+  justify-content:space-between; 
+  align-items:center;
 `
 const TitleStyle = styled.a`
-  font-weight:bold; font-size:30px; margin-left:15px; cursor:pointer;
+  font-weight:bold; 
+  font-size:30px; 
+  margin-left:15px; 
+  cursor:pointer;
 `
 const LogoutButton = styled.button`
-  margin-right: 15px; font-weight: bold; background: none; border: none; padding: 0; color: inherit; cursor:pointer;
+  margin-right: 15px; 
+  font-weight: bold; 
+  background: none; 
+  border: none; 
+  padding: 0; 
+  color: inherit; 
+  cursor:pointer;
 `
 const Header = styled.div`
-  height:70px; margin:20px 0px; justify-content:center; align-items:center; display:flex;
+  height:70px; 
+  margin:20px 0px; 
+  justify-content:center; 
+  align-items:center; 
+  display:flex;
 `
 const HeaderText = styled.div`
-  font-size:30px; font-weight:bold; text-align:center;
+  font-size:30px; 
+  font-weight:bold; 
+  text-align:center;
 `
 export default TopBar;
