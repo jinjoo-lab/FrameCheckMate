@@ -206,7 +206,7 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 						{ uploadView ?
 						<UploadButton onClick={uploadVideo}>
 							업로드
-						</UploadButton> : null}
+						</UploadButton> : <div style={{width:'150px'}}></div>}
 					</ButtonBox>
 				)}
 		</div>
@@ -253,6 +253,7 @@ const ButtonBox = styled.div`
 	display:flex; 
 	flex-direction:row; 
 	justify-content:center;
+	align-items:center;
 `
 
 const DownloadButton = styled.button`
