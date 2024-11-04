@@ -48,6 +48,10 @@ const ImageProcessingResult = () => {
 		navigate('/mainWorkPage');
 	}
 
+	const closeButton = () => {
+		navigate('/mainWorkPage');
+	}
+
 	useEffect (() => {
 		splitImport()
 	}, [])
@@ -104,6 +108,9 @@ const ImageProcessingResult = () => {
 				<WorkingButton 
 					onClick={mainButton}>작업페이지 이동
 				</WorkingButton>
+				<CloseButton 
+					onClick={closeButton}>닫기
+				</CloseButton>
 			</RowContainer>
 		</div>
 	)
@@ -137,6 +144,17 @@ const WorkingButton = styled.button`
 	padding:10px 20px; 
 	margin:10px 5px; 
 	background-color:black; 
+	color:white; 
+	fontWeight:bold; 
+	cursor:pointer;
+`
+const CloseButton = styled.button`
+	width:150px; 
+	border:none; 
+	border-radius:5px; 
+	padding:10px 20px; 
+	margin:10px 5px; 
+	background-color:gray; 
 	color:white; 
 	fontWeight:bold; 
 	cursor:pointer;
