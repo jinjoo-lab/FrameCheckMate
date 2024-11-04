@@ -12,7 +12,7 @@ const MainHomePage = () => {
 
   const makeGroup = (event) => {
     event.preventDefault(); // 페이지 새로 고침 방지
-    navigate('/manageMember');
+    navigate('/uploadVideo');
   }
 
   const resultView = () => {

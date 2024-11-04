@@ -12,6 +12,10 @@ const ImageProcessing = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const playerRef = useRef(null); // ReactPlayer에 대한 ref 생성
   const [playTime, setPlayTime] = useState();
+
+	const [second, setSecond] = useState(0)
+	const [minute, setMinute] = useState(0)
+	const [hour, setHour] = useState(0)
   
   const moveSeconds = (event, seconds) => {
     event.preventDefault(); // 페이지 새로 고침 방지
@@ -34,6 +38,8 @@ const ImageProcessing = () => {
 
   const [aiTime, setAiTime] = useState([])
 
+	const [splitTime, setSplitTime] = useState([])
+	
   const AiResult = () => {
     const response = [
       [1, 10],
@@ -121,7 +127,28 @@ const ImageProcessing = () => {
 					<WorkingBox>
 						<h4>타임스탬프 생성</h4>
 						<div>생성칸</div>
-						<div>추가버튼</div>
+						<div style={{display:'flex', width:'100%'}}>
+							<TimeInput 
+							type="number" 
+							value={hour}
+							onChange={(event) => setHour(event.target.value)} />시
+							<TimeInput 
+							type="number" 
+							value={minute}
+							onChange={(event) => setMinute(event.target.value)} />분
+							<TimeInput 
+							type="number" 
+							value={second}
+							onChange={(event) => setSecond(event.target.value)} />초
+						</div>
+
+						<WorkingButton>
+							추가하기
+						</WorkingButton>
+						<ResetButton>
+							초기화
+						</ResetButton>
+
 						<WorkingButton 
 							onClick={imageResult}>
 							영상 분할하기
@@ -164,6 +191,17 @@ const WorkingButton = styled.button`
 	fontWeight:bold; 
 	cursor:pointer;
 `
+const ResetButton = styled.button`
+  width:150px; 
+	border:none;
+	border-radius:5px; 
+	padding:10px 20px; 
+	margin:10px 5px; 
+	background-color:gray; 
+	color:white; 
+	fontWeight:bold; 
+	cursor:pointer;
+`
 const TimeScroll = styled.div`
   border:1px solid black; 
 	width:90%; 
@@ -200,5 +238,8 @@ const TimeMove = styled.div`
 	font-weight:bold; 
 	white-space:normal; 
 	cursor:pointer;
+`
+const TimeInput = styled.input`
+	width:30%;
 `
 export default ImageProcessing

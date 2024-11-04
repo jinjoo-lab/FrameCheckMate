@@ -13,20 +13,26 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, workingB
 	const [confirms, setConfirms] = useState('')
 	const [comments, setComments] = useState('')
 
-	const confirmSubmit = () => {
-
+	const confirmSubmit = (event, confirms) => {
+    setConfirmList(prev => [...prev, {"content":confirms, "createdAt":Math.random()}])
+		setConfirms('')
 	}
 
-	const commentSubmit = () => {
-
+	const commentSubmit = (event, confirms) => {
+    setCommentList(prev => [...prev, {"userId":Math.random(), "content":confirms, "createdAt":Math.random()}])
+		setComments('')
 	}
 
 	const confirmImport = () => {
 		const response = [
-			{number:1, name:'김김김', content:'다시 해주세요'},
-			{number:2, name:'김김김', content:'다시'},
-			{number:3, name:'김김김', content:'다시 수정해주세요'},
-			{number:4, name:'김김김', content:'다시 수정해주세요'},
+			{
+				"content": "이거 이상한데?",
+				"createdAt": "2024-11-04T01:31:42.492"
+		},
+		{
+				"content": "여기 고쳐줄래요?",
+				"createdAt": "2024-11-04T01:31:57.018"
+		},
 		]
 
 		setConfirmList(response)
@@ -35,9 +41,16 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, workingB
 
 	const commentImport = () => {
 		const response = [
-			{number:1, name:'김김김', content:'좋아요'},
-			{number:2, name:'이이이', content:'별로'},
-			{number:3, name:'박박박', content:'좋음'},
+			{
+				"userId": "123e4567",
+				"content": "좋아요",
+				"createdAt": "2024-11-04T02:09:05.585"
+		},
+		{
+				"userId": "123e4567",
+				"content": "글쎄요",
+				"createdAt": "2024-11-04T02:09:15.112"
+		}
 		]
 
 		setCommentList(response)
@@ -71,9 +84,8 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, workingB
 				: (
 						<>
 						{ confirmList.map((list) => 
-							<ReviewAlign key={list.number}>
+							<ReviewAlign key={list.createdAt}>
 								<ReviewStyle>
-									<ReviewText>{list.name}</ReviewText>
 									<ReviewText>{list.content}</ReviewText>
 								</ReviewStyle>
 							</ReviewAlign>
@@ -86,8 +98,11 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, workingB
 			{ confirmView 
 				? (
 					<ReviewInputContainer> 
-						<ReviewInput onChange={(event) => setConfirms(event.target.value)} />
-						<ReviewButton onClick={confirmSubmit}>
+						<ReviewInput 
+							value={confirms} 
+							onChange={(event) => setConfirms(event.target.value)} />
+						<ReviewButton 
+							onClick={(event) => confirmSubmit(event, confirms)}>
 							{confirmTitle}
 						</ReviewButton>
 					</ReviewInputContainer>
@@ -106,9 +121,8 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, workingB
 				: (
 						<>
 						{ commentList.map((list) => 
-							<ReviewAlign key={list.number}>
+							<ReviewAlign key={list.createdAt}>
 								<ReviewStyle>
-									<ReviewText>{list.name}</ReviewText>
 									<ReviewText>{list.content}</ReviewText>
 								</ReviewStyle>
 							</ReviewAlign>
@@ -120,8 +134,11 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, workingB
 			{ commentView 
 				? (
 					<ReviewInputContainer> 
-						<ReviewInput onChange={(event) => setComments(event.target.value)}/>
-						<ReviewButton onClick={commentSubmit}>
+						<ReviewInput 
+							value={comments}
+							onChange={(event) => setComments(event.target.value)}/>
+						<ReviewButton 
+							onClick={(event) => commentSubmit(event, comments)}>
 							작성하기
 						</ReviewButton>
 					</ReviewInputContainer>
@@ -154,7 +171,7 @@ const ReviewStyle = styled.div`
 	width:85%; 
 	display:flex; 
 	flex-direction:row; 
-	justify-content:space-between;
+	justify-content:center;
 `
 const ReviewText = styled.div`
 	font-size:12px; 
@@ -181,6 +198,7 @@ const ReviewInputContainer = styled.div`
 	justify-content:center;
 `
 const ReviewInput = styled.input`
+	width:70%;
 	padding:5px 10px; 
 	margin:10px 5px;
 `
