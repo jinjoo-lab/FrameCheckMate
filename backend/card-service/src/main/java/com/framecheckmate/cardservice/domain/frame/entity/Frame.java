@@ -19,7 +19,7 @@ import java.util.UUID;
 @Builder
 public class Frame {
     @Id
-    private ObjectId frameId;
+    private UUID frameId;
     private UUID projectId;
     Long sequence;
     List<FrameLog> logs;
