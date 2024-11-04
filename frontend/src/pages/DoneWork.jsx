@@ -36,8 +36,8 @@ const DoneWork = () => {
 
 const DoneContainer = styled.div`
 	border:4px dashed black; 
-	width:90%;
-	padding:10px; 
+	width:90%; 
+	padding:60px 10px; 
 	height:100%; 
 	display:flex; 
 	justify-content:center; 
