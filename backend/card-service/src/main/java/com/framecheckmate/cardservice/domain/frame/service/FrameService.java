@@ -52,6 +52,7 @@ public class FrameService {
 
     private void uploadOriginalFrame(UUID projectId, String fileName) {
         Frame originalFrame = Frame.builder()
+                .frameId(UUID.randomUUID())
                 .projectId(projectId)
                 .sequence(-1L)
                 .logs(new ArrayList<>())
@@ -191,6 +192,7 @@ public class FrameService {
     private UUID createFrame(UUID projectId, String fileName, Long seq) {
         UUID frameId = UUID.randomUUID();
         Frame frame = Frame.builder()
+                .frameId(frameId)
                 .projectId(projectId)
                 .sequence(seq)
                 .logs(new ArrayList<>())
