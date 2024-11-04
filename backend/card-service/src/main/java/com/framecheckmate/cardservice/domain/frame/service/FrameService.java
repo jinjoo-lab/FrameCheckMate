@@ -142,7 +142,7 @@ public class FrameService {
             FrameSplitRequestDTO.Segment segment = segments.get(i);
             String splitFileName = processSegment(fileName, segment, i + 1L);
             UUID frameId = createFrame(projectId, splitFileName, i + 1L);
-            createCard(projectId, frameId, segment.getDetect());
+            createCard(projectId, frameId, i + 1L, segment.getDetect());
         }
         return "Frame split operation completed for project ID: " + projectId;
     }
@@ -202,12 +202,13 @@ public class FrameService {
         return frameId;
     }
 
-    private UUID createCard(UUID projectId, UUID frameId, Boolean detect) {
+    private UUID createCard(UUID projectId, UUID frameId, Long order, Boolean detect) {
         UUID cardId = UUID.randomUUID();
         Card card = Card.builder()
                 .cardId(cardId)
                 .frameId(frameId)
                 .projectId(projectId)
+                .order(order)
                 .status(detect ? CardStatus.TODO : CardStatus.PENDING_CONFIRMATION)
                 .build();
         cardRepository.save(card);
