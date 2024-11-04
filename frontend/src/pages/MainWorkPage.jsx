@@ -120,9 +120,11 @@ const MainWorkPage = () => {
     <div>
       <TopBar logoutView={true}/>
       <TitleContainer>
-        <BigText>그룹 이름</BigText>
-        <BigText onClick={memberCheck}>멤버 관리</BigText>
-        <BigText onClick={videoAdd}>영상 처리</BigText>
+        <BigTextGroupName>그룹 이름</BigTextGroupName>
+        <Block>
+          <BigText onClick={memberCheck}>멤버 관리</BigText>
+          <BigText onClick={videoAdd}>영상 분석</BigText>
+        </Block>
       </TitleContainer>
       <BigContainer>
         {/* 작업 전 목록 */}
@@ -292,13 +294,34 @@ const TitleContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin:0px 20px;
-  padding:0px 20px;
 `
-const BigText = styled.p`
+
+const Block = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`
+const BigText = styled.div`
+  width:150px;
+  border:none;
+  border-radius:5px;
+  font-size:25px;
+  padding:10px 10px;
+  background-color:black;
+  color:white;
+  font-weight:bold;
   font-weight: bold;
   font-size: 30px;
   cursor:pointer;
+  text-align:center;
+  border: 1px solid black;
+  margin: 0px 10px;
+`
+const BigTextGroupName = styled.div`
+  font-weight: bold;
+  font-size: 30px;
+  cursor:default;
+  margin left: 20px
 `
 const BigContainer = styled.div`
   color: black;
