@@ -71,20 +71,17 @@ const LoginSignUp = () => {
     setNameCheck(nameTest);
 
     if ( idTest && pwTest && pwReTest && nameTest ) {
-
       const signupData = {
         Id:signId,
         password:signPw,
         name:signName
       }
-
       // try{
       //   const response = await axiosClient.post('/member/signup', signupData);
       //   console.log(response)
       // } catch(error) {
       //   console.log(`회원가입 에러 ${error}`)
       // }
-
     }
   };
   
@@ -111,62 +108,51 @@ const LoginSignUp = () => {
         /* 로그인 화면 */
         <FormContainer>
           <FormStyle onSubmit={loginConfirm}>
-
             <LabelText>아이디</LabelText>
             <InputStyle 
               type="text" 
               onChange={(event) => setLoginId(event.target.value)} />
-
             <LabelText>비밀번호</LabelText>
             <InputStyle
               type="password" 
               onChange={(event) => setLoginPw(event.target.value)}/>
-
             { loginCheck === false && (<Warning>로그인 정보를 다시 확인해주세요.</Warning>)}
-
             <ButtonsAligns>
               <SubmitButton type="submit">
                 로그인
               </SubmitButton>
             </ButtonsAligns>
-
           </FormStyle>
         </FormContainer>
       ) : (
         /* 회원가입 화면 */
         <FormContainer>
           <FormStyle onSubmit={signupConfirm}>
-
             <LabelText>아이디</LabelText>
             <InputStyle
               type="text"
               onChange={(event) => setSignId(event.target.value)}/>
             { idCheck === false && (<Warning>이메일 형식으로 입력해주세요.</Warning>)}
-
             <LabelText>비밀번호</LabelText>
             <InputStyle
               type="password"
               onChange={(event) => setSignPw(event.target.value)} />
             { pwCheck === false && (<Warning>비밀번호는 6자~12자로 특수문자와 영문, 숫자를 포함해야 합니다.</Warning>)}
-
             <LabelText>비밀번호 확인</LabelText>
             <InputStyle
               type="password"
               onChange={(event) => setSignRePw(event.target.value)}/>
             { pwReCheck === false && (<Warning>처음 입력한 비밀번호와 일치하지 않습니다.</Warning>)}
-
             <LabelText>이름</LabelText>
             <InputStyle
               type="text"
               onChange={(event) => setSignName(event.target.value)} />
             { nameCheck === false && (<Warning>이름을 입력해주세요.</Warning>)}
-
             <ButtonsAligns> 
               <SubmitButton type="submit">
                 회원가입
               </SubmitButton>
             </ButtonsAligns>
-
           </FormStyle>
         </FormContainer>
       )}
