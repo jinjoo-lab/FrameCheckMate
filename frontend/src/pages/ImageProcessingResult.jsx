@@ -3,6 +3,7 @@ import TopBar from "../components/TopBar";
 import { useNavigate, Link } from 'react-router-dom'; // eslint-disable-line no-unused-vars
 import styled from 'styled-components'
 import ReactPlayer from "react-player";
+import { axiosClient } from '../axios';
 
 const ImageProcessingResult = () => {
 
