@@ -6,7 +6,7 @@ export const workAssign = async (cardId, data) => {
 };
 
 // 코멘트 저장
-export const commentSave = async (cardId) => {
+export const commentSave = async (cardId, data) => {
   return axiosClient.post(`/api/card/${cardId}/comment`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
@@ -20,7 +20,7 @@ export const commentView = async (cardId) => {
 };
 
 // 컨펌 저장
-export const confirmSave = async (cardId) => {
+export const confirmSave = async (cardId, data) => {
   return axiosClient.post(`/api/card/${cardId}/confirm`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
@@ -28,27 +28,27 @@ export const confirmSave = async (cardId) => {
 
 
 // todo 상태 변경
-export const toDoChange = async (cardId) => {
+export const toDoChange = async (cardId, data) => {
   return axiosClient.patch(`/api/card/${cardId}/toDo`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 // 작업 중으로 상태 변경
-export const workingChange = async (cardId) => {
+export const workingChange = async (cardId, data) => {
   return axiosClient.patch(`/api/card/${cardId}/inProgress`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
 // 컨펌으로 상태 변경
-export const confirmChange = async (cardId) => {
+export const confirmChange = async (cardId, data) => {
   return axiosClient.patch(`/api/card/${cardId}/confirm`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
 // 작업 완료로 상태 변경
-export const resultChange = async (cardId) => {
+export const resultChange = async (cardId, data) => {
   return axiosClient.patch(`/api/card/${cardId}/completion`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
@@ -97,14 +97,14 @@ export const mergeVideoView = async (protectId) => {
 };
 
 // 카드 영상 업로드
-export const cardVideoUpload = async (cardId) => {
+export const cardVideoUpload = async (cardId, data) => {
   return axiosClient.post(`/api/frame/card/${cardId}`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
 // 원본 영상 업로드
-export const originalVideoUpload = async (protectId) => {
+export const originalVideoUpload = async (protectId, data) => {
   return axiosClient.post(`/api/frame/original/${protectId}`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
@@ -132,42 +132,42 @@ export const mergedVideoDownload = async (protectId) => {
 };
 
 // 영상 분할 (카드 생성)
-export const videoSplit = async () => {
+export const videoSplit = async (data) => {
   return axiosClient.post(`/api/frame/split`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
 // 영상 병합
-export const videoMerge = async (protectId) => {
+export const videoMerge = async (protectId, data) => {
   return axiosClient.post(`/api/frame/merged/${protectId}`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
 // 회원가입
-export const signupUser = async () => {
+export const signupUser = async (data) => {
   return axiosClient.post(`/api/member/join`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
 // 로그인
-export const loginUser = async () => {
+export const loginUser = async (data) => {
   return axiosClient.post(`/api/member/login`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
 // 유저 전체 이름 검색
-export const findUser = async () => {
+export const findUser = async (name) => {
   return axiosClient.get(`/api/member?name=${name}`, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
 // 프로젝트 생성
-export const createProject = async () => {
+export const createProject = async (data) => {
   return axiosClient.post(`/api/project`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
@@ -181,7 +181,7 @@ export const viewProject = async () => {
 };
 
 // 프로젝트 초대하기
-export const inviteProject = async () => {
+export const inviteProject = async (data) => {
   return axiosClient.post(`/api/invite`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
