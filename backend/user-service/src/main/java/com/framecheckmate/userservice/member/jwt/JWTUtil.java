@@ -39,6 +39,20 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+            return true;
+        } catch(SecurityException | MalformedJwtException e) {
+            throw new AuthenticationCredentialsNotFoundException("JWT was expired or incorrect");
+        } catch (ExpiredJwtException e) {
+            throw new AuthenticationCredentialsNotFoundException("Expired JWT token.");
+        } catch (UnsupportedJwtException e) {
+            throw new AuthenticationCredentialsNotFoundException("Unsupported JWT token.");
+        } catch (IllegalArgumentException e) {
+            throw new AuthenticationCredentialsNotFoundException("JWT token compact of handler are invalid.");
+        }
+    }
 
     public String createJwt(String category, String email, String role, Long expiredMs) {
 
