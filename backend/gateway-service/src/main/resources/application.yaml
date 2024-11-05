@@ -5,6 +5,9 @@ spring:
     name: FRAME-CHECKMATE-GATEWAY
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       httpclient:
         connect-timeout: 3000
         response-timeout: 10s
@@ -33,7 +36,7 @@ spring:
             - Path=/project/**
           filters:
             - AuthorizationHeaderFilter
-        - id: notification-service
+        - id: lb://NOTIFICATION-SERVICE
           uri: http://localhost:9090
           predicates:
             - Path=/notification/**
