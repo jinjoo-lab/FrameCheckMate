@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: NOTIFICATION-SERVICE
   config:
     import:
       - optional:file:.env[.properties]
@@ -24,3 +26,10 @@ spring:
     generate-ddl: true
     show-sql: true
     database: mysql
+server:
+  port: 9090
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

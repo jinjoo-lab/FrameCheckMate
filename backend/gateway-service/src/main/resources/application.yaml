@@ -5,6 +5,9 @@ spring:
     name: FRAME-CHECKMATE-GATEWAY
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       httpclient:
         connect-timeout: 3000
         response-timeout: 10s
@@ -34,11 +37,11 @@ spring:
           filters:
             - AuthorizationHeaderFilter
         - id: notification-service
-          uri: http://localhost:9090
+          uri: lb://NOTIFICATION-SERVICE
           predicates:
             - Path=/notification/**
-          filters:
-            - AuthorizationHeaderFilter
+#          filters:
+#            - AuthorizationHeaderFilter
 
 
 jwt:
@@ -47,4 +50,4 @@ jwt:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8080/eureka/
+      defaultZone: http://localhost:8761/eureka/
