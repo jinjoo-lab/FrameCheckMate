@@ -36,12 +36,12 @@ spring:
             - Path=/project/**
           filters:
             - AuthorizationHeaderFilter
-        - id: lb://NOTIFICATION-SERVICE
-          uri: http://localhost:9090
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
           predicates:
             - Path=/notification/**
-          filters:
-            - AuthorizationHeaderFilter
+#          filters:
+#            - AuthorizationHeaderFilter
 
 
 jwt:
