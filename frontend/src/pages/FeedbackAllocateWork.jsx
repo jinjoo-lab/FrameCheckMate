@@ -28,11 +28,11 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, workingB
 			{
 				"content": "이거 이상한데?",
 				"createdAt": "2024-11-04T01:31:42.492"
-		},
-		{
+			},
+			{
 				"content": "여기 고쳐줄래요?",
 				"createdAt": "2024-11-04T01:31:57.018"
-		},
+			},
 		]
 
 		setConfirmList(response)

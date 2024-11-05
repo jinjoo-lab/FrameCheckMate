@@ -2,9 +2,6 @@ import cv2
 from ultralytics import YOLO
 from datetime import datetime
 
-# # YOLOv8 모델 로드 -> 칼 탐지
-# model = YOLO('yolov8m.pt')
-
 # 학습된 모델 불러오기 -> 담배 탐지
 model = YOLO('runs/detect/train/weights/best.pt')
 
