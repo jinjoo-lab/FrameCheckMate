@@ -3,7 +3,6 @@ package com.framecheckmate.cardservice.domain.card.entity;
 import com.framecheckmate.cardservice.domain.card.type.CardStatus;
 import com.framecheckmate.cardservice.domain.card.type.ConfirmDetail;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -30,8 +29,8 @@ public class Card {
     private List<ConfirmDetail> confirms;
     private CardStatus status;
     private Long order;
-    @CreatedDate
-    private LocalDateTime createdAt;
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
