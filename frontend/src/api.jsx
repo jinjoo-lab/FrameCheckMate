@@ -7,7 +7,7 @@ export const workAssign = async (cardId, data) => {
 
 // 코멘트 저장
 export const commentSave = async (cardId) => {
-  return axiosClient.post(`/api/card/${cardId}/comment`, {
+  return axiosClient.post(`/api/card/${cardId}/comment`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
@@ -21,7 +21,7 @@ export const commentView = async (cardId) => {
 
 // 컨펌 저장
 export const confirmSave = async (cardId) => {
-  return axiosClient.post(`/api/card/${cardId}/confirm`, {
+  return axiosClient.post(`/api/card/${cardId}/confirm`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
@@ -29,27 +29,27 @@ export const confirmSave = async (cardId) => {
 
 // todo 상태 변경
 export const toDoChange = async (cardId) => {
-  return axiosClient.patch(`/api/card/${cardId}/toDo`, {
+  return axiosClient.patch(`/api/card/${cardId}/toDo`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 // 작업 중으로 상태 변경
 export const workingChange = async (cardId) => {
-  return axiosClient.patch(`/api/card/${cardId}/inProgress`, {
+  return axiosClient.patch(`/api/card/${cardId}/inProgress`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
 // 컨펌으로 상태 변경
 export const confirmChange = async (cardId) => {
-  return axiosClient.patch(`/api/card/${cardId}/confirm`, {
+  return axiosClient.patch(`/api/card/${cardId}/confirm`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
 // 작업 완료로 상태 변경
 export const resultChange = async (cardId) => {
-  return axiosClient.patch(`/api/card/${cardId}/completion`, {
+  return axiosClient.patch(`/api/card/${cardId}/completion`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
@@ -98,14 +98,14 @@ export const mergeVideoView = async (protectId) => {
 
 // 카드 영상 업로드
 export const cardVideoUpload = async (cardId) => {
-  return axiosClient.post(`/api/frame/card/${cardId}`, {
+  return axiosClient.post(`/api/frame/card/${cardId}`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
 // 원본 영상 업로드
 export const originalVideoUpload = async (protectId) => {
-  return axiosClient.post(`/api/frame/original/${protectId}`, {
+  return axiosClient.post(`/api/frame/original/${protectId}`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
@@ -133,28 +133,63 @@ export const mergedVideoDownload = async (protectId) => {
 
 // 영상 분할 (카드 생성)
 export const videoSplit = async () => {
-  return axiosClient.get(`/api/frame/split`, {
+  return axiosClient.post(`/api/frame/split`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
-// 영상 병힙
+// 영상 병합
 export const videoMerge = async (protectId) => {
-  return axiosClient.get(`/api/frame/merged/${protectId}`, {
+  return axiosClient.post(`/api/frame/merged/${protectId}`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
 // 회원가입
 export const signupUser = async () => {
-  return axiosClient.post(`/api/member/join`, {
+  return axiosClient.post(`/api/member/join`, data, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
 // 로그인
 export const loginUser = async () => {
-  return axiosClient.get(`/api/member/login`, {
+  return axiosClient.post(`/api/member/login`, data, {
+    headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
+  });
+};
+
+// 유저 전체 이름 검색
+export const findUser = async () => {
+  return axiosClient.get(`/api/member?name=${name}`, {
+    headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
+  });
+};
+
+// 프로젝트 생성
+export const createProject = async () => {
+  return axiosClient.post(`/api/project`, data, {
+    headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
+  });
+};
+
+// 프로젝트 조회
+export const viewProject = async () => {
+  return axiosClient.get(`/api/my-project`, {
+    headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
+  });
+};
+
+// 프로젝트 초대하기
+export const inviteProject = async () => {
+  return axiosClient.post(`/api/invite`, data, {
+    headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
+  });
+};
+
+// 프로젝트 멤버 조회
+export const viewProjectMember = async () => {
+  return axiosClient.get(`/api/project-members`, {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
