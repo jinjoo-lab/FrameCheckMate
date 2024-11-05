@@ -4,6 +4,7 @@ import com.framecheckmate.cardservice.domain.card.dto.request.AssignCardWorkRequ
 import com.framecheckmate.cardservice.domain.card.dto.request.CommentRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.ConfirmRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.CreateCardRequest;
+import com.framecheckmate.cardservice.domain.card.dto.response.CardResponse;
 import com.framecheckmate.cardservice.domain.card.entity.Card;
 import com.framecheckmate.cardservice.domain.card.entity.Comment;
 import com.framecheckmate.cardservice.domain.card.service.CardService;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -23,9 +25,9 @@ public class CardController {
 
     private final CardService cardService;
 
-    @GetMapping("{cardId}")
-    public ResponseEntity<Card> getCardById(@PathVariable("cardId") UUID cardId) {
-        return ResponseEntity.ok(cardService.getCardById(cardId));
+    @GetMapping("/{cardId}/detail")
+    public ResponseEntity<CardResponse> getCard(@PathVariable UUID cardId) throws IOException {
+        return ResponseEntity.ok(cardService.getCard(cardId));
     }
 
     @GetMapping
@@ -75,10 +77,5 @@ public class CardController {
     @PostMapping("/{cardId}/comment")
     public ResponseEntity<Comment> addComment(@PathVariable UUID cardId, @RequestBody CommentRequest commentRequest) {
         return ResponseEntity.ok(cardService.addComment(cardId, commentRequest));
-    }
-
-    @GetMapping("/{cardId}/comment")
-    public ResponseEntity<Comment> addComment(@PathVariable UUID cardId) {
-        return ResponseEntity.ok(cardService.getComments(cardId));
     }
 }
