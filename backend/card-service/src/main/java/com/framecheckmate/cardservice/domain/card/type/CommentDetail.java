@@ -10,7 +10,7 @@ import java.util.UUID;
 public class CommentDetail {
     private UUID userId;
     private String content;
-    private LocalDateTime createdAt;  // 생성 시간
+    private LocalDateTime createdAt;
 
     @Builder
     public CommentDetail(UUID userId, String content) {
