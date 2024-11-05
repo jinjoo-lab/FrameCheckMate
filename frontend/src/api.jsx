@@ -150,15 +150,15 @@ export const videoMerge = async (protectId, data) => {
 
 // 회원가입
 export const signupUser = async (data) => {
-  console.log('435346')
   return axiosClient.post(`/api/member/join`, data, {
+    headers: { "Requires-Auth": true },
   });
 };
 
 // 로그인
 export const loginUser = async (data) => {
   return axiosClient.post(`/api/member/login`, data, {
-    headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
+    headers: { "Requires-Auth": true },
   });
 };
 
