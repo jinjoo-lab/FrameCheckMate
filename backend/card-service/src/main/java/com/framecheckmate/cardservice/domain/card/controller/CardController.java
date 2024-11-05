@@ -4,6 +4,7 @@ import com.framecheckmate.cardservice.domain.card.dto.request.AssignCardWorkRequ
 import com.framecheckmate.cardservice.domain.card.dto.request.CommentRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.ConfirmRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.CreateCardRequest;
+import com.framecheckmate.cardservice.domain.card.dto.response.CardLogResponse;
 import com.framecheckmate.cardservice.domain.card.dto.response.CardResponse;
 import com.framecheckmate.cardservice.domain.card.entity.Card;
 import com.framecheckmate.cardservice.domain.card.entity.Comment;
@@ -28,6 +29,11 @@ public class CardController {
     @GetMapping("/{cardId}/detail")
     public ResponseEntity<CardResponse> getCard(@PathVariable UUID cardId) throws IOException {
         return ResponseEntity.ok(cardService.getCard(cardId));
+    }
+
+    @GetMapping("/{cardId}/logs")
+    public ResponseEntity<CardLogResponse> getCardLogs(@PathVariable UUID cardId) {
+        return ResponseEntity.ok(cardService.getCardLogs(cardId));
     }
 
     @GetMapping("/{projectId}")

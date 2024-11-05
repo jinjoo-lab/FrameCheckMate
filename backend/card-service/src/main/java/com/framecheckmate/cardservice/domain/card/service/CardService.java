@@ -5,6 +5,7 @@ import com.framecheckmate.cardservice.domain.card.dto.request.AssignCardWorkRequ
 import com.framecheckmate.cardservice.domain.card.dto.request.CommentRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.ConfirmRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.CreateCardRequest;
+import com.framecheckmate.cardservice.domain.card.dto.response.CardLogResponse;
 import com.framecheckmate.cardservice.domain.card.dto.response.CardResponse;
 import com.framecheckmate.cardservice.domain.card.entity.Card;
 import com.framecheckmate.cardservice.domain.card.entity.Comment;
@@ -33,7 +34,7 @@ public class CardService {
     private final CommentRepository commentRepository;
     private final FrameService frameService;
 
-    public CardResponse getCard (UUID cardId) throws IOException {
+    public CardResponse getCard(UUID cardId) throws IOException {
         Card card = findCardById(cardId);
         String frameInfo = frameService.getFrameResource(cardId, FrameType.CARD).getURL().toString();
         List<CommentDetail> comments = getComments(cardId);
@@ -45,6 +46,19 @@ public class CardService {
                 .frameInfo(frameInfo)
                 .confirms(card.getConfirms())
                 .comments(comments)
+                .build();
+    }
+
+    public CardLogResponse getCardLogs(UUID cardId) {
+        Card card = findCardById(cardId);
+        List<String> frameLogs = frameService.getFrameUrlStrings(cardId);
+        return CardLogResponse.builder()
+                .cardId(cardId)
+                .description(card.getDescription())
+                .startDate(card.getStartDate())
+                .endDate(card.getEndDate())
+                .frames(frameLogs)
+                .confirms(card.getConfirms())
                 .build();
     }
 
