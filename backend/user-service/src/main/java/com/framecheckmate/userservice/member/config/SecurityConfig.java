@@ -82,9 +82,11 @@ public class SecurityConfig {
         http
                 .formLogin(formLogin ->
                         formLogin
-//                                .loginPage("/loginForm")
-                                .loginProcessingUrl("/api/member/login") // login 주소가 호출되면 시큐리티가 낚아채서 대신 로그인 진행
-                                .defaultSuccessUrl("/"));
+                        //        .loginPage("/loginSignup")
+                                // .loginProcessingUrl("/api/member/login") // login 주소가 호출되면 시큐리티가 낚아채서 대신 로그인 진행
+                                // .defaultSuccessUrl("/")
+                                .disable()
+                                );
 
         //http basic 인증 방식 disable
         http
