@@ -22,7 +22,7 @@ const ConfirmWorking = () => {
 			<RowContainer>
 				<FeedbackAllocateWork 
 					confirmView={true} 
-					confirmTitle='컨펌 취소하기' 
+					confirmTitle='작업 재요청' 
 					commentView={false} 
 					workingBefore={false} 
 					uploadView={true}/>
