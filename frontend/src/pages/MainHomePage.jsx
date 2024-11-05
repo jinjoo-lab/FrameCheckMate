@@ -5,6 +5,7 @@ import { ko } from "date-fns/locale";
 import TopBar from "../components/TopBar";
 import Modal from 'react-modal';
 import styled from 'styled-components';
+import { axiosClient } from '../axios';
 
 const MainHomePage = () => {
 
