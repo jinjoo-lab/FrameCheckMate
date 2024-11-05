@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import TopBar from "../components/TopBar";
+import { loginUser, signupUser } from '../api';
+import { axiosClient } from '../axios';
 
 const LoginSignUp = () => {
 
@@ -30,8 +32,20 @@ const LoginSignUp = () => {
   const [loginCheck, setLoginCheck] = useState(null)
 
   // ★ 함수 추가 - 로그인 실행함수
-  const loginConfirm = (event) => {
+  const loginConfirm = async (event) => {
     event.preventDefault(); // 페이지 새로 고침 방지
+
+    const Data = {
+      email:loginId,
+      password:loginPw
+    }
+
+    try{
+      const response = await loginUser(Data)
+      console.log(response)
+    }catch(error){
+      console.log(`로그인 에러 : ${error}`)
+    }
     navigate('/mainHomePage');
   };
 
@@ -71,14 +85,18 @@ const LoginSignUp = () => {
     setNameCheck(nameTest);
 
     if ( idTest && pwTest && pwReTest && nameTest ) {
-      const signupData = {
-        Id:signId,
+      const Data = {
+        email:signId,
+        name:signName,
         password:signPw,
-        name:signName
       }
+      console.log(Data)
+
       try {
+        console.log('12342425')
+        const response = await signupUser(Data)
+        console.log(`응답값 : ${response}`)
         // 회원가입 API 호출 예시 (주석을 해제하고 사용)
-        // const response = await axiosClient.post('/member/signup', signupData);
         
         // 회원가입 성공 시 자동 로그인 후 페이지 이동
         setLoginId(signId); // 자동 로그인에 필요한 값 설정
