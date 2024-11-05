@@ -30,9 +30,9 @@ public class CardController {
         return ResponseEntity.ok(cardService.getCard(cardId));
     }
 
-    @GetMapping
-    public ResponseEntity<Map<CardStatus, List<Card>>> getAllCards() {
-        return ResponseEntity.ok(cardService.getAllCardsGroupedByStatus());
+    @GetMapping("/{projectId}")
+    public ResponseEntity<Map<CardStatus, List<Card>>> getAllCards(@PathVariable UUID projectId) {
+        return ResponseEntity.ok(cardService.getAllCardsGroupedByStatus(projectId));
     }
 
     @PostMapping("{cardId}/assign")
