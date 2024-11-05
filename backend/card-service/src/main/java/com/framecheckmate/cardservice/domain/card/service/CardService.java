@@ -53,8 +53,8 @@ public class CardService {
                 .orElseThrow(() -> new EntityNotFoundException("Card not found with id: " + cardId));
     }
 
-    public Map<CardStatus, List<Card>> getAllCardsGroupedByStatus() {
-        List<Card> cards = cardRepository.findAll();
+    public Map<CardStatus, List<Card>> getAllCardsGroupedByStatus(UUID projectId) {
+        List<Card> cards = cardRepository.findByProjectId(projectId);
         return cards.stream()
                 .collect(Collectors.groupingBy(Card::getStatus,
                         Collectors.collectingAndThen(Collectors.toList(), list -> {
