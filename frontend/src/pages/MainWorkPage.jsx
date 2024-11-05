@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft } from "react-icons/fa";
 import styled from 'styled-components';
 import TopBar from "../components/TopBar";
+import { axiosClient } from '../axios';
 
 const MainWorkPage = () => {
 

@@ -1,3 +1,6 @@
+import { axiosClient } from "./axios";
+
+const accessToken = '234235345avazvg'
 // 작업 배정
 export const workAssign = async (cardId, data) => {
   return axiosClient.post(`/api/card/${cardId}/assign`, data, {
@@ -147,8 +150,8 @@ export const videoMerge = async (protectId, data) => {
 
 // 회원가입
 export const signupUser = async (data) => {
+  console.log('435346')
   return axiosClient.post(`/api/member/join`, data, {
-    headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   });
 };
 
