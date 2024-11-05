@@ -131,6 +131,21 @@ public class FrameService {
         return new UrlResource(amazonS3.getUrl(bucket, fileName).toString());
     }
 
+    private List<FrameLog> getCardFrameLogs(UUID cardId) {
+        return Optional.ofNullable(cardRepository.findByCardId(cardId))
+                .map(Card::getFrameId)
+                .map(frameRepository::findByFrameId)
+                .map(Frame::getLogs)
+                .orElse(Collections.emptyList());
+    }
+
+    public List<String> getFrameUrlStrings(UUID cardId) {
+        List<FrameLog> frameLogs = getCardFrameLogs(cardId);
+        return frameLogs.stream()
+                .map(frameLog -> amazonS3.getUrl(bucket, frameLog.getFrameName()).toString())
+                .collect(Collectors.toList());
+    }
+
     public String splitFrame(FrameSplitRequestDTO requestDTO) throws IOException, InterruptedException {
         UUID projectId = requestDTO.getProjectId();
         List<FrameSplitRequestDTO.Segment> segments = requestDTO.getSegments();
