@@ -17,6 +17,10 @@ spring:
           uri: http://localhost:8080
           predicates:
             - Path=/member/**
+        - id: project-service
+          uri: http://localhost:8080
+          predicates:
+            - Path=/project/**
         - id: notification-service
           uri: http://localhost:9090
           predicates:
