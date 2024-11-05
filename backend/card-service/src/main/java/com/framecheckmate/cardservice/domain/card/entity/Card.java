@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.List;
 import java.time.LocalDateTime;
@@ -35,6 +36,7 @@ public class Card {
     private LocalDateTime updatedAt;
 
     public void addConfirm(String content) {
+        if (confirms == null) { confirms = new ArrayList<>(); }
         confirms.add(new ConfirmDetail(content));
     }
 }

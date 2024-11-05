@@ -5,16 +5,21 @@ import com.framecheckmate.cardservice.domain.card.dto.request.AssignCardWorkRequ
 import com.framecheckmate.cardservice.domain.card.dto.request.CommentRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.ConfirmRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.CreateCardRequest;
+import com.framecheckmate.cardservice.domain.card.dto.response.CardResponse;
 import com.framecheckmate.cardservice.domain.card.entity.Card;
 import com.framecheckmate.cardservice.domain.card.entity.Comment;
 import com.framecheckmate.cardservice.domain.card.repository.CardRepository;
 import com.framecheckmate.cardservice.domain.card.repository.CommentRepository;
 import com.framecheckmate.cardservice.domain.card.type.CardStatus;
+import com.framecheckmate.cardservice.domain.card.type.CommentDetail;
+import com.framecheckmate.cardservice.domain.frame.service.FrameService;
+import com.framecheckmate.cardservice.domain.frame.type.FrameType;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,9 +31,21 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final CommentRepository commentRepository;
+    private final FrameService frameService;
 
-    public Card getCardById(UUID cardId) {
-        return findCardById(cardId);
+    public CardResponse getCard (UUID cardId) throws IOException {
+        Card card = findCardById(cardId);
+        String frameInfo = frameService.getFrameResource(cardId, FrameType.CARD).getURL().toString();
+        List<CommentDetail> comments = getComments(cardId);
+        return CardResponse.builder()
+                .cardId(cardId)
+                .description(card.getDescription())
+                .startDate(card.getStartDate())
+                .endDate(card.getEndDate())
+                .frameInfo(frameInfo)
+                .confirms(card.getConfirms())
+                .comments(comments)
+                .build();
     }
 
     private Card findCardById(UUID cardId) {
@@ -113,7 +130,9 @@ public class CardService {
         return commentRepository.save(comment);
     }
 
-    public Comment getComments(UUID cardId) {
-        return commentRepository.findByCardId(cardId).orElse(null);
+    public List<CommentDetail> getComments(UUID cardId) {
+        return commentRepository.findByCardId(cardId)
+                .map(Comment::getComments)
+                .orElse(Collections.emptyList());
     }
 }
