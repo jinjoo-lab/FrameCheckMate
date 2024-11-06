@@ -11,14 +11,11 @@ import com.framecheckmate.cardservice.domain.card.dto.response.ProjectCardsRespo
 import com.framecheckmate.cardservice.domain.card.entity.Card;
 import com.framecheckmate.cardservice.domain.card.entity.Comment;
 import com.framecheckmate.cardservice.domain.card.service.CardService;
-import com.framecheckmate.cardservice.domain.card.type.CardStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
