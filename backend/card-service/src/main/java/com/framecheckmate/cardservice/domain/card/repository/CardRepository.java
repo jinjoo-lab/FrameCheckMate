@@ -19,4 +19,15 @@ public interface CardRepository extends MongoRepository<Card, UUID> {
             "{ $group: { '_id': null, 'maxOrder': { $max: '$order' } } }"
     })
     Optional<Long> findMaxOrderByStatus(CardStatus status);
+    @Aggregation(pipeline = {
+            "{ $match: { projectId: ?0 } }",
+            "{ $count: 'total' }"
+    })
+    Optional<Long> countByProjectId(UUID projectId);
+
+    @Aggregation(pipeline = {
+            "{ $match: { projectId: ?0, status: ?1 } }",
+            "{ $count: 'total' }"
+    })
+    Optional<Long> countByProjectIdAndStatus(UUID projectId, CardStatus status);
 }
