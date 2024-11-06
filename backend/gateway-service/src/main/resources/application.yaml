@@ -19,14 +19,14 @@ spring:
           filters:
             - AuthorizationHeaderFilter
         - id: member-service-post
-          uri: http://localhost:8080
+          uri: lb://MEMBER-SERVICE
           predicates:
             - Path=/member/**
             - Method=POST
         - id: member-service-get
-          uri: http://localhost:8080
+          uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=/member/**
+            - Path=api/member/**
             - Method=GET
           filters:
             - AuthorizationHeaderFilter
