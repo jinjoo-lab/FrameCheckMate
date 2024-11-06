@@ -5,14 +5,11 @@ import org.slf4j.LoggerFactory;
 import com.framecheckmate.userservice.member.entity.RefreshToken;
 import com.framecheckmate.userservice.member.service.TokenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @ResponseBody
+@RequestMapping("/api/member")
 public class TokenController {
 
     private final TokenService tokenService;
