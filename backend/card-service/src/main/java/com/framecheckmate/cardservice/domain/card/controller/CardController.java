@@ -4,8 +4,10 @@ import com.framecheckmate.cardservice.domain.card.dto.request.AssignCardWorkRequ
 import com.framecheckmate.cardservice.domain.card.dto.request.CommentRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.ConfirmRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.CreateCardRequest;
+import com.framecheckmate.cardservice.domain.card.dto.response.CardCompletionResponse;
 import com.framecheckmate.cardservice.domain.card.dto.response.CardLogResponse;
 import com.framecheckmate.cardservice.domain.card.dto.response.CardResponse;
+import com.framecheckmate.cardservice.domain.card.dto.response.ProjectCardsResponse;
 import com.framecheckmate.cardservice.domain.card.entity.Card;
 import com.framecheckmate.cardservice.domain.card.entity.Comment;
 import com.framecheckmate.cardservice.domain.card.service.CardService;
@@ -37,9 +39,10 @@ public class CardController {
     }
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<Map<CardStatus, List<Card>>> getAllCards(@PathVariable UUID projectId) {
-        return ResponseEntity.ok(cardService.getAllCardsGroupedByStatus(projectId));
+    public ResponseEntity<ProjectCardsResponse> getAllCards(@PathVariable UUID projectId) {
+        return ResponseEntity.ok(cardService.getAllCardsWithCompletionStatus(projectId));
     }
+
 
     @PostMapping("{cardId}/assign")
     public ResponseEntity<Card> assignCardWork(@PathVariable("cardId") UUID cardId,
@@ -71,7 +74,7 @@ public class CardController {
     }
 
     @PatchMapping("/{cardId}/completion")
-    public ResponseEntity<Card> moveToCompletion(@PathVariable UUID cardId) {
+    public ResponseEntity<CardCompletionResponse> moveToCompletion(@PathVariable UUID cardId) {
         return ResponseEntity.ok(cardService.moveToCompletion(cardId));
     }
 
