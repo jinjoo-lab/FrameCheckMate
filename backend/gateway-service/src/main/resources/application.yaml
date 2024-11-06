@@ -21,7 +21,7 @@ spring:
         - id: member-service-post
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=/member/**
+            - Path=api/member/**
             - Method=POST
         - id: member-service-get
           uri: lb://MEMBER-SERVICE
