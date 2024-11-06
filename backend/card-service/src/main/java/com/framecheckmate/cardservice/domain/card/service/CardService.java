@@ -5,8 +5,10 @@ import com.framecheckmate.cardservice.domain.card.dto.request.AssignCardWorkRequ
 import com.framecheckmate.cardservice.domain.card.dto.request.CommentRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.ConfirmRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.CreateCardRequest;
+import com.framecheckmate.cardservice.domain.card.dto.response.CardCompletionResponse;
 import com.framecheckmate.cardservice.domain.card.dto.response.CardLogResponse;
 import com.framecheckmate.cardservice.domain.card.dto.response.CardResponse;
+import com.framecheckmate.cardservice.domain.card.dto.response.ProjectCardsResponse;
 import com.framecheckmate.cardservice.domain.card.entity.Card;
 import com.framecheckmate.cardservice.domain.card.entity.Comment;
 import com.framecheckmate.cardservice.domain.card.repository.CardRepository;
@@ -67,7 +69,14 @@ public class CardService {
                 .orElseThrow(() -> new EntityNotFoundException("Card not found with id: " + cardId));
     }
 
-    public Map<CardStatus, List<Card>> getAllCardsGroupedByStatus(UUID projectId) {
+    public ProjectCardsResponse getAllCardsWithCompletionStatus(UUID projectId) {
+        Map<CardStatus, List<Card>> cardsByStatus = getAllCardsGroupedByStatus(projectId);
+        boolean isCompleted = isProjectCompleted(projectId);
+
+        return new ProjectCardsResponse(cardsByStatus, isCompleted);
+    }
+
+    private Map<CardStatus, List<Card>> getAllCardsGroupedByStatus(UUID projectId) {
         List<Card> cards = cardRepository.findByProjectId(projectId);
         return cards.stream()
                 .collect(Collectors.groupingBy(Card::getStatus,
@@ -75,6 +84,12 @@ public class CardService {
                             list.sort(Comparator.comparingLong(Card::getOrder));
                             return list;
                         })));
+    }
+
+    private boolean isProjectCompleted(UUID projectId) {
+        long totalCards = cardRepository.countByProjectId(projectId).orElse(0L);
+        long completedCards = cardRepository.countByProjectIdAndStatus(projectId, CardStatus.COMPLETED).orElse(0L);
+        return totalCards > 0 && totalCards == completedCards;
     }
 
     public Card assignCardWork(UUID cardId, AssignCardWorkRequest assignCardWorkRequest) {
@@ -113,8 +128,10 @@ public class CardService {
         return moveCardToStatus(cardId, CardStatus.PENDING_CONFIRMATION);
     }
 
-    public Card moveToCompletion(UUID cardId) {
-        return moveCardToStatus(cardId, CardStatus.COMPLETED);
+    public CardCompletionResponse moveToCompletion(UUID cardId) {
+        Card card = moveCardToStatus(cardId, CardStatus.COMPLETED);
+        boolean isProjectCompleted = isProjectCompleted(card.getProjectId());
+        return new CardCompletionResponse(card, isProjectCompleted);
     }
 
     @Transactional
