@@ -42,6 +42,7 @@ const ImageProcessing = () => {
 	const [splitTime, setSplitTime] = useState([])
 	
   const AiResult = () => {
+    // TODO : AI로부터 온 list를 받아야 하는 곳
     const response = [
       [1, 10],
 			[15, 30],
@@ -58,10 +59,7 @@ const ImageProcessing = () => {
     console.log(`총 시간${a}`);
   };
 
-  const closeButton = () => {
-    navigate('/mainWorkPage');
-  }
-
+  // TODO 결과를 BE로 보내 영상을 자를 수 있도록 수정
   const imageResult = () => {
     // videoSplit
 		navigate('/imageProcessingResult');
@@ -101,7 +99,7 @@ const ImageProcessing = () => {
 						{ aiTime.length == 0 
 						? (
 							<NoReview>
-								<p>컨펌 내용이 없습니다</p>
+								<p>탐지 내용이 없습니다</p>
 							</NoReview>
 							)	
 						: (
