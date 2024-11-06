@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: CARD-SERVICE
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+      database: cards
+      uuid-representation: standard
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+server:
+  port: 5050
+  servlet:
+    context-path: /api
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${S3_ACCESS_KEY}
+      secretKey: ${S3_SECRET_KEY}
+    s3:
+      bucketName: ${S3_BUCKET_NAME}
+    region:
+      static: ${S3_REGION}
+    stack:
+      auto: false
+
+ffmpeg:
+  path: src/main/resources/ffmpeg/bin/ffmpeg
+
+frame:
+  input:
+    path: src/main/resources/frame/input/
+  output:
+    path: src/main/resources/frame/output/
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+    # instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
