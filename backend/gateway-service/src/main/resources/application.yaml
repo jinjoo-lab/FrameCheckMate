@@ -13,11 +13,11 @@ spring:
         response-timeout: 10s
       routes:
         - id: card-service
-          uri: http://localhost:7070
+          uri: lb://CARD-SERVICE
           predicates:
-            - Path=/card/**
-          filters:
-            - AuthorizationHeaderFilter
+            - Path=/api/card/**
+#          filters:
+#            - AuthorizationHeaderFilter
         - id: member-service-post
           uri: lb://MEMBER-SERVICE
           predicates:
