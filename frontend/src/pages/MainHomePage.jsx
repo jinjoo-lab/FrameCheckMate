@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoVideo } from "react-icons/go";
-import { ko } from "date-fns/locale";
 import TopBar from "../components/TopBar";
 import Modal from 'react-modal';
 import styled from 'styled-components';
-import { axiosClient } from '../axios';
+import { viewProject } from '../api';
 
 const MainHomePage = () => {
 
@@ -64,6 +63,7 @@ const MainHomePage = () => {
 
   const [groupList, setGroupList] = useState([])
 
+  // TODO : 서버 배포시 확인 (BE쪽 data 형식이 없어서 data 형식도 맞춰야 함)
   const groupImport = () => {
     const response = [
       {number:1, name:'영상 수정', confirm:false},
@@ -73,6 +73,7 @@ const MainHomePage = () => {
       {number:5, name:'모자이크 처리', confirm:true},
       {number:6, name:'모자이크 처리', confirm:true}
     ]
+    // const response = viewProject();
 
     setGroupList(response)
   }
