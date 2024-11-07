@@ -28,7 +28,7 @@ public class ProjectController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Project> createProject(
-            @RequestPart("name") String name,
+            @RequestPart("projectName") String name,
             Authentication authentication
     ) {
         log.info("Received project creation request with name: {}", name);
@@ -61,8 +61,8 @@ public class ProjectController {
                 .build();
     }
 
-    @GetMapping("/project-members")
-    public ResponseEntity<?> getProjectMembers(@RequestParam UUID projectId, Authentication authentication) {
+    @GetMapping("/{projectId}/members")
+    public ResponseEntity<?> getProjectMembers(@PathVariable(value="projectId") UUID projectId, Authentication authentication) {
         String userEmail = authentication.getName(); // gets current user's email
         List<Member> members = projectService.getProjectMembers(projectId, userEmail);
 
