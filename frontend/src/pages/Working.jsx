@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import TopBar from "../components/TopBar";
-import { useNavigate, Link } from 'react-router-dom'; // eslint-disable-line no-unused-vars
+import { useNavigate, Link, useParams } from 'react-router-dom'; // eslint-disable-line no-unused-vars
 import FeedbackAllocateWork from './FeedbackAllocateWork';
 import styled from 'styled-components';
 import { axiosClient } from '../axios';
 
 const Working = () => {
-
+  
   const navigate = useNavigate();
   
+  const { projectId, cardId } = useParams();
+
   const closeButton = () => {
-    navigate('/mainWorkPage');
+    navigate(`/mainWorkPage/${projectId}`);
   }
 
   const uploadButton = () => {
@@ -18,7 +20,8 @@ const Working = () => {
   }
 
   const detailButton = () => {
-    navigate('/workingLog')
+    console.log(cardId)
+    navigate(`/workingLog/${cardId}`)
   }
 
   return(
@@ -28,7 +31,10 @@ const Working = () => {
         <WorkingButton onClick={detailButton}>작업 로그</WorkingButton>
       </LogContainer>
       <WorkingContainer>
-        <FeedbackAllocateWork confirmView={false} commentView={true} workingBefore={false} uploadView={true}/>
+        <FeedbackAllocateWork 
+          confirmView={false} 
+          commentView={true} 
+          uploadView={true}/>
         <ButtonsContainer>
           <WorkingButton onClick={uploadButton}>
             작업 완료

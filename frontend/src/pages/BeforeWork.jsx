@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
+import React, { useState, useEffect} from 'react'; // eslint-disable-line no-unused-vars
 import TopBar from "../components/TopBar";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import AllocateWork from './AllocateWork';
 import styled from 'styled-components';
 import { axiosClient } from '../axios';
@@ -9,8 +9,10 @@ const BeforeWork = () => {
 
 	const navigate = useNavigate();
 
+	const { projectId, cardId } = useParams();
+
 	const closeButton = () => {
-		navigate('/mainWorkPage');
+		navigate(`/mainWorkPage/${projectId}`);
 		}
 
 	const finButton = () => {
@@ -22,14 +24,14 @@ const BeforeWork = () => {
 			<TopBar title='작업 배정' logoutView={true}/>
 			<RowContainer>
 				<AllocateWork workingBefore={true}/>
-				<ButtonContainer>
+				{/* <ButtonContainer>
 					<BeforeFinButton onClick={finButton}>
 						작업 배정
 					</BeforeFinButton>
 					<BeforeCloseButton onClick={closeButton}>
 						닫기
 					</BeforeCloseButton>
-				</ButtonContainer>
+				</ButtonContainer> */}
 			</RowContainer>
 		</div>
 	)
