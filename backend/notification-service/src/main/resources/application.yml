@@ -19,9 +19,9 @@ spring:
     username: ${NAVER_MAIL_USER}
     password: ${NAVER_MAIL_PASSWORD}
     properties:
+      mail.stmp.debug: true
       mail.smtp.auth: true
-      mail.smtp.ssl.enable: true
-      mail.smtp.ssl.trust: smtp.naver.com
+      mail.smtp.starttls.enable: true
   jpa:
     hibernate:
       ddl-auto: create
