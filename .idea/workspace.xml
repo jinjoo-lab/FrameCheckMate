@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5622bd6b-3f4b-4bc4-a409-f966abc431b6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/framecheckmate/userservice/entity/MemberEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/framecheckmate/userservice/entity/MemberEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/framecheckmate/userservice/member/controller/MemberController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/framecheckmate/userservice/member/controller/MemberController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/framecheckmate/userservice/member/repository/MemberRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/framecheckmate/userservice/member/repository/MemberRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/user-service/src/main/java/com/framecheckmate/userservice/project/controller/ProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/user-service/src/main/java/com/framecheckmate/userservice/project/controller/ProjectController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,12 +34,12 @@
     }
   }
 }</component>
-  <component name="GitLabMergeRequestsSettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "first": "https://lab.ssafy.com/s11-final/S11P31A607.git",
-    "second": "2704b779-d1f4-4be1-9c61-64c6cca22f54"
+  <component name="GitLabMergeRequestsSettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;first&quot;: &quot;https://lab.ssafy.com/s11-final/S11P31A607.git&quot;,
+    &quot;second&quot;: &quot;2704b779-d1f4-4be1-9c61-64c6cca22f54&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -48,8 +52,9 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "feat/BE/S11P31A607-362-user-invite",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/SSAFY/IdeaProjects/S11P31A607",
+    "last_opened_file_path": "C:/Users/SSAFY/IdeaProjects/S11P31A607/backend/user-service",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -77,6 +82,8 @@
       <workItem from="1730190380635" duration="1379000" />
       <workItem from="1730248090845" duration="2587000" />
       <workItem from="1730680758307" duration="158000" />
+      <workItem from="1730952738761" duration="811000" />
+      <workItem from="1730953565570" duration="698000" />
     </task>
     <servers />
   </component>
