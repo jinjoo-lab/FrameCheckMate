@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @ResponseBody
 @RequestMapping(value = "/api/member")
@@ -31,10 +33,9 @@ public class MemberController {
         return "ok";
     }
 
-    @GetMapping()
-    public ResponseEntity<Member> getUserByName(@RequestParam String name) {
-        return memberRepository.findByName(name)
-                .map(user -> ResponseEntity.ok().body(user))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @GetMapping("/find/{name}")
+    public ResponseEntity<List<Member>> getUserByName(@PathVariable(value="name") String name) {
+        List<Member> res = memberRepository.findAllByName(name);
+        return ResponseEntity.ok().body(res);
     }
 }

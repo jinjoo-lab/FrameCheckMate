@@ -10,6 +10,7 @@ import java.util.UUID;
 
 public interface ProjectRepository extends JpaRepository<Project, UUID> {
     List<Project> findByManagerId(UUID managerId);
+    Project findByProjectId(UUID projectId);
     List<Project> findByIsFinishedTrue();
     Project findByName(String name);
 
