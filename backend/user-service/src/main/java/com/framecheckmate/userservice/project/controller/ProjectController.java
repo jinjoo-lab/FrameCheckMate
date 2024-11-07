@@ -2,8 +2,10 @@ package com.framecheckmate.userservice.project.controller;
 
 import com.framecheckmate.userservice.member.entity.Member;
 import com.framecheckmate.userservice.member.repository.MemberRepository;
+import com.framecheckmate.userservice.project.dto.MemberInviteDTO;
 import com.framecheckmate.userservice.project.dto.ProjectCreateDTO;
 import com.framecheckmate.userservice.project.dto.ProjectDTO;
+import com.framecheckmate.userservice.project.dto.ProjectInviteDTO;
 import com.framecheckmate.userservice.project.entity.Project;
 import com.framecheckmate.userservice.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +30,7 @@ public class ProjectController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Project> createProject(
-            @RequestPart("name") String name,
+            @RequestPart("projectName") String name,
             Authentication authentication
     ) {
         log.info("Received project creation request with name: {}", name);
@@ -61,11 +63,27 @@ public class ProjectController {
                 .build();
     }
 
-    @GetMapping("/project-members")
-    public ResponseEntity<?> getProjectMembers(@RequestParam UUID projectId, Authentication authentication) {
+    @GetMapping("/{projectId}/members")
+    public ResponseEntity<?> getProjectMembers(@PathVariable(value="projectId") UUID projectId, Authentication authentication) {
         String userEmail = authentication.getName(); // gets current user's email
         List<Member> members = projectService.getProjectMembers(projectId, userEmail);
 
         return ResponseEntity.ok(members);
     }
+
+    @PostMapping("/invite")
+    public ResponseEntity<Void> inviteProject(@RequestBody ProjectInviteDTO projectInviteDTO) {
+        log.info(projectInviteDTO.getProjectId().toString());
+        UUID projectId = projectInviteDTO.getProjectId();
+        List<MemberInviteDTO> members = projectInviteDTO.getMembers();
+
+        for (MemberInviteDTO member : members) {
+
+            log.info("Processing invite for email: {}", member.getEmail());
+            projectService.inviteProjectMember(projectId, member.getEmail());
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
 }

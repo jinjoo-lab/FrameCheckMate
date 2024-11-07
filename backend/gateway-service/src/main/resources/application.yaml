@@ -3,3 +3,51 @@ server:
 spring:
   application:
     name: FRAME-CHECKMATE-GATEWAY
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      httpclient:
+        connect-timeout: 3000
+        response-timeout: 10s
+      routes:
+        - id: card-service
+          uri: lb://CARD-SERVICE
+          predicates:
+            - Path=/api/card/**
+#          filters:
+#            - AuthorizationHeaderFilter
+        - id: member-service-post
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=api/member/**
+            - Method=POST
+        - id: member-service-get
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=api/member/**
+            - Method=GET
+          filters:
+            - AuthorizationHeaderFilter
+        - id: project-service
+          uri: http://localhost:8080
+          predicates:
+            - Path=/project/**
+          filters:
+            - AuthorizationHeaderFilter
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/notification/**
+#          filters:
+#            - AuthorizationHeaderFilter
+
+
+jwt:
+  secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
