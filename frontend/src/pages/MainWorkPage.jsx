@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft } from "react-icons/fa";
 import styled from 'styled-components';
 import TopBar from "../components/TopBar";
 import { axiosClient } from '../axios';
+import { allCardView, toDoChange, workingChange, confirmChange, resultChange } from '../api';
 
 const MainWorkPage = () => {
+
+  const { projectId, projectName } = useParams();
 
   const navigate = useNavigate();
 
@@ -17,13 +20,6 @@ const MainWorkPage = () => {
     {number:4, type:'d', content:'영상4', time:'00:06:00~00:10:00'},
     {number:5, type:'a', content:'영상5', time:'00:10:00~00:12:00'},
     {number:6, type:'c', content:'영상6', time:'00:12:00~00:13:00'},
-    {number:7, type:'c', content:'영상7', time:'00:13:00~00:14:00'},
-    {number:8, type:'b', content:'영상8', time:'00:14:00~00:17:00'},
-    {number:9, type:'b', content:'영상9', time:'00:17:00~00:18:00'},
-    {number:10, type:'d', content:'영상10', time:'00:18:00~00:30:00'},
-    {number:11, type:'d', content:'영상11', time:'00:18:00~00:30:00'},
-    {number:12, type:'a', content:'영상12', time:'00:18:00~00:30:00'},
-    {number:13, type:'a', content:'영상13', time:'00:18:00~00:30:00'},
   ])
     
   /* 카드 컨테이너 - 작업전 & 진행중 & 컨펌 & 완료  */
@@ -33,89 +29,153 @@ const MainWorkPage = () => {
   const [ finishList, setFinishList ] = useState([])
 
   /* 버튼 이동 - 작업 전 → 작업 중 */
-  const firstMove = (event, card) => {
+  const firstMove = async (event, card) => {
     event.preventDefault(); // 페이지 새로 고침 방지
     event.stopPropagation()
-    setCardList(prev => {
-      return prev.map(list => list.number === card.number ? {...list, type:'b'} : list)
-    })
+    try{
+      const response = await workingChange()
+      if (response.OK){
+        console.log(response)
+        cardSort()
+      }
+    }catch(error){
+      console.log(error)
+    }
+    // setCardList(prev => {
+    //   return prev.map(list => list.number === card.number ? {...list, type:'b'} : list)
+    // })
   }
 
   /* 버튼 이동 - 작업  중 → 컨펌 */
-  const secondMove = (event, card) => {
+  const secondMove = async (event, card) => {
     event.preventDefault(); // 페이지 새로 고침 방지
     event.stopPropagation()
-    setCardList(prev => {
-      return prev.map(list => list.number === card.number ? {...list, type:'c'} : list)
-    })
+    try{
+      const response = await confirmChange()
+      if (response.OK){
+        console.log(response)
+        cardSort()
+      }
+    }catch(error){
+      console.log(error)
+    }
+    // setCardList(prev => {
+    //   return prev.map(list => list.number === card.number ? {...list, type:'c'} : list)
+    // })
   }
 
   /* 버튼 이동 - 작업 중 → 작업 전 */
-  const secondBackMove = (event, card) => {
+  const secondBackMove = async (event, card) => {
     event.preventDefault(); // 페이지 새로 고침 방지
     event.stopPropagation()
-    setCardList(prev => {
-      return prev.map(list => list.number === card.number ? {...list, type:'a'} : list)
-    })
+    try{
+      const response = await toDoChange()
+      if (response.OK){
+        console.log(response)
+        cardSort()
+      }
+    }catch(error){
+      console.log(error)
+    }
+    // setCardList(prev => {
+    //   return prev.map(list => list.number === card.number ? {...list, type:'a'} : list)
+    // })
   }
 
   /* 버튼 이동 - 컨펌 → 완료 */
-  const thirdMove = (event, card) => {
+  const thirdMove = async (event, card) => {
     event.preventDefault(); // 페이지 새로 고침 방지
     event.stopPropagation()
-    setCardList(prev => {
-      return prev.map(list => list.number === card.number ? {...list, type:'d'} : list)
-    })
+    try{
+      const response = await resultChange()
+      if (response.OK){
+        console.log(response)
+        cardSort()
+      }
+    }catch(error){
+      console.log(error)
+    }
+    // setCardList(prev => {
+    //   return prev.map(list => list.number === card.number ? {...list, type:'d'} : list)
+    // })
   }
 
   /* 버튼 이동 - 컨펌 → 작업 중 */
-  const thirdBackMove = (event, card) => {
+  const thirdBackMove = async (event, card) => {
     event.preventDefault(); // 페이지 새로 고침 방지
     event.stopPropagation()
-    setCardList(prev => {
-      return prev.map(list => list.number === card.number ? {...list, type:'b'} : list)
-    })
+    try{
+      const response = await workingChange()
+      if (response.OK){
+        console.log(response)
+        cardSort()
+      }
+    }catch(error){
+      console.log(error)
+    }
+    // setCardList(prev => {
+    //   return prev.map(list => list.number === card.number ? {...list, type:'b'} : list)
+    // })
   }
 
   /* 페이지 이동 */
   const memberCheck = () => {
-    navigate('/manageMember');
+    navigate(`/manageMember/${projectId}/${projectName}`);
   }
   const videoAdd = () => {
-    navigate('/uploadVideo');
+    navigate(`/uploadVideo/${projectId}`);
   }
   const resultPage = () => {
-    navigate('/resultWork')
+    navigate(`/resultWork/${projectId}`)
   }
 
   /* 카드 분배 - 진행 상황 속성에 따라 카드 컨테이너에 넣기 */
-  const cardSort = () => {
-    const listA = []
-    const listB = []
-    const listC = []
-    const listD = []
+  const cardSort = async() => {
+    try{
+      const response = await allCardView(projectId)
+      console.log(response)
 
-    cardList.forEach(card => {
-      if (card.type == 'a') {
-        listA.push(card)
-      } else if (card.type == 'b') {
-        listB.push(card)
-      } else if (card.type == 'c') {
-        listC.push(card)
-      } else if (card.type == 'd') {
-        listD.push(card)
-      }
-    })
-    setBeforeList(listA)
-    setWorkingList(listB)
-    setConfirmList(listC)
-    setFinishList(listD)
+      const listA = response.cardsByStatus.TODO
+      const listB = response.cardsByStatus.IN_PROGRESS
+      const listC = response.cardsByStatus.PENDING_CONFIRMATION
+      const listD = response.cardsByStatus.COMPLETED
+
+      setBeforeList(listA)
+      setWorkingList(listB)
+      setConfirmList(listC)
+      setFinishList(listD)
+      
+    }catch(error){
+      console.log(error)
+    }
+    // const listA = []
+    // const listB = []
+    // const listC = []
+    // const listD = []
+
+    
+    // cardList.forEach(card => {
+    //   if (card.type == 'a') {
+    //     listA.push(card)
+    //   } else if (card.type == 'b') {
+    //     listB.push(card)
+    //   } else if (card.type == 'c') {
+    //     listC.push(card)
+    //   } else if (card.type == 'd') {
+    //     listD.push(card)
+    //   }
+    // })
+    // setBeforeList(listA)
+    // setWorkingList(listB)
+    // setConfirmList(listC)
+    // setFinishList(listD)
+
   }
 
   /* 카드 리스트 변화 있을 때 재렌더링 */
   useEffect(() => {
     cardSort();
-  }, [cardList]); 
+  }, []); 
     
   return(
     <div>
@@ -137,8 +197,8 @@ const MainWorkPage = () => {
           <CardScroll>
             { beforeList.map(card => 
             <Link 
-              to='/beforeWork'
-              key={card.number} 
+              to={`/beforeWork/${card.projectId}/${card.cardId}`}
+              key={card.frameId} 
               style={{
                 color:'inherit',
                 textDecoration:'none',
@@ -156,7 +216,7 @@ const MainWorkPage = () => {
                 </MoveButton>
               </MoveButtonContainer>
               <CardView>
-                {card.content}
+                {card.order}번 작업
               </CardView>
             </Link>
             )}
@@ -174,8 +234,8 @@ const MainWorkPage = () => {
                 <CardScroll>
                   { workingList.map(card => 
                     <Link
-                      to='/working'
-                      key={card.number} 
+                      to={`/working/${card.projectId}/${card.cardId}`}
+                      key={card.frameId} 
                       style={{
                         color:'inherit',
                         textDecoration:'none',
@@ -196,7 +256,7 @@ const MainWorkPage = () => {
                         </MoveButton>
                       </MoveButtonContainer>
                       <CardView>
-                        {card.content}
+                        {card.order}번 작업
                       </CardView>
                     </Link>
                     )
@@ -216,8 +276,8 @@ const MainWorkPage = () => {
               <CardScroll>
                 { confirmList.map(card => 
                   <Link
-                    to='/confirmWorking'
-                    key={card.number} 
+                    to={`/confirmWorking/${card.projectId}/${card.cardId}`}
+                    key={card.frameId} 
                     style={{
                       color:'inherit',
                       textDecoration:'none',
@@ -238,7 +298,7 @@ const MainWorkPage = () => {
                       </MoveButton>
                     </MoveButtonContainer>
                     <CardView>
-                      {card.content}
+                      {card.order}번 작업
                     </CardView>
                   </Link>
                   )
@@ -258,8 +318,8 @@ const MainWorkPage = () => {
               <CardScroll>
                 { finishList.map(card => 
                   <Link 
-                    to='/doneWork'
-                    key={card.number} 
+                    to={`/doneWork/${card.projectId}/${card.cardId}`}
+                    key={card.frameId} 
                     style={{
                       color:'inherit',
                       textDecoration:'none',
@@ -272,7 +332,7 @@ const MainWorkPage = () => {
                       alignItems:"center"
                     }}>
                     <CardView>
-                      {card.content}
+                      {card.order}번 작업
                     </CardView>
                   </Link>
                   )

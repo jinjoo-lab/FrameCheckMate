@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import TopBar from "../components/TopBar";
 import { loginUser, signupUser } from '../api';
+import { BASE_URL } from '../axios';
 
 const LoginSignUp = () => {
 
@@ -35,17 +36,40 @@ const LoginSignUp = () => {
     event.preventDefault(); // 페이지 새로 고침 방지
 
     const Data = {
-      email:loginId,
-      password:loginPw
+      "email":loginId,
+      "password":loginPw
     }
 
     try{
-      const response = await loginUser(Data)
-      console.log(response)
+      const formData = new FormData();
+      formData.append('email', loginId);
+      formData.append('password', loginPw);
+      const response = await fetch(`${BASE_URL}/api/member/login`, {
+        method: 'POST',
+        body: formData,
+        // headers:{"Access-Control-Allow-Origin": "*"}
+      });
+      
+      if (response.ok) {
+
+        const tokens = response.headers.get('access')
+        console.log(tokens)
+        localStorage.setItem('accessToken', tokens);
+
+        // console.log(contentType.Headers.authorization);  // 변환된 JSON 데이터
+        // const abc = response.json;
+        // console.log(abc)
+        navigate('/mainHomePage');
+
+      } else {
+        console.error('로그인 실패:', response.status);
+      }
+      // const accessToken = response.headers['authorization'].split(' ')[1];
+
+
     }catch(error){
       console.log(`로그인 에러 : ${error}`)
     }
-    navigate('/mainHomePage');
   };
 
 
@@ -92,11 +116,25 @@ const LoginSignUp = () => {
       console.log(Data)
 
       try {
+        console.log('회원가입시도')
         const response = await signupUser(Data)
+        console.log(`회원가입 성공:${response}`)
         // 회원가입 성공 시 자동 로그인 후 페이지 이동
-        setLoginId(signId); // 자동 로그인에 필요한 값 설정
-        setLoginPw(signPw);
-        navigate('/MainWorkPage');
+        // setLoginId(signId); // 자동 로그인에 필요한 값 설정
+        // setLoginPw(signPw);
+        // const Datas = {
+        //   email:signId,
+        //   password:signPw
+        // }
+        // const responses = await loginUser(Datas)
+
+        // const accessToken = responses.headers['authorization'].split(' ')[1];
+
+        // localStorage.setItem('accessToken', accessToken);
+
+
+        // console.log(`자동 로그인 성공:${responses}`)
+        // navigate('/MainWorkPage');
       } catch (error) {
         console.log(`회원가입 에러 ${error}`);
       }
