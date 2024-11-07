@@ -6,9 +6,12 @@ import com.framecheckmate.notificationservice.dto.response.NotificationSaveRespo
 import com.framecheckmate.notificationservice.mapper.NotificationMapper
 import com.framecheckmate.notificationservice.repository.NotificationRepository
 import jakarta.transaction.Transactional
+import lombok.extern.slf4j.Slf4j
+import org.apache.kafka.common.requests.DeleteAclsResponse.log
 import org.springframework.stereotype.Service
 import kotlin.streams.toList
 
+@Slf4j
 @Service
 class NotificationService(
     private val customMailSender: CustomMailSender,
