@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import { ko } from "date-fns/locale";
 import styled from 'styled-components';
@@ -7,8 +7,11 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ReactPlayer from "react-player";
 import { axiosClient } from '../axios';
+import { workAssign } from '../api';
 
 const AllocateWork = ({ workingBefore, uploadView }) => {
+
+	const { projectId, cardId } = useParams();
 
 	const navigate = useNavigate();
 
@@ -32,19 +35,45 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 		console.log(`총 시간${a}`);
 	};
 
+	/* 작업자 배정인 경우 */
 	// 작업자 
 	const [ workContent, setWorkContet ] = useState('')
 	const [ worker, setWorker ] = useState('')
-
 	// 작업 기간 - 시작 날짜 & 종료 날짜
 	const [ startDate, setStartDate ] = useState(null);
 	const [ endDate, setEndDate ] = useState(null);
 
-	// 현재 작업자 정보
-	const [ nowWorker, setNowWorker ] = useState('dd')
-	const [ nowContent, setNowContent ] = useState('dd')
-	const [ nowWorkDate, setNowWorkDate ] = useState('dd')
 
+
+	// 현재 작업자 정보
+	const [ nowWorker, setNowWorker ] = useState('')
+	const [ nowContent, setNowContent ] = useState('')
+	const [ nowWorkDate, setNowWorkDate ] = useState('')
+
+	const closeButton = () => {
+		navigate(`/mainWorkPage/${projectId}`);
+	}
+
+	const finButton = async() => {
+
+		const startDay = formatDate(startDate)
+		const endDay = formatDate(endDate)
+		const Data = {
+			"workerId": worker,
+			"startDate": startDay,
+			"endDate": endDay,
+			"description": workContent,
+		}
+		const response = await workAssign(Data)
+
+		console.log(response)
+		try{
+
+		}catch(error){
+			console.log(`작업 배정 에러:${error}`)
+		}
+		navigate('/mainWorkPage')
+	}
 
 	const uploadVideo = () => {
 			
@@ -78,10 +107,12 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 	// 날짜 변환해서 보내줘야 함
 	const formatDate = (date) => {
 		const year = date.getFullYear();
-		const month = String(date.getMonth() + 1).padStart(2, '0'); // 1월은 0이므로 +1
+		const month = String(date.getMonth() + 1).padStart(2, '0');
 		const day = String(date.getDate()).padStart(2, '0');
+		const hour = String(date.getHours()).padStart(2, '0');
+		const minute = String(date.getMinutes()).padStart(2, '0');
 
-		return `${year}-${month}-${day}`;
+		return `${year}-${month}-${day}T${hour}:${minute}:00`;
 	};
 
 	useEffect(() => {
@@ -150,11 +181,12 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 									setStartDate(date);
 								}}
 								selectsStart
+								showTimeSelect
 								startDate={startDate}
 								minDate={new Date()}
 								endDate={endDate}
 								locale={ko}
-								dateFormat="yyyy-MM-dd"
+								dateFormat="yyyy-MM-dd HH:mm"
 								placeholderText="시작 날짜"
 								isClearable
 								onKeyDown={(event) => event.preventDefault()}
@@ -164,11 +196,12 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 								selected={endDate}
 								onChange={(date) => setEndDate(date)}
 								selectsEnd
+								showTimeSelect
 								startDate={startDate}
 								endDate={endDate}
 								minDate={startDate} // 시작 날짜 이후로만 선택하도록 하기
 								locale={ko}
-								dateFormat="yyyy-MM-dd"
+								dateFormat="yyyy-MM-dd HH:mm"
 								placeholderText="종료 날짜"
 								isClearable
 								onKeyDown={(event) => event.preventDefault()}
@@ -199,7 +232,18 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 					/>
 				</VideoBox>
 				
-				{ workingBefore ? null : (
+				{ workingBefore 
+				? (
+					<ButtonBox>
+					<DownloadButton onClick={finButton}>
+						작업 배정
+					</DownloadButton>
+					<UploadButton onClick={closeButton}>
+						닫기
+					</UploadButton>
+				</ButtonBox>
+				)
+				: (
 					<ButtonBox>
 						<DownloadButton onClick={downloadVideo}>
 							다운로드

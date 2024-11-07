@@ -4,6 +4,8 @@ import TopBar from "../components/TopBar";
 import ReactPlayer from "react-player";
 import styled from 'styled-components'
 import { axiosClient } from '../axios';
+import { BASE_URL } from '../axios';
+import axios from 'axios';
 
 const UploadVideo = () => {
 
@@ -33,8 +35,22 @@ const UploadVideo = () => {
     navigate('/mainWorkPage');
   }
 
-  const uploadButton = () => {
-      navigate('/imageProcessing')
+  const uploadButton = async () => {
+    const testPjId = ''
+    const formData = new FormData();
+    formData.append('file', fileURL);  
+  
+    try {
+      const response = await axios.post(`${BASE_URL}/api/frame/original/${testPjId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('Response:', response);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+      // navigate('/imageProcessing')
   }
   return(
     <div>

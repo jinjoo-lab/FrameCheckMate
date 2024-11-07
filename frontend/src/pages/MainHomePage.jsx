@@ -6,14 +6,33 @@ import TopBar from "../components/TopBar";
 import Modal from 'react-modal';
 import styled from 'styled-components';
 import { axiosClient } from '../axios';
+import { viewProject, createProject } from '../api';
+import { BASE_URL } from '../axios';
 
 const MainHomePage = () => {
 
   const navigate = useNavigate();
 
-  const makeGroup = (event) => {
+  const makeGroup = async (event) => {
     event.preventDefault(); // 페이지 새로 고침 방지
-    navigate('/uploadVideo');
+    try{
+
+      const formData = new FormData();
+      formData.append('projectName', groupName);
+      const accessToken = localStorage.getItem('accessToken');
+      
+      const response = await fetch(`${BASE_URL}/api/project`, {
+        method: 'POST',
+        body: formData,
+        headers: { access: `${accessToken}` },
+      });
+      console.log(response)
+      // const Data = { projectName: groupName }
+      // const response = await createProject(Data)
+    }catch(error){
+      console.log(`그룹 생성 실패:${error}`)
+    }
+    // navigate('/manageMember/${projectId}');
   }
 
   const resultView = () => {
@@ -55,30 +74,43 @@ const MainHomePage = () => {
     },
   };
 
-  const workView = (event) => {
+  const workView = (event, projectId, projectName) => {
     event.preventDefault(); // 페이지 새로 고침 방지
-    navigate('/mainWorkPage');
+    // 프로젝트 아이디 경로로 넘겨주기
+    console.log(projectName)
+    navigate(`/mainWorkPage/${projectId}/${projectName}`);
+  }
+  const memberView = (event, projectId) => {
+    event.preventDefault(); // 페이지 새로 고침 방지
+    // 프로젝트 아이디 경로로 넘겨주기
+    navigate(`/manageMember/${projectId}`);
   }
 
   const [groupName, setGroupName] = useState('')
 
   const [groupList, setGroupList] = useState([])
 
-  const groupImport = () => {
-    const response = [
-      {number:1, name:'영상 수정', confirm:false},
-      {number:2, name:'드라마 편집', confirm:true},
-      {number:3, name:'모자이크 처리', confirm:true},
-      {number:4, name:'모자이크 처리', confirm:false},
-      {number:5, name:'모자이크 처리', confirm:true},
-      {number:6, name:'모자이크 처리', confirm:true}
-    ]
+  const groupImport = async() => {
 
-    setGroupList(response)
+    try{
+      const response = await viewProject()
+      console.log(response.data)
+      const abc = response.data
+      setGroupList(abc)
+      if (response.OK){
+        console.log(response)
+        // setGroupList(response)
+      }
+    }catch(error){
+      console.log(`그룹조회 에러 ${error}`)
+    }
+
   }
 
   useEffect(() => {
+
     groupImport()
+
   },[])
 
   return(
@@ -87,17 +119,26 @@ const MainHomePage = () => {
       <RowContainer> 
         {/* 그룹 목록 */}
         <GroupScroll>
-          { groupList.map((list) => 
-            <GroupView key={list.number}>
-              <GroupText onClick={workView}>{list.name}</GroupText>
-              { list.confirm ? 
-                <PlayButton onClick={resultView}> 
-                  <GoVideo size={50} /> 
-                </PlayButton>
-                : null
-              }
-            </GroupView>
-          )}
+          { groupList.length == 0
+          ? <div>그룹 정보가 없습니다</div>
+          : (
+            <>
+              { groupList.map((list) => 
+                <GroupView key={list.projectId}>
+                  <GroupText onClick={(event) => {workView(event, list.projectId, list.name)}}>{list.name}</GroupText>
+                  {/* <GroupText onClick={(event) => {workView(event, list.projectId)}}>{list.name}</GroupText> */}
+                  { list.confirm ? 
+                    <PlayButton onClick={resultView}> 
+                      <GoVideo size={50} /> 
+                    </PlayButton>
+                    : null
+                  }
+                </GroupView>
+              )}
+            </>
+            )
+          }
+
         </GroupScroll>
         <ModalClick onClick={openModal}>그룹 생성</ModalClick>
       </RowContainer>
