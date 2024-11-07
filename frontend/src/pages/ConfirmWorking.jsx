@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import TopBar from "../components/TopBar";
-import { useNavigate, Link } from 'react-router-dom'; // eslint-disable-line no-unused-vars
+import { useNavigate, Link, useParams } from 'react-router-dom'; // eslint-disable-line no-unused-vars
 import FeedbackAllocateWork from './FeedbackAllocateWork';
 import styled from 'styled-components'
 import { axiosClient } from '../axios';
@@ -9,8 +9,10 @@ const ConfirmWorking = () => {
 
 	const navigate = useNavigate();
 
+	const { projectId, cardId } = useParams();
+	
 	const closeButton = () => {
-		navigate('/mainWorkPage');
+		navigate(`/mainWorkPage/${projectId}`);
 	}
 
 	const uploadButton = () => {
@@ -25,7 +27,6 @@ const ConfirmWorking = () => {
 					confirmView={true} 
 					confirmTitle='작업 재요청' 
 					commentView={false} 
-					workingBefore={false} 
 					uploadView={true}/>
 				<ButtonAlign>
 					<ConfirmButton 

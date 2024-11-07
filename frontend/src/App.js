@@ -23,18 +23,18 @@ function App() {
       <Route path="/" element={<Navigate to={loginCheck ? "/mainHomePage" : "loginSignup"} />}/>
       <Route path="/loginSignup" element={<LoginSignUp />} />
       <Route path="/mainHomePage" element={<MainHomePage />} />
-      <Route path="/manageMember" element={<ManageMember />} />
-      <Route path="/mainWorkPage" element={<MainWorkPage />} />
-      <Route path="/uploadVideo" element={<UploadVideo />} />
-      <Route path="/imageProcessing" element={<ImageProcessing />} />
-      <Route path="/imageProcessingResult" element={<ImageProcessingResult />} />
-      <Route path="/beforeWork" element={<BeforeWork />} />
+      <Route path="/manageMember/:projectId/:projectName" element={<ManageMember />} />
+      <Route path="/mainWorkPage/:projectId/:projectName" element={<MainWorkPage />} />
+      <Route path="/uploadVideo/:projectId" element={<UploadVideo />} />
+      <Route path="/imageProcessing/:projectId" element={<ImageProcessing />} />
+      <Route path="/imageProcessingResult/:projectId" element={<ImageProcessingResult />} />
+      <Route path="/beforeWork/:projectId/:cardId" element={<BeforeWork />} />
       <Route path="/feedbackAllocateWork" element={<FeedbackAllocateWork />} />
-      <Route path="/working" element={<Working />} />
-      <Route path="/confirmWorking" element={<ConfirmWorking />} />
-      <Route path="/doneWork" element={<DoneWork />} />
-      <Route path="/resultWork" element={<ResultWork />} />
-      <Route path="/workingLog" element={<WorkingLog />} />
+      <Route path="/working/:projectId/:cardId" element={<Working />} />
+      <Route path="/confirmWorking/:projectId/:cardId" element={<ConfirmWorking />} />
+      <Route path="/doneWork/:projectId/:cardId" element={<DoneWork />} />
+      <Route path="/resultWork/:projectId" element={<ResultWork />} />
+      <Route path="/workingLog/:cardId" element={<WorkingLog />} />
     </Routes>
   );
 }
