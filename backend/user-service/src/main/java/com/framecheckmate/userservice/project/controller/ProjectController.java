@@ -2,8 +2,10 @@ package com.framecheckmate.userservice.project.controller;
 
 import com.framecheckmate.userservice.member.entity.Member;
 import com.framecheckmate.userservice.member.repository.MemberRepository;
+import com.framecheckmate.userservice.project.dto.MemberInviteDTO;
 import com.framecheckmate.userservice.project.dto.ProjectCreateDTO;
 import com.framecheckmate.userservice.project.dto.ProjectDTO;
+import com.framecheckmate.userservice.project.dto.ProjectInviteDTO;
 import com.framecheckmate.userservice.project.entity.Project;
 import com.framecheckmate.userservice.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
@@ -68,4 +70,20 @@ public class ProjectController {
 
         return ResponseEntity.ok(members);
     }
+
+    @PostMapping("/invite")
+    public ResponseEntity<Void> inviteProject(@RequestBody ProjectInviteDTO projectInviteDTO) {
+        log.info(projectInviteDTO.getProjectId().toString());
+        UUID projectId = projectInviteDTO.getProjectId();
+        List<MemberInviteDTO> members = projectInviteDTO.getMembers();
+
+        for (MemberInviteDTO member : members) {
+
+            log.info("Processing invite for email: {}", member.getEmail());
+            projectService.inviteProjectMember(projectId, member.getEmail());
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
 }

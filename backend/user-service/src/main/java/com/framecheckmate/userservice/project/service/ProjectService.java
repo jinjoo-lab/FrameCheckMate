@@ -60,6 +60,21 @@ public class ProjectService {
         projectMemberRepository.save(projectMember);
     }
 
+    public void inviteProjectMember(UUID projectId, String userEmail) {
+        Member member = memberRepository.findByEmail(userEmail);
+        Project project = projectRepository.findByProjectId(projectId);
+
+        // for(Member member : members){
+        ProjectMember projectMember = new ProjectMember();
+        projectMember.setId(UUID.randomUUID());
+        projectMember.setProject(project);
+        projectMember.setMember(member);
+        projectMemberRepository.save(projectMember);
+
+        // }
+
+    }
+
     public List<Project> findMemberProjects(String userEmail) {
         List<ProjectMember> projectMembers = projectMemberRepository.findByMemberEmail(userEmail);
         return projectMembers.stream()
