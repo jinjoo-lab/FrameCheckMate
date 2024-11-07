@@ -12,7 +12,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="notification" target="17" />
-      <module name="notification-service" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

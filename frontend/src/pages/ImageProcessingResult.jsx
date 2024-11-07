@@ -50,7 +50,7 @@ const ImageProcessingResult = () => {
 	}
 
 	const closeButton = () => {
-		navigate('/mainWorkPage');
+		navigate('/imageProcessing');
 	}
 
 	useEffect (() => {

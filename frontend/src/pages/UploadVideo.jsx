@@ -32,7 +32,7 @@ const UploadVideo = () => {
   };
 
   const closeButton = () => {
-    navigate('/mainWorkPage');
+    navigate('/mainHomePage');
   }
 
   const uploadButton = async () => {
