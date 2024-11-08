@@ -142,7 +142,7 @@ public class FrameService {
     public List<String> getFrameUrlStrings(UUID cardId) {
         List<FrameLog> frameLogs = getCardFrameLogs(cardId);
         return frameLogs.stream()
-                .map(frameLog -> amazonS3.getUrl(bucket, frameLog.getFrameName()).toString())
+                .map(FrameLog::getFrameName)
                 .collect(Collectors.toList());
     }
 
