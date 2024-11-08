@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import TopBar from "../components/TopBar";
 import { axiosClient } from '../axios';
 import { allCardView, toDoChange, workingChange, confirmChange, resultChange } from '../api';
+import { BASE_URL } from '../axios';
 
 const MainWorkPage = () => {
 
@@ -52,10 +53,8 @@ const MainWorkPage = () => {
     event.stopPropagation()
     try{
       const response = await confirmChange()
-      if (response.OK){
-        console.log(response)
-        cardSort()
-      }
+      console.log(response)
+      cardSort()
     }catch(error){
       console.log(error)
     }
@@ -70,10 +69,8 @@ const MainWorkPage = () => {
     event.stopPropagation()
     try{
       const response = await toDoChange()
-      if (response.OK){
         console.log(response)
         cardSort()
-      }
     }catch(error){
       console.log(error)
     }
@@ -88,10 +85,8 @@ const MainWorkPage = () => {
     event.stopPropagation()
     try{
       const response = await resultChange()
-      if (response.OK){
         console.log(response)
         cardSort()
-      }
     }catch(error){
       console.log(error)
     }
@@ -131,23 +126,66 @@ const MainWorkPage = () => {
 
   /* 카드 분배 - 진행 상황 속성에 따라 카드 컨테이너에 넣기 */
   const cardSort = async() => {
+    
+    const testId = '123e4567-e89b-12d3-a456-426614174002'
+
+    // ★★★★★★★★ projectCompleted: false -> true일 때 전체 생성 버튼
     try{
-      const response = await allCardView(projectId)
-      console.log(response)
 
-      const listA = response.cardsByStatus.TODO
-      const listB = response.cardsByStatus.IN_PROGRESS
-      const listC = response.cardsByStatus.PENDING_CONFIRMATION
-      const listD = response.cardsByStatus.COMPLETED
+      const response = await fetch(`${BASE_URL}/api/card/${testId}`, {
+        method: 'GET',
+        withCredentials: true,
+      });
+      const answer = await response.json()
+      // const cardInfo = answer.cardsByStatus
+      // // const cardInfo = JSON.stringify(answer, null, 2)
+      // // const ddd = cardInfo.cardsByStatus
+      // console.log(`${cardInfo}`)
+      console.log(answer.cardsByStatus.TODO
+      )
+      if (answer && answer.cardsByStatus && answer.cardsByStatus.TODO) {
+        setBeforeList(answer.cardsByStatus.TODO);
+      }
+      if (answer && answer.cardsByStatus && answer.cardsByStatus.IN_PROGRESS) {
+        setBeforeList(answer.cardsByStatus.IN_PROGRESS);
+      }
+      if (answer && answer.cardsByStatus && answer.cardsByStatus.PENDING_CONFIRMATION) {
+        setBeforeList(answer.cardsByStatus.PENDING_CONFIRMATION);
+      }
+      if (answer && answer.cardsByStatus && answer.cardsByStatus.COMPLETED) {
+        setBeforeList(answer.cardsByStatus.COMPLETED);
+      }
 
-      setBeforeList(listA)
-      setWorkingList(listB)
-      setConfirmList(listC)
-      setFinishList(listD)
+      // setBeforeList(answer.cardsByStatus.COMPLETE)
+
+
+
+      // const response = await findUser(name)
+      // if (response.OK){
+      //   console.log(response)
+      //   setNameSearchData(response)
+      // }
       
     }catch(error){
-      console.log(error)
+      console.log(`전체 카드 요청 결과 ${error}`)
     }
+    // try{
+    //   const response = await allCardView(testId)
+    //   console.log(response)
+
+    //   // const listA = response.cardsByStatus.TODO
+    //   // const listB = response.cardsByStatus.IN_PROGRESS
+    //   // const listC = response.cardsByStatus.PENDING_CONFIRMATION
+    //   // const listD = response.cardsByStatus.COMPLETED
+
+    //   // setBeforeList(listA)
+    //   // setWorkingList(listB)
+    //   // setConfirmList(listC)
+    //   // setFinishList(listD)
+      
+    // }catch(error){
+    //   console.log(error)
+    // }
     // const listA = []
     // const listB = []
     // const listC = []
@@ -216,7 +254,7 @@ const MainWorkPage = () => {
                 </MoveButton>
               </MoveButtonContainer>
               <CardView>
-                {card.order}번 작업
+                {card.order} 작업
               </CardView>
             </Link>
             )}

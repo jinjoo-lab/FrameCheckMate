@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import TopBar from "../components/TopBar";
 import { loginUser, signupUser } from '../api';
 import { BASE_URL } from '../axios';
+import { USER_URL } from '../axios';
 
 const LoginSignUp = () => {
 
@@ -44,11 +45,18 @@ const LoginSignUp = () => {
       const formData = new FormData();
       formData.append('email', loginId);
       formData.append('password', loginPw);
-      const response = await fetch(`${BASE_URL}/api/member/login`, {
+      
+      const response = await fetch(`${USER_URL}/api/member/login`, {
         method: 'POST',
         body: formData,
         // headers:{"Access-Control-Allow-Origin": "*"}
       });
+
+      // const response = await fetch(`${BASE_URL}/api/member/login`, {
+      //   method: 'POST',
+      //   body: formData,
+      //   // headers:{"Access-Control-Allow-Origin": "*"}
+      // });
       
       if (response.ok) {
 

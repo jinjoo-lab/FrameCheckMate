@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'; // eslint-disable-line no-unused-vars
-import { useNavigate, Link } from 'react-router-dom'; // eslint-disable-line no-unused-vars
+import { useNavigate, Link, useParams } from 'react-router-dom'; // eslint-disable-line no-unused-vars
 import TopBar from "../components/TopBar";
 import ReactPlayer from "react-player";
 import styled from 'styled-components'
@@ -8,6 +8,8 @@ import { BASE_URL } from '../axios';
 import axios from 'axios';
 
 const UploadVideo = () => {
+
+  const { projectId } = useParams();
 
   const navigate = useNavigate();
 
@@ -36,22 +38,56 @@ const UploadVideo = () => {
   }
 
   const uploadButton = async () => {
-    const testPjId = ''
-    const formData = new FormData();
-    formData.append('file', fileURL);  
-  
-    try {
-      const response = await axios.post(`${BASE_URL}/api/frame/original/${testPjId}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      console.log('Response:', response);
-    } catch (error) {
-      console.error('Error:', error);
+
+    try{
+      const responses = await fetch(fileURL); // URL에서 파일을 fetch
+      const blob = await responses.blob(); // 파일을 Blob으로 변환
+
+      const formData = new FormData();
+      // formData.append('file', fileURL); 
+      formData.append('file', blob, 'video.mp4');
+      
+      const response = await fetch(`${BASE_URL}/api/frame/original/${projectId}`, {
+        method: 'POST',
+        body: formData,
+        headers:{}
+        // headers: { access: `${accessToken}` },
+      },);
+
+    //   const response = axios.post(`${BASE_URL}/api/frame/original/${projectId}`, formData, {}
+    //   //   {
+    //   //   headers: {
+    //   //     'Content-Type': 'multipart/form-data', // 이 헤더는 axios가 자동으로 설정하므로 생략 가능
+    //   //   }
+    //   // }
+    // )
+    // const abc = await response.json()
+      const text = await response.json();
+      // console.log(text)
+      console.log(`응답왔음${text.fileUrl}`)
+      navigate(`/imageProcessing/${projectId}`);
+    }catch(error){
+      console.log(`전송에러${error}`)
     }
-      // navigate('/imageProcessing')
+
+
+  
+    // try {
+    //   const response = await axios.post(`${BASE_URL}/api/frame/original/${projectId}`, formData, {
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data',
+    //     },
+    //   });
+    //   console.log('Response:', response);
+    // } catch (error) {
+    //   console.error('Error:', error);
+    // }
+    //   navigate('/imageProcessing')
   }
+
+  useEffect(() => {
+    console.log(`프로젝트 아이디${projectId}`)
+  })
   return(
     <div>
       <TopBar title='영상 처리' logoutView={true}/>
