@@ -19,7 +19,6 @@ spring:
     username: ${GMAIL_MAIL_USER}
     password: ${GMAIL_MAIL_PASSWORD}
     properties:
-      mail.stmp.debug: true
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
   jpa:

@@ -1,7 +1,8 @@
 package com.framecheckmate.notificationservice.service
 
+import jakarta.mail.internet.InternetAddress
+import jakarta.mail.internet.MimeMessage
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
 
@@ -14,12 +15,13 @@ class CustomMailSender(
 
     fun snedMail(to : String, subject : String, content : String) {
 
-        val message = SimpleMailMessage().apply {
-            from = mailSender
-            setTo(to)
-            setSubject(subject)
-            text = content
-        }
+        var message : MimeMessage = javaMailSender.createMimeMessage()
+
+        message.addRecipients(MimeMessage.RecipientType.TO, to)
+        message.subject = subject
+
+        message.setText(content,"utf-8")
+        message.setFrom(InternetAddress(mailSender,"frameCheckMate"))
 
         javaMailSender.send(message)
     }
