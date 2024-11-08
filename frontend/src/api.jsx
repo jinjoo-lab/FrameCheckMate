@@ -113,10 +113,10 @@ export const allCardView = async (testId) => {
 };
 
 // 작업 로그 조회
-export const allLogView = async (projectId) => {
+export const allLogView = async (cardId) => {
   const accessToken = localStorage.getItem('accessToken');
 
-  return axiosClient.get(`/api/card/log/${projectId}`, 
+  return axiosClient.get(`/api/card/${cardId}/logs`, 
     {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
   }
