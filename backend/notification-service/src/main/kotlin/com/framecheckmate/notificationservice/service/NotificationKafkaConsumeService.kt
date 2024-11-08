@@ -3,7 +3,6 @@ package com.framecheckmate.notificationservice.service
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.framecheckmate.notificationservice.dto.request.NotificationSaveRequest
 import lombok.extern.slf4j.Slf4j
-import org.apache.kafka.common.requests.DeleteAclsResponse.log
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Service
 
