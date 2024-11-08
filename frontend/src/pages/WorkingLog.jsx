@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'; // eslint-disable-line no-unused-vars
 import TopBar from "../components/TopBar";
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import ReactPlayer from "react-player";
 import { GoVideo } from "react-icons/go";
 import styled from 'styled-components';
 import { axiosClient } from '../axios';
+import { allowView } from '../axios';
 
 const WorkingLog = () => {
-
+  const { cardId } = useParams();
   const navigate = useNavigate();
 
   const [logList, setLogList] = useState([])
@@ -17,10 +18,15 @@ const WorkingLog = () => {
   const [playTime, setPlayTime] = useState();
 
   const logImport = () => {
+    // TODO response data 형식(naming) 수정 및 그에 따른 FE code 수정
+    // const response = allowView(cardId)
     const response = [
-      {number:1, name:'영상 수정', file:false},{number:2, name:'드라마 편집', file:true},
-      {number:3, name:'모자이크 처리', file:true}, {number:4, name:'모자이크 처리', file:false},
-      {number:5, name:'모자이크 처리', file:false}, {number:6, name:'모자이크 처리', file:false},
+      {number:1, name:'영상 수정', file:true},
+      {number:2, name:'드라마 편집', file:true},
+      {number:3, name:'모자이크 처리', file:true},
+      {number:4, name:'모자이크 처리', file:true},
+      {number:5, name:'모자이크 처리', file:true},
+      {number:6, name:'모자이크 처리', file:true},
     ]
     setLogList(response)
   }
@@ -73,26 +79,26 @@ const WorkingLog = () => {
               }
             </ListBox>
           </LogContainer>
-            { fileURL ? (
-              <LogContainer>
-                <ReactPlayer
-                  url={fileURL}
-                  playing={isPlaying} // 재생 여부
-                  controls={true}
-                  width="100%"
-                  height="80%"
-                  ref={playerRef} // 여기서 ref 사용
-                />
-                <WorkingButton onClick={(event) => {uploadButton(event, fileURL)}}>
-                  다운로드
-                </WorkingButton>
-              </LogContainer>
-              )
-              : <LogContainer>확인할 영상을 선택해주세요</LogContainer>
-            }
+          { fileURL ? (
+            <LogContainer>
+              <ReactPlayer
+                url={fileURL}
+                playing={isPlaying} // 재생 여부
+                controls={true}
+                width="100%"
+                height="80%"
+                ref={playerRef} // 여기서 ref 사용
+              />
+              <WorkingButton onClick={(event) => {uploadButton(event, fileURL)}}>
+                다운로드
+              </WorkingButton>
+            </LogContainer>
+            )
+            : <LogContainer>확인할 영상을 선택해주세요</LogContainer>
+          }
         </WorkingContainer>
         <WorkingButton onClick={closeButton}>
-            닫기
+          닫기
         </WorkingButton>
       </RowContainer>
     </div>
