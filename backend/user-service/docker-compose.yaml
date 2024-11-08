@@ -1,0 +1,10 @@
+services:
+  db:
+    image: mysql
+    env_file:
+      - .env
+    environment:
+      TZ: Asia/Seoul
+    ports:
+      - "3307:3306"
+    restart: always
