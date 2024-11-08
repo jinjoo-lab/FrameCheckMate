@@ -12,7 +12,8 @@ class NotificationKafkaConsumeService(
     @KafkaListener(topics = ["member-notification-topic"], groupId = "member-notification")
     fun consumeNotificationMessage(message : String) {
         val request : NotificationSaveRequest = convert(message)
-        notificationService.saveNotification(request)
+
+       notificationService.saveNotification(request)
     }
 
     fun convert(jsonString : String) : NotificationSaveRequest {

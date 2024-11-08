@@ -18,10 +18,15 @@ const ImageProcessing = () => {
   const playerRef = useRef(null); // ReactPlayer에 대한 ref 생성
   const [playTime, setPlayTime] = useState();
 
-	const [second, setSecond] = useState(0)
-	const [minute, setMinute] = useState(0)
-	const [hour, setHour] = useState(0)
+	const [second, setSecond] = useState(0);
+	const [minute, setMinute] = useState(0);
+	const [hour, setHour] = useState(0);
+
+  const [aiTime, setAiTime] = useState([]);
+	const [splitTime, setSplitTime] = useState([]);
+  const [result, setResult] = useState([]);
   
+
   const moveSeconds = (event, seconds) => {
     event.preventDefault(); // 페이지 새로 고침 방지
     setIsPlaying(true);
@@ -40,13 +45,11 @@ const ImageProcessing = () => {
 						${String(minutes).padStart(2, '0')}:
 						${String(secs).padStart(2, '0')}`;
   };
-
-  const [aiTime, setAiTime] = useState([])
-
-	const [splitTime, setSplitTime] = useState([])
 	
-  const AiResult = () => {
+  const AiResult = async () => {
     // TODO : AI로부터 온 list를 받아야 하는 곳
+    // const response = await detectTime(fileURL);
+    // const data = await response.json();
     const response = [
       [1, 10],
 			[15, 30],
@@ -54,8 +57,48 @@ const ImageProcessing = () => {
 			[199, 210]
     ]
 
+    // setAiTime(data)
     setAiTime(response)
   }
+
+  // 사용자가 입력한 시간 초 단위로 변환하여 splitTime에 추가
+  const addSplitTime = () => {
+    const totalSeconds = Number(hour) * 3600 + Number(minute) * 60 + Number(second);
+    setSplitTime(prev => [...prev, totalSeconds]);
+  };
+
+  // 분할된 시간 범위를 aiTime과 비교하여 detect 값을 설정
+  useEffect(() => {
+    if (splitTime.length > 0 && aiTime.length > 0) {
+      const videoDuration = 600; // 예시로 총 비디오 길이(초)
+
+      // 마지막 splitTime에 동영상 총 길이 추가
+      const timeRanges = [...splitTime, videoDuration];
+      const tempResult = [];
+
+      for (let i = 0; i < timeRanges.length - 1; i++) {
+        const start = timeRanges[i];
+        const end = timeRanges[i + 1];
+        let detect = false;
+
+        // aiTime을 탐색하여 현재 구간에 탐지가 있는지 확인
+        for (const [aiStart, aiEnd] of aiTime) {
+          if ((aiStart >= start && aiStart < end) || (aiEnd > start && aiEnd <= end) || (aiStart <= start && aiEnd >= end)) {
+            detect = true;
+            break;
+          }
+        }
+
+        tempResult.push({ start, end, detect });
+      }
+
+      setResult(tempResult);
+    }
+  }, [splitTime, aiTime]);
+
+  useEffect(() => {
+    AiResult();
+  }, []);
 
   // 동영상 총 시간 계산
   const goDuration = (a) => {
@@ -228,10 +271,10 @@ const ImageProcessing = () => {
 							onChange={(event) => setSecond(event.target.value)} />초
 						</div>
 
-						<WorkingButton>
+						<WorkingButton onClick={addSplitTime}>
 							추가하기
 						</WorkingButton>
-						<ResetButton>
+						<ResetButton onClick={() => setSplitTime([])}>
 							초기화
 						</ResetButton>
 
