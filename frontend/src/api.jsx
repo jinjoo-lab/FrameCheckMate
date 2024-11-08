@@ -1,6 +1,6 @@
 import { axiosClient } from "./axios";
 import { memberClient } from "./axios";
-// import { flaskClient } from "./axios";
+import { userClient } from "./axios";
 
 // 요청 인터셉터 설정
 axiosClient.interceptors.request.use(
@@ -20,11 +20,13 @@ axiosClient.interceptors.request.use(
 
 // 작업 배정
 export const workAssign = async (cardId, data) => {
-  const accessToken = localStorage.getItem('accessToken');
+  // const accessToken = localStorage.getItem('accessToken');
 
-  return axiosClient.post(`/api/card/${cardId}/assign`, data, {
-    headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
-  });
+  return axiosClient.post(`/api/card/${cardId}/assign`, data,
+  //    {
+  //   headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
+  // }
+);
 };
 
 // 코멘트 저장
@@ -100,30 +102,36 @@ export const cardView = async (cardId) => {
 };
 
 // 전체 카드 조회
-export const allCardView = async (projectId) => {
-  const accessToken = localStorage.getItem('accessToken');
-
-  return axiosClient.get(`/api/card/${projectId}`, {
-    headers: { Authorization: `${accessToken}`},
-  });
+export const allCardView = async (testId) => {
+  // const accessToken = localStorage.getItem('accessToken');
+  const ids = '123e4567-e89b-12d3-a456-426614174002'
+  return axiosClient.get(`/api/card/${ids}`, 
+  //   {
+  //   headers: { Authorization: `${accessToken}`},
+  // }
+  );
 };
 
 // 작업 로그 조회
 export const allLogView = async (projectId) => {
   const accessToken = localStorage.getItem('accessToken');
 
-  return axiosClient.get(`/api/card/log/${projectId}`, {
+  return axiosClient.get(`/api/card/log/${projectId}`, 
+    {
     headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
-  });
+  }
+);
 };
 
 // 카드 영상 조회
 export const cardVideoView = async (cardId) => {
-  const accessToken = localStorage.getItem('accessToken');
+  // const accessToken = localStorage.getItem('accessToken');
 
-  return axiosClient.get(`/api/frame/card/${cardId}`, {
-    headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
-  });
+  return axiosClient.get(`/api/frame/card/${cardId}`, 
+  //   {
+  //   headers: { Authorization: `${accessToken}`, "Requires-Auth": true },
+  // }
+);
 };
 
 // 원본 영상 조회
@@ -210,10 +218,17 @@ export const videoMerge = async (protectId, data) => {
 // 회원가입
 export const signupUser = async (data) => {
   console.log(data)
-  return axiosClient.post(`/api/member/join`, data, {
+  return userClient.post(`/api/member/join`, data, {
     headers: { "Requires-Auth": true },
   });
 };
+// // 회원가입
+// export const signupUser = async (data) => {
+//   console.log(data)
+//   return axiosClient.post(`/api/member/join`, data, {
+//     headers: { "Requires-Auth": true },
+//   });
+// };
 
 // 로그인
 export const loginUser = async (data) => {
@@ -245,18 +260,25 @@ export const viewProject = async () => {
 
   console.log(`내 토큰은 ${accessToken}`)
   
-  return axiosClient.get(`/api/project/my-project`, {
+  return userClient.get(`/api/project/my-project`, {
     headers: { access: `${accessToken}`},
-  });
+  }
+  // return axiosClient.get(`/api/project/my-project`, {
+  //   headers: { access: `${accessToken}`},
+  // }
+);
 };
 
 // 프로젝트 초대하기
 export const inviteProject = async (data) => {
   const accessToken = localStorage.getItem('accessToken');
 
-  return axiosClient.post(`/api/project/invite`, data, {
+  return userClient.post(`/api/project/invite`, data, {
     headers: { access: `${accessToken}`},
   });
+  // return axiosClient.post(`/api/project/invite`, data, {
+  //   headers: { access: `${accessToken}`},
+  // });
 };
 
 // 프로젝트 멤버 조회

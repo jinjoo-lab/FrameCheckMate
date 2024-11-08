@@ -16,7 +16,7 @@ const BeforeWork = () => {
 		}
 
 	const finButton = () => {
-		navigate('/mainWorkPage')
+		navigate(`/mainWorkPage/${projectId}`)
 	}
 
 	return(

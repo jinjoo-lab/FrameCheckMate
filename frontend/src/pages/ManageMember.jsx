@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { axiosClient } from '../axios';
 import { findUser, viewProjectMember, inviteProject } from '../api';
 import { BASE_URL } from '../axios';
+import { USER_URL } from '../axios';
 
 const ManageMember = () => {
 
@@ -25,10 +26,14 @@ const ManageMember = () => {
     try{
       const accessToken = localStorage.getItem('accessToken');
 
-      const response = await fetch(`${BASE_URL}/api/member/find/${name}`, {
+      const response = await fetch(`${USER_URL}/api/member/find/${name}`, {
         method: 'GET',
         headers: { access: `${accessToken}` },
       });
+      // const response = await fetch(`${BASE_URL}/api/member/find/${name}`, {
+      //   method: 'GET',
+      //   headers: { access: `${accessToken}` },
+      // });
       console.log(response)
       const abc = await response.json()
       console.log(abc)
@@ -104,10 +109,9 @@ const ManageMember = () => {
       const Data = {
         'projectId':projectId,
         'members':datas}
-      console.log(datas)
-      console.log(Data)
       const response = await inviteProject(Data)
       console.log(`초대 응답${response}`)
+      memberImport()
       // if (response.OK){
       //   console.log(response)
       //   alert('초대가 완료되었습니다')
@@ -133,10 +137,14 @@ const ManageMember = () => {
     try{
       const accessToken = localStorage.getItem('accessToken');
 
-      const response = await fetch(`${BASE_URL}/api/project/${projectId}/members`, {
+      const response = await fetch(`${USER_URL}/api/project/${projectId}/members`, {
         method: 'GET',
         headers: { access: `${accessToken}` },
       });
+      // const response = await fetch(`${BASE_URL}/api/project/${projectId}/members`, {
+      //   method: 'GET',
+      //   headers: { access: `${accessToken}` },
+      // });
       
       const abc = await response.json()
       console.log(`데이터터${abc}`)
