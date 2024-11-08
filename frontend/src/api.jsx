@@ -1,5 +1,6 @@
 import { axiosClient } from "./axios";
 import { memberClient } from "./axios";
+// import { flaskClient } from "./axios";
 
 // 요청 인터셉터 설정
 axiosClient.interceptors.request.use(
@@ -266,3 +267,12 @@ export const viewProjectMember = async (data) => {
     headers: { access: `${accessToken}` },
   });
 };
+
+// // flask 서버
+// export const detectTime = async (data) => {
+//   const accessToken = localStorage.getItem('accessToken');
+
+//   return flaskClient.post('/predict'), data, {
+//     headers: { access: `${accessToken}` },
+//   }
+// }
