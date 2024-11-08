@@ -6,13 +6,13 @@ from datetime import datetime
 app = Flask(__name__)
 
 @app.route('/predict')
-def home():
+def home(fileURL):
     # 학습된 모델 불러오기 -> 담배 탐지
     model = YOLO('./best.pt')
 
     # TODO : 비디오 파일 경로 server내부로 재설정 해서 불러오기
-    video_path = 'C:\\Users\\SSAFY\\Desktop\\test_video.mp4'
-    cap = cv2.VideoCapture(video_path)
+    # video_path = 'C:\\Users\\SSAFY\\Desktop\\test_video.mp4'
+    cap = cv2.VideoCapture(fileURL)
 
     # FPS 가져오기
     fps = cap.get(cv2.CAP_PROP_FPS)
