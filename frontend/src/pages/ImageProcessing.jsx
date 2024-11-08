@@ -3,9 +3,10 @@ import TopBar from "../components/TopBar";
 import { useNavigate, Link, useParams } from 'react-router-dom'; // eslint-disable-line no-unused-vars
 import styled from 'styled-components'
 import ReactPlayer from "react-player";
-import { videoSplit } from '../api';
+// import { videoSplit } from '../api';
 import { BASE_URL } from '../axios';
-import axios from 'axios';
+// import axios from 'axios';
+// import { detectTime } from '../api';
 
 const ImageProcessing = () => {
 
