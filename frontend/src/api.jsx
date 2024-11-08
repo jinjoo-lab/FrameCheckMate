@@ -268,11 +268,11 @@ export const viewProjectMember = async (data) => {
   });
 };
 
-// // flask 서버
-// export const detectTime = async (data) => {
-//   const accessToken = localStorage.getItem('accessToken');
+// flask 서버
+export const detectTime = async (data) => {
+  const accessToken = localStorage.getItem('accessToken');
 
-//   return flaskClient.post('/predict'), data, {
-//     headers: { access: `${accessToken}` },
-//   }
-// }
+  return flaskClient.post('/predict'), data, {
+    headers: { access: `${accessToken}` },
+  }
+}
