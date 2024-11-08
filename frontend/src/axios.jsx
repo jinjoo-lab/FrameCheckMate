@@ -25,3 +25,7 @@ export const userClient = axios.create({
   baseURL: USER_URL,
   headers: HEADERS,
 });
+// export const flaskClient = axios.create({
+//   baseURL: USER_URL,
+//   headers: HEADERS,
+// });
