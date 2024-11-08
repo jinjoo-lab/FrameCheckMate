@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react'; // eslint-disable-line no-unused-vars
 import TopBar from "../components/TopBar";
-import { useNavigate, Link } from 'react-router-dom'; // eslint-disable-line no-unused-vars
+import { useNavigate, Link, useParams } from 'react-router-dom'; // eslint-disable-line no-unused-vars
 import styled from 'styled-components'
 import ReactPlayer from "react-player";
 import { videoSplit } from '../api';
+import { BASE_URL } from '../axios';
+import axios from 'axios';
 
 const ImageProcessing = () => {
 
   const navigate = useNavigate();
+
+  const { projectId } = useParams();
 
   const [fileURL, setFileURL] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
@@ -60,14 +64,96 @@ const ImageProcessing = () => {
   };
 
   // TODO 결과를 BE로 보내 영상을 자를 수 있도록 수정
-  const imageResult = () => {
+  const imageResult = async() => {
     // videoSplit
-		navigate('/imageProcessingResult');
+		try{
+      const response = await fetch(`${BASE_URL}/api/frame/original/${projectId}`, {
+        method: 'GET',
+        // body: formData,
+        headers:{}
+        // headers: { access: `${accessToken}` },
+      },);
+			const text = await response.text();
+      // console.log(text)
+      console.log(`응답왔음${text}`)
+			setFileURL(text)
+			setIsPlaying(true)
+
+		}catch(error){
+			console.log(`분할 에러${error}`)
+		}
+		// navigate('/imageProcessingResult');
+
+
+	}
+
+
+// 	{
+//     "projectId": "b1ad7d6a-d40b-4eca-85e6-42d4f736c76d",
+//     "segments": [
+//         {"start": "0", "end": "10", "detect": false},
+//         {"start": "10", "end": "30", "detect": true},
+//         {"start": "30", "end": "60", "detect": false}
+//     ]
+// }
+	const imageSplit = async() => {
+		try{
+			
+			const response = await fetch(`${BASE_URL}/api/frame/original/${projectId}/download`, {
+        method: 'GET',
+        // body: formData,
+        headers:{}
+        // headers: { access: `${accessToken}` },
+      },);
+
+			const blob = await response.blob();
+
+      // Blob URL을 만들어서 다운로드
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = '';  // 다운로드 파일 이름을 서버에서 자동으로 처리
+      link.click();
+
+      // 링크 제거
+      URL.revokeObjectURL(link.href);
+
+			// const Data = {
+			// 	projectId:projectId,
+			// 	segments:[
+			// 		{"start": "0", "end": "3", "detect": false},
+			// 		{"start": "3", "end": "5", "detect": true},
+			// 		{"start": "5", "end": "8", "detect": true},
+			// 	]
+			// }
+			// console.log(projectId)
+			// // const Datas = JSON.stringify(Data)
+			// // const response = await axios.post(`${BASE_URL}/api/frame/split`, Data)
+			// // console.log(response)
+      // const response = await fetch(`${BASE_URL}/api/frame/split`, {
+      //   method: 'POST',
+      //   body: Data,
+			// 	headers: {
+			// 		'Content-Type': 'application/json',
+			// 	},
+      // },);
+
+			// console.log(response)
+			// // const text = await response.text();
+      // // // console.log(text)
+      // // console.log(`응답왔음${text}`)
+			// // setFileURL(text)
+			// // setIsPlaying(true)
+
+		}catch(error){
+			console.log(`다운로드 에러${error}`)
+			// console.log(`분할 에러${error}`)
+		}
 	}
 
   useEffect(() => {
 
-    AiResult()
+    // AiResult()
+		imageResult()
 
   }, [])
 
@@ -150,7 +236,7 @@ const ImageProcessing = () => {
 						</ResetButton>
 
 						<WorkingButton 
-							onClick={imageResult}>
+							onClick={imageSplit}>
 							영상 분할하기
 						</WorkingButton>
 					</WorkingBox>

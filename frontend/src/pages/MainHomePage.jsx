@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { axiosClient } from '../axios';
 import { viewProject, createProject } from '../api';
 import { BASE_URL } from '../axios';
+import { USER_URL } from '../axios';
 
 
 const MainHomePage = () => {
@@ -21,12 +22,20 @@ const MainHomePage = () => {
       formData.append('projectName', groupName);
       const accessToken = localStorage.getItem('accessToken');
       
-      const response = await fetch(`${BASE_URL}/api/project`, {
+      const response = await fetch(`${USER_URL}/api/project`, {
         method: 'POST',
         body: formData,
         headers: { access: `${accessToken}` },
       });
-      console.log(response)
+
+      // const response = await fetch(`${BASE_URL}/api/project`, {
+      //   method: 'POST',
+      //   body: formData,
+      //   headers: { access: `${accessToken}` },
+      // });
+
+      console.log(response.data)
+      // groupImport()
       // const Data = { projectName: groupName }
       // const response = await createProject(Data)
     }catch(error){
@@ -77,8 +86,9 @@ const MainHomePage = () => {
   const workView = (event, projectId, projectName) => {
     event.preventDefault(); // 페이지 새로 고침 방지
     // 프로젝트 아이디 경로로 넘겨주기
+    console.log(projectId)
     console.log(projectName)
-    navigate(`/mainWorkPage/${projectId}/${projectName}`);
+    navigate(`/mainWorkPage/${projectId}`);
   }
   const memberView = (event, projectId) => {
     event.preventDefault(); // 페이지 새로 고침 방지
@@ -95,11 +105,11 @@ const MainHomePage = () => {
 
     try{
       const response = await viewProject()
-      console.log(response.data)
+      // console.log(response.data)
       const abc = response.data
       setGroupList(abc)
       if (response.OK){
-        console.log(response)
+        // console.log(response)
         // setGroupList(response)
       }
     }catch(error){
