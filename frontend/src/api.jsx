@@ -289,3 +289,12 @@ export const viewProjectMember = async (data) => {
     headers: { access: `${accessToken}` },
   });
 };
+
+// flask 서버
+export const detectTime = async (data) => {
+  const accessToken = localStorage.getItem('accessToken');
+
+  return flaskClient.post('/predict'), data, {
+    headers: { access: `${accessToken}` },
+  }
+}
