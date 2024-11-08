@@ -7,7 +7,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ReactPlayer from "react-player";
 import { axiosClient } from '../axios';
-import { workAssign } from '../api';
+import { workAssign, cardVideoView } from '../api';
+import { BASE_URL } from '../axios';
 
 const AllocateWork = ({ workingBefore, uploadView }) => {
 
@@ -20,14 +21,14 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 	const playerRef = useRef(null); // ReactPlayer에 대한 ref 생성
 	const [playTime, setPlayTime] = useState();
 
-	const videoPlaying = (event) => {
-		const file = event.target.files[0];
-		if (file) {
-			const url = URL.createObjectURL(file);
-			setFileURL(url);
-			setIsPlaying(true); // 파일 선택 후 자동으로 재생
-		}
-	};
+	// const videoPlaying = (event) => {
+	// 	const file = event.target.files[0];
+	// 	if (file) {
+	// 		const url = URL.createObjectURL(file);
+	// 		setFileURL(url);
+	// 		setIsPlaying(true); // 파일 선택 후 자동으로 재생
+	// 	}
+	// };
 
 	// 동영상 총 시간 계산
 	const goDuration = (a) => {
@@ -43,8 +44,6 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 	const [ startDate, setStartDate ] = useState(null);
 	const [ endDate, setEndDate ] = useState(null);
 
-
-
 	// 현재 작업자 정보
 	const [ nowWorker, setNowWorker ] = useState('')
 	const [ nowContent, setNowContent ] = useState('')
@@ -54,25 +53,49 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 		navigate(`/mainWorkPage/${projectId}`);
 	}
 
-	const finButton = async() => {
-
-		const startDay = formatDate(startDate)
-		const endDay = formatDate(endDate)
-		const Data = {
-			"workerId": worker,
-			"startDate": startDay,
-			"endDate": endDay,
-			"description": workContent,
-		}
-		const response = await workAssign(Data)
-
-		console.log(response)
+	const showVideo = async() => {
 		try{
+      const response = await fetch(`${BASE_URL}/api/frame/card/${cardId}`, {
+        method: 'GET',
+        withCredentials: true,
+      });
+      const answer = await response.text()
+			console.log(answer)
+			setFileURL(answer)
+			setIsPlaying(true)
+			console.log(`응답 ${answer}`)
+			}catch(error){
+				console.log(`에러 ${error}`)
+			}
+	}
+	const finButton = async() => {
+		// ★ workerId 프로젝트 멤버 조회해서 리스트에서 받는 걸로 수정해야함
+
+		try{
+
+			const startDay = formatDate(startDate)
+			const endDay = formatDate(endDate)
+			const Data = {
+				"workerId": "852e4567-e89b-12d3-a456-426614174124",
+				"startDate": startDate,
+				"endDate": endDate,
+				"description": workContent,
+			}
+			const response = await fetch(`${BASE_URL}/api/card/${cardId}/assign`, {
+        method: 'POST',
+        withCredentials: true,
+      });
+			// const response = await workAssign(cardId, Data)
+	
+			console.log(response)
 
 		}catch(error){
 			console.log(`작업 배정 에러:${error}`)
 		}
-		navigate('/mainWorkPage')
+
+		// navigate(`/mainWorkPage/${projectId}`)
+
+
 	}
 
 	const uploadVideo = () => {
@@ -81,6 +104,15 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 
 	const downloadVideo = () => {
 
+	}
+
+	useEffect(() => {
+		showVideo()
+	})
+
+	const Errors = (event) => {
+		console.log('이벤트에러')
+		console.log(event)
 	}
 
 	const customHeader = ({ date, decreaseMonth, increaseMonth }) => {
@@ -229,6 +261,7 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 						height="100%"
 						ref={playerRef} // 여기서 ref 사용
 						onDuration={goDuration}
+						onError={Errors}
 					/>
 				</VideoBox>
 				
