@@ -24,7 +24,7 @@ function App() {
       <Route path="/loginSignup" element={<LoginSignUp />} />
       <Route path="/mainHomePage" element={<MainHomePage />} />
       <Route path="/manageMember/:projectId/:projectName" element={<ManageMember />} />
-      <Route path="/mainWorkPage/:projectId/:projectName" element={<MainWorkPage />} />
+      <Route path="/mainWorkPage/:projectId" element={<MainWorkPage />} />
       <Route path="/uploadVideo/:projectId" element={<UploadVideo />} />
       <Route path="/imageProcessing/:projectId" element={<ImageProcessing />} />
       <Route path="/imageProcessingResult/:projectId" element={<ImageProcessingResult />} />
