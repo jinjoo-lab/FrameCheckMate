@@ -1,6 +1,10 @@
 package com.framecheckmate.userservice.project.service;
 
 import com.framecheckmate.userservice.member.entity.Member;
+import com.framecheckmate.userservice.member.kafka.KafkaDtoMapper;
+import com.framecheckmate.userservice.member.kafka.MemberKafkaProducer;
+import com.framecheckmate.userservice.member.kafka.dto.NotificationSaveRequest;
+import com.framecheckmate.userservice.member.kafka.dto.NotificationType;
 import com.framecheckmate.userservice.member.repository.MemberRepository;
 import com.framecheckmate.userservice.project.dto.ProjectCreateDTO;
 import com.framecheckmate.userservice.project.entity.Project;
@@ -21,11 +25,18 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final MemberRepository memberRepository;
     private final ProjectMemberRepository projectMemberRepository;
+    private final MemberKafkaProducer memberKafkaProducer;
+    private final KafkaDtoMapper kafkaDtoMapper;
 
-    public ProjectService(ProjectRepository projectRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository) {
+    private static final String NOTIFICATION_TOPIC = "member-notification-topic";
+
+    public ProjectService(ProjectRepository projectRepository, MemberRepository memberRepository, ProjectMemberRepository projectMemberRepository,
+                          MemberKafkaProducer memberKafkaProducer, KafkaDtoMapper kafkaDtoMapper) {
         this.projectRepository = projectRepository;
         this.memberRepository = memberRepository;
         this.projectMemberRepository = projectMemberRepository;
+        this.memberKafkaProducer = memberKafkaProducer;
+        this.kafkaDtoMapper = kafkaDtoMapper;
     }
 
     @Transactional
@@ -42,7 +53,17 @@ public class ProjectService {
         project.setManagerId(member.getMemberId());
         project.setIsFinished(false);
 
-        return projectRepository.save(project);
+        Project saveProject = projectRepository.save(project);
+
+        memberKafkaProducer.sendMessage(NOTIFICATION_TOPIC,
+                kafkaDtoMapper.makeNotificationSaveRequest(
+                    new NotificationSaveRequest(
+                            userEmail,
+                            NotificationType.PROJECT_CREATE
+                    )
+                ));
+
+        return saveProject;
     }
 
     public void addProjectMember(String projectName, String userEmail) {
@@ -60,6 +81,7 @@ public class ProjectService {
         projectMemberRepository.save(projectMember);
     }
 
+    @Transactional
     public void inviteProjectMember(UUID projectId, String userEmail) {
         Member member = memberRepository.findByEmail(userEmail);
         Project project = projectRepository.findByProjectId(projectId);
@@ -73,6 +95,13 @@ public class ProjectService {
 
         // }
 
+        memberKafkaProducer.sendMessage(NOTIFICATION_TOPIC,
+                kafkaDtoMapper.makeNotificationSaveRequest(
+                        new NotificationSaveRequest(
+                                member.getEmail(),
+                                NotificationType.PROJECT_INVITE
+                        )
+                ));
     }
 
     public List<Project> findMemberProjects(String userEmail) {
