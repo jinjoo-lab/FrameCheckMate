@@ -101,6 +101,7 @@ public class CardService {
         Card existingCard = findCardById(cardId);
         Card updateCard = existingCard.toBuilder()
                 .workerId(assignCardWorkRequest.getWorkerId())
+                .workerEmail(assignCardWorkRequest.getWorkerEmail())
                 .startDate(assignCardWorkRequest.getStartDate())
                 .endDate(assignCardWorkRequest.getEndDate())
                 .description(assignCardWorkRequest.getDescription())
