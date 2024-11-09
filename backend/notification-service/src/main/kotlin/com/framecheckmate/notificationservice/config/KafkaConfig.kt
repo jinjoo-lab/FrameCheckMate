@@ -23,4 +23,12 @@ class KafkaConfig {
             .replicas(1)
             .build()
     }
+
+    @Bean
+    fun makeCardNotificationTopic() : NewTopic {
+        return TopicBuilder.name("card-notification-topic")
+            .partitions(3)
+            .replicas(1)
+            .build()
+    }
 }

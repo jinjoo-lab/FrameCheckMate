@@ -17,6 +17,8 @@ import com.framecheckmate.cardservice.domain.card.type.CardStatus;
 import com.framecheckmate.cardservice.domain.card.type.CommentDetail;
 import com.framecheckmate.cardservice.domain.frame.service.FrameService;
 import com.framecheckmate.cardservice.domain.frame.type.FrameType;
+import com.framecheckmate.cardservice.domain.kafka.KafkaProducer;
+import com.framecheckmate.cardservice.domain.kafka.mapper.KafkaDtoMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,9 @@ public class CardService {
     private final CardRepository cardRepository;
     private final CommentRepository commentRepository;
     private final FrameService frameService;
+    private final KafkaProducer kafkaProducer;
+    private final KafkaDtoMapper kafkaDtoMapper;
+    private final String TOPIC = "card-notification-topic";
 
     public CardResponse getCard(UUID cardId) throws IOException {
         Card card = findCardById(cardId);
