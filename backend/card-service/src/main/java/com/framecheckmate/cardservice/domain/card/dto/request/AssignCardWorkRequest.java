@@ -15,6 +15,8 @@ public class AssignCardWorkRequest {
 
     private UUID workerId;
 
+    private String workerEmail;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "UTC")
     private LocalDateTime startDate;
 

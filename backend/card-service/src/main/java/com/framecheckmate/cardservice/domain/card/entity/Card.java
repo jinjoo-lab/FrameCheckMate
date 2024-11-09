@@ -21,6 +21,7 @@ public class Card {
     @Id
     private UUID cardId;
     private UUID workerId;
+    private String workerEmail;
     private UUID projectId;
     private UUID frameId;
     private LocalDateTime startDate;
