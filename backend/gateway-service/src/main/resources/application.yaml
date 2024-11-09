@@ -15,7 +15,7 @@ spring:
         - id: card-service
           uri: lb://CARD-SERVICE
           predicates:
-            - Path=/api/card/**
+            - Path=/api/card/**, /api/frame/**
 #          filters:
 #            - AuthorizationHeaderFilter
         - id: member-service-post
