@@ -10,10 +10,17 @@ class NotificationKafkaConsumeService(
     private val notificationService: NotificationService
 ) {
     @KafkaListener(topics = ["member-notification-topic"], groupId = "member-notification")
-    fun consumeNotificationMessage(message : String) {
+    fun consumeMemberNotificationMessage(message : String) {
         val request : NotificationSaveRequest = convert(message)
 
        notificationService.saveNotification(request)
+    }
+
+    @KafkaListener(topics = ["card-notification-topic"], groupId = "card-notification")
+    fun consumeCardNotificationMessage(message : String) {
+        val request : NotificationSaveRequest = convert(message)
+
+        notificationService.saveNotification(request)
     }
 
     fun convert(jsonString : String) : NotificationSaveRequest {
