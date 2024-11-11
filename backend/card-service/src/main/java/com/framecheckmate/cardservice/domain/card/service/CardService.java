@@ -1,6 +1,5 @@
 package com.framecheckmate.cardservice.domain.card.service;
 
-
 import com.framecheckmate.cardservice.domain.card.dto.request.AssignCardWorkRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.CommentRequest;
 import com.framecheckmate.cardservice.domain.card.dto.request.ConfirmRequest;
@@ -15,6 +14,8 @@ import com.framecheckmate.cardservice.domain.card.repository.CardRepository;
 import com.framecheckmate.cardservice.domain.card.repository.CommentRepository;
 import com.framecheckmate.cardservice.domain.card.type.CardStatus;
 import com.framecheckmate.cardservice.domain.card.type.CommentDetail;
+import com.framecheckmate.cardservice.domain.card.type.ConfirmDetail;
+import com.framecheckmate.cardservice.domain.card.type.FrameConfirmMatch;
 import com.framecheckmate.cardservice.domain.frame.service.FrameService;
 import com.framecheckmate.cardservice.domain.frame.type.FrameType;
 import com.framecheckmate.cardservice.domain.kafka.KafkaProducer;
@@ -58,6 +59,11 @@ public class CardService {
                 .build();
     }
 
+    private Card findCardById(UUID cardId) {
+        return Optional.ofNullable(cardRepository.findByCardId(cardId))
+                .orElseThrow(() -> new EntityNotFoundException("Card not found with id: " + cardId));
+    }
+
     public CardLogResponse getCardLogs(UUID cardId) {
         Card card = findCardById(cardId);
         List<String> frameLogs = frameService.getFrameUrlStrings(cardId);
@@ -66,14 +72,39 @@ public class CardService {
                 .description(card.getDescription())
                 .startDate(card.getStartDate())
                 .endDate(card.getEndDate())
-                .frames(frameLogs)
-                .confirms(card.getConfirms())
+                .originFrame(extractOrigin(frameLogs))
+                .frameConfirmPairs(createFrameConfirmMatches(
+                        getRemainingFrameLogs(frameLogs),
+                        card.getConfirms()))
                 .build();
     }
 
-    private Card findCardById(UUID cardId) {
-        return Optional.ofNullable(cardRepository.findByCardId(cardId))
-                .orElseThrow(() -> new EntityNotFoundException("Card not found with id: " + cardId));
+    private String extractOrigin(List<String> frameLogs) {
+        return frameLogs.isEmpty() ? null : frameLogs.get(0);
+    }
+
+    private List<String> getRemainingFrameLogs(List<String> frameLogs) {
+        return frameLogs.size() > 1 ?
+                frameLogs.subList(1, frameLogs.size()) :
+                new ArrayList<>();
+    }
+
+    private List<FrameConfirmMatch> createFrameConfirmMatches(
+            List<String> remainingFrameLogs,
+            List<ConfirmDetail> confirms) {
+        List<FrameConfirmMatch> matches = new ArrayList<>();
+        int maxSize = Math.max(remainingFrameLogs.size(), confirms.size());
+        for (int i = 0; i < maxSize; i++) {
+            matches.add(FrameConfirmMatch.builder()
+                    .frame(getElementOrNull(remainingFrameLogs, i))
+                    .confirm(getElementOrNull(confirms, i))
+                    .build());
+        }
+        return matches;
+    }
+
+    private <T> T getElementOrNull(List<T> list, int index) {
+        return index < list.size() ? list.get(index) : null;
     }
 
     public ProjectCardsResponse getAllCardsWithCompletionStatus(UUID projectId) {
