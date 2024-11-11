@@ -18,6 +18,8 @@ import com.framecheckmate.cardservice.domain.card.type.CommentDetail;
 import com.framecheckmate.cardservice.domain.frame.service.FrameService;
 import com.framecheckmate.cardservice.domain.frame.type.FrameType;
 import com.framecheckmate.cardservice.domain.kafka.KafkaProducer;
+import com.framecheckmate.cardservice.domain.kafka.dto.NotificationSaveRequest;
+import com.framecheckmate.cardservice.domain.kafka.dto.NotificationType;
 import com.framecheckmate.cardservice.domain.kafka.mapper.KafkaDtoMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -97,6 +99,7 @@ public class CardService {
         return totalCards > 0 && totalCards == completedCards;
     }
 
+    @Transactional
     public Card assignCardWork(UUID cardId, AssignCardWorkRequest assignCardWorkRequest) {
         Card existingCard = findCardById(cardId);
         Card updateCard = existingCard.toBuilder()
@@ -106,7 +109,17 @@ public class CardService {
                 .endDate(assignCardWorkRequest.getEndDate())
                 .description(assignCardWorkRequest.getDescription())
                 .build();
-        return cardRepository.save(updateCard);
+
+        Card card = cardRepository.save(updateCard);
+
+        kafkaProducer.send(TOPIC,
+                kafkaDtoMapper.toNotificationDto(new NotificationSaveRequest(
+                        card.getWorkerEmail(),
+                        NotificationType.ALLOCATION
+                ))
+        );
+
+        return card;
     }
 
     public Card createCard(CreateCardRequest request) {
@@ -127,16 +140,39 @@ public class CardService {
     }
 
     public Card moveToInProgress(UUID cardId) {
+        Card card = cardRepository.findByCardId(cardId);
+
+        if(card.getStatus().equals(CardStatus.PENDING_CONFIRMATION)) {
+            kafkaProducer.send(TOPIC,
+                    kafkaDtoMapper.toNotificationDto(new NotificationSaveRequest(
+                            card.getWorkerEmail(),
+                            NotificationType.PENDING_CONFIRMATION_REJECTED
+                    ))
+            );
+        }
+
         return moveCardToStatus(cardId, CardStatus.IN_PROGRESS);
     }
 
+    @Transactional
     public Card moveToConfirm(UUID cardId) {
-        return moveCardToStatus(cardId, CardStatus.PENDING_CONFIRMATION);
+        Card card = moveCardToStatus(cardId, CardStatus.PENDING_CONFIRMATION);
+
+        kafkaProducer.send(TOPIC,
+                kafkaDtoMapper.toNotificationDto(new NotificationSaveRequest(
+                        card.getWorkerEmail(),
+                        NotificationType.PENDING_CONFIRMATION
+                ))
+        );
+
+        return card;
     }
 
+    @Transactional
     public CardCompletionResponse moveToCompletion(UUID cardId) {
         Card card = moveCardToStatus(cardId, CardStatus.COMPLETED);
         boolean isProjectCompleted = isProjectCompleted(card.getProjectId());
+
         return new CardCompletionResponse(card, isProjectCompleted);
     }
 
