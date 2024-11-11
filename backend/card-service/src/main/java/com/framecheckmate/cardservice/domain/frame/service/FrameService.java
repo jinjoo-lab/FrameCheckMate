@@ -279,7 +279,7 @@ public class FrameService {
 
     private String[] buildMergeFFmpegCommand(File fileList, String outputFilePath) {
         return new String[]{
-                ffmpegConfig.getFFmpegPath() + "\\",
+                ffmpegConfig.getFFmpegPath().toString(),
                 "-f", "concat",
                 "-safe", "0",
                 "-i", fileList.getAbsolutePath(),
