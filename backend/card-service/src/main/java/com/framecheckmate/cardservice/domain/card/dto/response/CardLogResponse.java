@@ -1,6 +1,6 @@
 package com.framecheckmate.cardservice.domain.card.dto.response;
 
-import com.framecheckmate.cardservice.domain.card.type.ConfirmDetail;
+import com.framecheckmate.cardservice.domain.card.type.FrameConfirmMatch;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,8 +13,8 @@ import java.util.UUID;
 public class CardLogResponse {
     private UUID cardId;
     private String description;
+    private String originFrame;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private List<String> frames;
-    private List<ConfirmDetail> confirms;
+    private List<FrameConfirmMatch> frameConfirmPairs;
 }
