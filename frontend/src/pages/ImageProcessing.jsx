@@ -92,6 +92,11 @@ const ImageProcessing = () => {
       return;
     }
 
+    if (hour < 0 || minute < 0 || second < 0 ) {
+      setWarningMessage('0보다 작은 값을 입력할 수 없습니다.');
+      return
+    }
+
     // 전체 길이 초과 확인
     if (totalSeconds > splitTime[splitTime.length - 1] || totalSeconds < 0) {
       setWarningMessage('영상의 전체 길이를 벗어나는 시간은 입력할 수 없습니다');
