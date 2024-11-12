@@ -1,12 +1,11 @@
 server:
   port: 8761
 
-
 eureka:
   server:
     enable-self-preservation: false
   instance:
-    hostname: localhost
+    hostname: k11a607.p.ssafy.io
     prefer-ip-address: true
   client:
     register-with-eureka: false
