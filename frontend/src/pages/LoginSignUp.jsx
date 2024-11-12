@@ -5,6 +5,7 @@ import TopBar from "../components/TopBar";
 import { loginUser, signupUser } from '../api';
 import { BASE_URL } from '../axios';
 import { USER_URL } from '../axios';
+import { jwtDecode } from 'jwt-decode';
 
 const LoginSignUp = () => {
 
@@ -32,14 +33,9 @@ const LoginSignUp = () => {
   // 로그인 검증 - false면 경고문 보여줌
   const [loginCheck, setLoginCheck] = useState(null)
 
-  // ★ 함수 추가 - 로그인 실행함수
+  // 로그인 실행 함수
   const loginConfirm = async (event) => {
     event.preventDefault(); // 페이지 새로 고침 방지
-
-    const Data = {
-      "email":loginId,
-      "password":loginPw
-    }
 
     try{
       const formData = new FormData();
@@ -52,31 +48,24 @@ const LoginSignUp = () => {
         // headers:{"Access-Control-Allow-Origin": "*"}
       });
 
-      // const response = await fetch(`${BASE_URL}/api/member/login`, {
-      //   method: 'POST',
-      //   body: formData,
-      //   // headers:{"Access-Control-Allow-Origin": "*"}
-      // });
-      
       if (response.ok) {
-
         const tokens = response.headers.get('access')
-        console.log(tokens)
         localStorage.setItem('accessToken', tokens);
-
-        // console.log(contentType.Headers.authorization);  // 변환된 JSON 데이터
-        // const abc = response.json;
-        // console.log(abc)
+        const decodedTokens = jwtDecode(tokens);
+        console.log(decodedTokens);
+        const email = decodedTokens.email
+        localStorage.setItem('myEmail', email);
         navigate('/mainHomePage');
 
       } else {
-        console.error('로그인 실패:', response.status);
+        alert('로그인 정보를 다시 확인해주세요')
+        setLoginCheck(false)
       }
-      // const accessToken = response.headers['authorization'].split(' ')[1];
-
 
     }catch(error){
       console.log(`로그인 에러 : ${error}`)
+      alert('로그인 정보를 다시 확인해주세요')
+      setLoginCheck(false)
     }
   };
 
@@ -101,10 +90,11 @@ const LoginSignUp = () => {
   // 비밀번호 정규식 6자 이상 12자 이하 특수문자 영문 숫자 포함
   const passwordRegEx = /^(?=.*[A-Za-z])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z0-9!@#$%^&*(),.?":{}|<>]{6,12}$/;
   
-  // 회원가입 실행함수
+  // 회원가입 실행 함수
   const signupConfirm = async (event) => {
     event.preventDefault(); // 페이지 새로 고침 방지
 
+    // 회원가입 조건 맞는지 체크
     const pwReTest = signPw === signRePw;
     const idTest = emailRegex.test(signId);
     const pwTest = passwordRegEx.test(signPw);
@@ -115,37 +105,20 @@ const LoginSignUp = () => {
     setPwCheck(pwTest);
     setNameCheck(nameTest);
 
+    // 회원가입 조건 다 충족하면 요청
     if ( idTest && pwTest && pwReTest && nameTest ) {
       const Data = {
         email:signId,
         username:signName,
         password:signPw,
       }
-      console.log(Data)
-
       try {
-        console.log('회원가입시도')
         const response = await signupUser(Data)
-        console.log(`회원가입 성공:${response}`)
-        // 회원가입 성공 시 자동 로그인 후 페이지 이동
-        // setLoginId(signId); // 자동 로그인에 필요한 값 설정
-        // setLoginPw(signPw);
-        // const Datas = {
-        //   email:signId,
-        //   password:signPw
-        // }
-        // const responses = await loginUser(Datas)
-
-        // const accessToken = responses.headers['authorization'].split(' ')[1];
-
-        // localStorage.setItem('accessToken', accessToken);
-
-
-        // console.log(`자동 로그인 성공:${responses}`)
-        // navigate('/MainWorkPage');
+        console.log(response)
+        alert('회원가입에 성공했습니다')
       } catch (error) {
         console.log(`회원가입 에러 ${error}`);
-      }
+      } 
     }
   };
   

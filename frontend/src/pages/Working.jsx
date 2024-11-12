@@ -11,14 +11,6 @@ const Working = () => {
   
   const { projectId, cardId } = useParams();
 
-  const closeButton = () => {
-    navigate(`/mainWorkPage/${projectId}`);
-  }
-
-  const uploadButton = () => {
-    navigate('/mainWorkPage')
-  }
-
   const detailButton = () => {
     console.log(cardId)
     navigate(`/workingLog/${cardId}`)
@@ -35,14 +27,6 @@ const Working = () => {
           confirmView={false} 
           commentView={true} 
           uploadView={true}/>
-        <ButtonsContainer>
-          <WorkingButton onClick={uploadButton}>
-            작업 완료
-          </WorkingButton>
-          <WorkingCloseButton onClick={closeButton}>
-            닫기
-          </WorkingCloseButton>
-        </ButtonsContainer>
       </WorkingContainer>
     </div>
   )
