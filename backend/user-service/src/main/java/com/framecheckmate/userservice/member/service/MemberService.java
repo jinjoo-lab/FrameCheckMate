@@ -8,11 +8,13 @@ import com.framecheckmate.userservice.member.kafka.MemberKafkaProducer;
 import com.framecheckmate.userservice.member.kafka.dto.NotificationSaveRequest;
 import com.framecheckmate.userservice.member.kafka.dto.NotificationType;
 import com.framecheckmate.userservice.member.repository.MemberRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class MemberService {
@@ -63,5 +65,11 @@ public class MemberService {
             throw new IllegalArgumentException("Name cannot be empty");
         }
         return memberRepository.findAllByNameContainingIgnoreCase(name);
+    }
+
+    public String getMember(UUID memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException("Member not found with id: " + memberId))
+                .getName();
     }
 }
