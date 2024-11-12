@@ -14,9 +14,8 @@ const ManageMember = () => {
   const { projectId, projectName } = useParams();
 
   const [name, setName] = useState('') // 입력한 이름
-  // const [nameData, setNameData] = useState([]) // 직원 이름 목록
   const [nameSearchData, setNameSearchData] = useState([]) // 검색 결과 이름 목록
-  const [memberData, setMemberData] = useState([]) // 현재 그룹의 멤버 목록
+  const [memberData, setMemberData] = useState([]) // 현재 프로젝트의 멤버 목록
   const [inviteData, setInviteData] = useState([]) // 초대 요청 보낼 목록
   const [wordView, setWordView] = useState('') // 검색 결과 없을 때 보여줄 텍스트
 
@@ -25,49 +24,40 @@ const ManageMember = () => {
     event.preventDefault(); // 페이지 새로 고침 방지
     try{
       const accessToken = localStorage.getItem('accessToken');
-
       const response = await fetch(`${USER_URL}/api/member/find/${name}`, {
         method: 'GET',
         headers: { access: `${accessToken}` },
       });
-      // const response = await fetch(`${BASE_URL}/api/member/find/${name}`, {
-      //   method: 'GET',
-      //   headers: { access: `${accessToken}` },
-      // });
-      console.log(response)
-      const abc = await response.json()
-      console.log(abc)
-      setNameSearchData(abc)
-
-
-      // const response = await findUser(name)
-      // if (response.OK){
-      //   console.log(response)
-      //   setNameSearchData(response)
-      // }
+      const names = await response.json()
+      console.log(names)
+      if (names.length == 0){
+        setWordView('검색 결과가 없습니다')
+        setNameSearchData([])
+      } else{
+        setNameSearchData(names)
+      }
     }catch(error){
-      console.log(`검색 에러${error}`)
+      setWordView('검색 결과가 없습니다')
     }
-  
-    // const updateList = nameData.filter(member => member.name === name);
-    // if (updateList.length == 0) {
-    //   setWordView('검색 결과가 없습니다')
-    // }
-    // setNameSearchData(updateList)
   }
 
   /* 이름 검색 결과 → 초대 목록 이동 */
-  const addList = (event, list) => {
+  const addList = (event, search) => {
     event.preventDefault(); // 페이지 새로 고침 방지
-  
-    const isEmailAlreadyAdded = inviteData.some(item => item.email === list.email); // 중복값 있는지 확인
-
-    if (!isEmailAlreadyAdded) {
-      setInviteData(prev => [...prev, list]); // 새로운 list 추가
-      setNameSearchData(prev => prev.filter(data => data.email !== list.email)); // nameSearchData에서 해당 list 제거
+    const inviteAdded = inviteData.some(data => data.email === search.email); // 초대 목록에서 중복 있는지 확인
+    const memberAdded = memberData.some(data => data.email === search.email); // 현재 프로젝트 멤버에서 중복 있는지 확인
+    if (!inviteAdded && !memberAdded) {
+      setInviteData(prev => [...prev, search]); // 초대 리스트에 추가
+      setNameSearchData(prev => prev.filter(data => data.email !== search.email)); // 검색 결과에서 해당 회원 제거
     } else {
-      console.log("이미 추가된 이메일입니다.");
-      alert('이미 추가된 이메일입니다')
+      if (inviteAdded){
+        console.log("이미 추가된 이메일입니다.");
+        alert('이미 초대 목록에 추가된 이메일입니다')
+      }
+      if (memberAdded){
+        console.log("이미 프로젝트에 있는 멤버입니다.");
+        alert("이미 프로젝트에 있는 멤버입니다.")
+      }
     }
   };
 
@@ -75,130 +65,62 @@ const ManageMember = () => {
   const removeList = (event, list) => {
     event.preventDefault(); // 페이지 새로 고침 방지
     setInviteData(prev => prev.filter(data => data.email !== list.email))
-    // setNameData(prev => [...prev, list])
     // setNameSearchData(prev => prev.concat(list.name === name ? [list] : []))
   }
 
-  /* 초대 요청 보내기 */
+  /* 프로젝트 초대 요청 보내기 */
   const inviteRequest = async (event) => {
     event.preventDefault(); // 페이지 새로 고침 방지
-    console.log(inviteData)
     try{
-      const accessToken = localStorage.getItem('accessToken');
-
       const datas = inviteData
-      
-      // const formData = new FormData();
-      // formData.append('name', projectName);
-      // // formData.append('members', datas);
-      // formData.append('members', JSON.stringify(datas));
-      // console.log(formData.get('name'))
-      // console.log(formData.get('members'))
-
-      // const response = await fetch(`${BASE_URL}/api/invite`, {
-      //   method: 'POST',
-      //   body: formData,
-      //   headers: { access: `${accessToken}` },
-      // });
-      // if (response.ok){
-      //   console.log(`초대 응답 ${response.data}`)
-
-      // }
-      // const abc= JSON.stringify(datas)
-      // console.log(`요청보내는 데이터 ${abc}`)
       const Data = {
         'projectId':projectId,
-        'members':datas}
+        'members':datas
+      }
       const response = await inviteProject(Data)
-      console.log(`초대 응답${response}`)
+      console.log(response)
+
+      alert('초대가 완료되었습니다')
+      setInviteData([])
+
       memberImport()
-      // if (response.OK){
-      //   console.log(response)
-      //   alert('초대가 완료되었습니다')
-      // }
+      // navigate(`/mainWorkPage/${projectId}`);
+      
     }catch(error){
       console.log(`초대 에러${error}`)
     }
-    // navigate('/mainWorkPage')
   }
 
-  /* 그룹에서 멤버 제거 */
+  // !!!!! 프로젝트 멤버 삭제 (추후 구현 예정)
   const removeMember = (event, list) => {
     event.preventDefault(); // 페이지 새로 고침 방지
-    // ★요청★ 
-    setMemberData(prev => {
-      return prev.filter(data => data.number !== list.number);
-    });
+    // setMemberData(prev => {
+    //   return prev.filter(data => data.number !== list.number);
+    // });
   }
 
-  /* 현재 속한 그룹의 멤버 목록 불러오기 */
+  /* 현재 속한 프로젝트의 멤버 목록 불러오기 */
   const memberImport = async() => {
-    console.log(projectId)
     try{
       const accessToken = localStorage.getItem('accessToken');
-
       const response = await fetch(`${USER_URL}/api/project/${projectId}/members`, {
         method: 'GET',
         headers: { access: `${accessToken}` },
       });
-      // const response = await fetch(`${BASE_URL}/api/project/${projectId}/members`, {
-      //   method: 'GET',
-      //   headers: { access: `${accessToken}` },
-      // });
-      
-      const abc = await response.json()
-      console.log(`데이터터${abc}`)
-      setMemberData(abc)
-      // const Data = {
-      //   "projectId":projectId
-      // }
-      // const response = await viewProjectMember(Data)
-      if (response.OK){
-        console.log(response)
-        setMemberData(response)
-      }
-
-      // const accessToken = localStorage.getItem('accessToken');
-      
-      // const response = await fetch(`${BASE_URL}/api/project-members`, {
-      //   method: 'GET',
-      //   headers: { access: `${accessToken}` },
-      // });
-      // console.log(response)
-      // const Data = { projectName: 
+      const members = await response.json()
+      console.log(members)
+      setMemberData(members)
     }catch(error){
       console.log(error)
     }
   }
 
-    // ★요청★
-    // const response = [
-    //   {number:1, name:'김김김', depart:'개발부', email:'abcdefghtllkknl@naver.com'},
-    //   {number:2, name:'이이이', depart:'사업부', email:'abcdefghtllkknl@naver.com'},
-    //   {number:3, name:'박박박', depart:'기획부', email:'abcdefghtllkknl@naver.com'}
-    // ]
-    // setMemberData(response)
-
-  /* 직원 이름 목록 불러오기 */
-  // const nameImport = () => {
-  //   // ★요청★
-  //   const response = [
-  //     {number:4, name:'aaa', depart:'개발부', email:'abcdefghtllkknl@naver.com'},
-  //     {number:5, name:'bbb', depart:'개발부', email:'abcdefghtllkknl@naver.com'},
-  //     {number:6, name:'ccc', depart:'개발부', email:'abcdefghtllkknl@naver.com'},
-  //     {number:7, name:'aaa', depart:'기획부', email:'abcdefghtllkknl@naver.com'},
-  //   ]
-  //   setNameData(response)
-  // }
-
+  /* 처음 접속 시 현재 프로젝트 멤버 불러오기 */
   useEffect(()=> {
-    /* 처음에 그룹 멤버 목록 */
     memberImport()
-    console.log(projectName)
-    // console.log(projectId)
-    // nameImport()
   }, [])
 
+  // 닫기 버튼
   const closeButton = () => {
     navigate(`/mainWorkPage/${projectId}`);
   }
@@ -254,7 +176,7 @@ const ManageMember = () => {
                     <MemberList key={list.email}>
                       <MemberContent>
                         <MemberText>{list.name}</MemberText>
-                        <MemberText>{list.depart}</MemberText>
+                        {/* <MemberText>{list.depart}</MemberText> */}
                         <MemberText>{list.email}</MemberText>
                       </MemberContent>
                       <MemberButton onClick={(event) => removeList(event, list)}>
@@ -287,7 +209,7 @@ const ManageMember = () => {
                     <MemberList key={list.email}>
                       <MemberContent>
                         <MemberText>{list.name}</MemberText>
-                        <MemberText>{list.depart}</MemberText>
+                        {/* <MemberText>{list.depart}</MemberText> */}
                         <MemberText>{list.email}</MemberText>
                       </MemberContent>
                       <MemberButton onClick = {(event) => {removeMember(event,list)}}>

@@ -4,24 +4,14 @@ import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft } from "react-icons/f
 import styled from 'styled-components';
 import TopBar from "../components/TopBar";
 import { axiosClient } from '../axios';
-import { allCardView, toDoChange, workingChange, confirmChange, resultChange } from '../api';
-import { BASE_URL } from '../axios';
+import { allCardView, toDoChange, workingChange, confirmChange, resultChange, videoMerge } from '../api';
+import { BASE_URL, USER_URL } from '../axios';
 
 const MainWorkPage = () => {
 
   const { projectId, projectName } = useParams();
 
   const navigate = useNavigate();
-
-  /* 임시 카드리스트 */
-  const [cardList, setCardList] = useState([
-    {number:1, type:'a', content:'영상1', time:'00:01:00~00:02:00'},
-    {number:2, type:'b', content:'영상2', time:'00:02:00~00:03:00'},
-    {number:3, type:'c', content:'영상3', time:'00:03:00~00:06:00'},
-    {number:4, type:'d', content:'영상4', time:'00:06:00~00:10:00'},
-    {number:5, type:'a', content:'영상5', time:'00:10:00~00:12:00'},
-    {number:6, type:'c', content:'영상6', time:'00:12:00~00:13:00'},
-  ])
     
   /* 카드 컨테이너 - 작업전 & 진행중 & 컨펌 & 완료  */
   const [ beforeList, setBeforeList ] = useState([])
@@ -29,190 +19,223 @@ const MainWorkPage = () => {
   const [ confirmList, setConfirmList ] = useState([])
   const [ finishList, setFinishList ] = useState([])
 
-  /* 버튼 이동 - 작업 전 → 작업 중 */
-  const firstMove = async (event, card) => {
-    event.preventDefault(); // 페이지 새로 고침 방지
-    event.stopPropagation()
-    try{
-      const response = await workingChange()
-      if (response.OK){
-        console.log(response)
-        cardSort()
-      }
-    }catch(error){
-      console.log(error)
-    }
-    // setCardList(prev => {
-    //   return prev.map(list => list.number === card.number ? {...list, type:'b'} : list)
-    // })
-  }
+  /* 최종 작업 완료 버튼 - true면 보여주기 */
+  const [ finalCreate, setFinalCreate ] = useState(false)
 
-  /* 버튼 이동 - 작업  중 → 컨펌 */
-  const secondMove = async (event, card) => {
+  const [ memberData, setMemberData ] = useState([])
+
+  /* toDo로 상태 변경 */
+  const toDoMove = async (event, card) => {
     event.preventDefault(); // 페이지 새로 고침 방지
     event.stopPropagation()
     try{
-      const response = await confirmChange()
-      console.log(response)
+      const cardId = card.cardId
+      // 1번
+      const response = await fetch(`${BASE_URL}/api/card/${cardId}/toDo`, {
+        method: 'PATCH', 
+        withCredentials: true,
+      });
+      // 2번
+      // const response = await toDoChange(cardId)
+      const answer = await response.json()
       cardSort()
     }catch(error){
       console.log(error)
     }
-    // setCardList(prev => {
-    //   return prev.map(list => list.number === card.number ? {...list, type:'c'} : list)
-    // })
   }
 
-  /* 버튼 이동 - 작업 중 → 작업 전 */
-  const secondBackMove = async (event, card) => {
+  /* 작업중으로 상태 변경 */
+  const inProgressMove = async (event, card) => {
     event.preventDefault(); // 페이지 새로 고침 방지
-    event.stopPropagation()
+    event.stopPropagation() // 버튼만 클릭되도록
+
+    // !!!!! 버튼 이동 요청 성공하는 방식으로 나머지도 다 변경해야함
     try{
-      const response = await toDoChange()
-        console.log(response)
-        cardSort()
+      const cardId = card.cardId
+      // 1번
+      const response = await fetch(`${BASE_URL}/api/card/${cardId}/inProgress`, {
+        method: 'PATCH', 
+        // credentials: 'include',
+        headers: {
+          'Access-Control-Allow-Methods':'PATCH',
+        },
+      // withCredentials: true,
+      });
+      // 2번
+      // const response = await workingChange(cardId)
+      const answer = await response.json()
+
+      cardSort()
     }catch(error){
       console.log(error)
     }
-    // setCardList(prev => {
-    //   return prev.map(list => list.number === card.number ? {...list, type:'a'} : list)
-    // })
   }
 
-  /* 버튼 이동 - 컨펌 → 완료 */
-  const thirdMove = async (event, card) => {
+  /* 컨펌으로 상태 변경 */
+  const confirmMove = async (event, card) => {
     event.preventDefault(); // 페이지 새로 고침 방지
     event.stopPropagation()
     try{
-      const response = await resultChange()
-        console.log(response)
-        cardSort()
+      const cardId = card.cardId
+      // 1번
+      const response = await fetch(`${BASE_URL}/api/card/${cardId}/confirm`, {
+        method: 'PATCH', 
+        // withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Methods':'PATCH',
+        },
+      });
+      // 2번
+      // const response = await confirmChange(cardId)
+      // const answer = await response.json()
+      // console.log(answer)
+      const answer = await response.json()
+      cardSort()
     }catch(error){
       console.log(error)
     }
-    // setCardList(prev => {
-    //   return prev.map(list => list.number === card.number ? {...list, type:'d'} : list)
-    // })
   }
 
-  /* 버튼 이동 - 컨펌 → 작업 중 */
-  const thirdBackMove = async (event, card) => {
+
+  /* 완료로 상태 변경 */
+  const completionMove = async (event, card) => {
     event.preventDefault(); // 페이지 새로 고침 방지
     event.stopPropagation()
     try{
-      const response = await workingChange()
-      if (response.OK){
-        console.log(response)
-        cardSort()
-      }
+      const cardId = card.cardId
+      // 1번
+      const response = await fetch(`${BASE_URL}/api/card/${cardId}/completion`, {
+        method: 'PATCH', 
+        withCredentials: true,
+      });
+      // 2번
+      // const response = await resultChange(cardId)
+      const answer = await response.json()
+      cardSort()
     }catch(error){
       console.log(error)
     }
-    // setCardList(prev => {
-    //   return prev.map(list => list.number === card.number ? {...list, type:'b'} : list)
-    // })
   }
+
+  // /* 버튼 이동 - 컨펌 → 작업 중 */
+  // const thirdBackMove = async (event, card) => {
+  //   event.preventDefault(); // 페이지 새로 고침 방지
+  //   event.stopPropagation()
+  //   try{
+  //     const cardId = card.cardId
+  //     // 1번
+  //     const response = await fetch(`http://k11a607.p.ssafy.io:8080/api/card/${cardId}/inProgress`, {
+  //     // const response = await fetch(`${BASE_URL}/api/card/${cardId}/inProgress`, {
+  //       method: 'PATCH', 
+  //       withCredentials: true,
+  //     });
+  //     // 2번
+  //     // const response = await workingChange(cardId)
+  //     // const answer = await response.json()
+  //     cardSort()
+  //   }catch(error){
+  //     console.log(error)
+  //   }
+  // }
 
   /* 페이지 이동 */
   const memberCheck = () => {
     navigate(`/manageMember/${projectId}/${projectName}`);
   }
+
+
   const videoAdd = () => {
     navigate(`/uploadVideo/${projectId}`);
   }
-  const resultPage = () => {
-    navigate(`/resultWork/${projectId}`)
+
+  // 최종 작업 페이지
+  const resultPage = async () => {
+    try{
+      //1번
+      // const accessToken = localStorage.getItem('accessToken');
+      console.log('영상만들어요')
+      
+      const response = await fetch(`${BASE_URL}/api/frame/merge/${projectId}`, {
+        method: 'POST',
+        // headers: { access: `${accessToken}` },
+      });
+      // 2번
+      // const response = await videoMerge(projectId)
+      // const text = await response.json();
+      console.log(response)
+      alert('병합한 영상 생성이 완료되었습니다')
+      navigate(`/resultWork/${projectId}`)
+    }catch(error){
+      alert('영상 병합에 실패했습니다')
+      console.log(`최종 영상 생성 실패:${error}`)
+    }
   }
 
   /* 카드 분배 - 진행 상황 속성에 따라 카드 컨테이너에 넣기 */
   const cardSort = async() => {
-    
-    const testId = '123e4567-e89b-12d3-a456-426614174002'
-
-    // ★★★★★★★★ projectCompleted: false -> true일 때 전체 생성 버튼
+    // const testId = '123e4567-e89b-12d3-a456-426614174002'
+    // !!!!! projectCompleted: false -> true일 때 전체 생성 버튼
+    setBeforeList([])
+    setWorkingList([])
+    setConfirmList([])
+    setFinishList([])
     try{
-
-      const response = await fetch(`${BASE_URL}/api/card/${testId}`, {
+      const response = await fetch(`${BASE_URL}/api/card/${projectId}`, {
         method: 'GET',
         withCredentials: true,
       });
       const answer = await response.json()
-      // const cardInfo = answer.cardsByStatus
-      // // const cardInfo = JSON.stringify(answer, null, 2)
-      // // const ddd = cardInfo.cardsByStatus
-      // console.log(`${cardInfo}`)
-      console.log(answer.cardsByStatus.TODO
-      )
+      console.log(answer)
       if (answer && answer.cardsByStatus && answer.cardsByStatus.TODO) {
         setBeforeList(answer.cardsByStatus.TODO);
       }
       if (answer && answer.cardsByStatus && answer.cardsByStatus.IN_PROGRESS) {
-        setBeforeList(answer.cardsByStatus.IN_PROGRESS);
+        setWorkingList(answer.cardsByStatus.IN_PROGRESS);
       }
       if (answer && answer.cardsByStatus && answer.cardsByStatus.PENDING_CONFIRMATION) {
-        setBeforeList(answer.cardsByStatus.PENDING_CONFIRMATION);
+        setConfirmList(answer.cardsByStatus.PENDING_CONFIRMATION);
       }
       if (answer && answer.cardsByStatus && answer.cardsByStatus.COMPLETED) {
-        setBeforeList(answer.cardsByStatus.COMPLETED);
+        setFinishList(answer.cardsByStatus.COMPLETED);
       }
-
-      // setBeforeList(answer.cardsByStatus.COMPLETE)
-
-
-
-      // const response = await findUser(name)
-      // if (response.OK){
-      //   console.log(response)
-      //   setNameSearchData(response)
-      // }
-      
+      if (answer && answer.projectCompleted) {
+        setFinalCreate(answer.projectCompleted)
+      }
     }catch(error){
-      console.log(`전체 카드 요청 결과 ${error}`)
+      console.log(`카드 요청 조회 문제 ${error}`)
     }
-    // try{
-    //   const response = await allCardView(testId)
-    //   console.log(response)
-
-    //   // const listA = response.cardsByStatus.TODO
-    //   // const listB = response.cardsByStatus.IN_PROGRESS
-    //   // const listC = response.cardsByStatus.PENDING_CONFIRMATION
-    //   // const listD = response.cardsByStatus.COMPLETED
-
-    //   // setBeforeList(listA)
-    //   // setWorkingList(listB)
-    //   // setConfirmList(listC)
-    //   // setFinishList(listD)
-      
-    // }catch(error){
-    //   console.log(error)
-    // }
-    // const listA = []
-    // const listB = []
-    // const listC = []
-    // const listD = []
-
-    
-    // cardList.forEach(card => {
-    //   if (card.type == 'a') {
-    //     listA.push(card)
-    //   } else if (card.type == 'b') {
-    //     listB.push(card)
-    //   } else if (card.type == 'c') {
-    //     listC.push(card)
-    //   } else if (card.type == 'd') {
-    //     listD.push(card)
-    //   }
-    // })
-    // setBeforeList(listA)
-    // setWorkingList(listB)
-    // setConfirmList(listC)
-    // setFinishList(listD)
-
   }
 
-  /* 카드 리스트 변화 있을 때 재렌더링 */
+    /* 현재 속한 프로젝트의 멤버 목록 불러오기 */
+    const memberImport = async() => {
+      try{
+        const accessToken = localStorage.getItem('accessToken');
+        const response = await fetch(`${USER_URL}/api/project/${projectId}/members`, {
+          method: 'GET',
+          headers: { access: `${accessToken}` },
+        });
+        const members = await response.json()
+        console.log(members)
+        const emailCheck = localStorage.getItem('myEmail')
+        const idCheck = members.find(data => data.email === emailCheck);
+        const idInfo = (idCheck.memberId)
+        localStorage.setItem('myId', idInfo);
+        // setMemberData(members)
+      }catch(error){
+        console.log(error)
+      }
+    }
+
+  /* 처음 접속 시 전체 카드 목록 불러오기 */
   useEffect(() => {
     cardSort();
+    console.log(projectId)
+    const abc = localStorage.getItem('managerId')
+    console.log(`관리자 아이디 : ${abc}`)
+    const def = localStorage.getItem('isFinished') // string type으로 확인 필요
+    console.log(`작업 완료?: ${def}`)
+    console.log(typeof def)
+    memberImport()
   }, []); 
     
   return(
@@ -249,12 +272,15 @@ const MainWorkPage = () => {
                 alignItems:"center"
               }}>
               <MoveButtonContainer>
-                <MoveButton onClick={(event) => {firstMove(event, card)}}>
+                <MoveButton onClick={(event) => {inProgressMove(event, card)}}>
                   <FaRegArrowAltCircleRight size={25} />
                 </MoveButton>
               </MoveButtonContainer>
               <CardView>
-                {card.order} 작업
+                {/* {card.order} 작업 */}
+                { card.workerId == null 
+                  ? (<>작업자 미배정</>)
+                  : (<>작업자 : {card.workerId}</>)}
               </CardView>
             </Link>
             )}
@@ -286,15 +312,18 @@ const MainWorkPage = () => {
                         alignItems:"center"
                       }}>                        
                       <MoveButtonContainer>
-                        <MoveButton onClick={(event)=>{secondBackMove(event, card)}}>
+                        <MoveButton onClick={(event)=>{toDoMove(event, card)}}>
                           <FaRegArrowAltCircleLeft size={25} />
                         </MoveButton>
-                        <MoveButton onClick={(event) => {secondMove(event, card)}}>
+                        <MoveButton onClick={(event) => {confirmMove(event, card)}}>
                           <FaRegArrowAltCircleRight size={25} />
                         </MoveButton>
                       </MoveButtonContainer>
                       <CardView>
-                        {card.order}번 작업
+                        {/* {card.order}번 작업 */}
+                        { card.workerId == null 
+                        ? (<>작업자 미배정</>)
+                        : (<>작업자 : {card.workerId}</>)}
                       </CardView>
                     </Link>
                     )
@@ -313,6 +342,7 @@ const MainWorkPage = () => {
             : (
               <CardScroll>
                 { confirmList.map(card => 
+                
                   <Link
                     to={`/confirmWorking/${card.projectId}/${card.cardId}`}
                     key={card.frameId} 
@@ -328,15 +358,18 @@ const MainWorkPage = () => {
                       alignItems:"center"
                     }}>
                     <MoveButtonContainer>
-                      <MoveButton onClick={(event)=>{thirdBackMove(event, card)}}>
+                      <MoveButton onClick={(event)=>{inProgressMove(event, card)}}>
                         <FaRegArrowAltCircleLeft size={25} />
                       </MoveButton>
-                      <MoveButton onClick={(event) => {thirdMove(event, card)}}>
+                      <MoveButton onClick={(event) => {completionMove(event, card)}}>
                         <FaRegArrowAltCircleRight size={25} />
                       </MoveButton>
                     </MoveButtonContainer>
                     <CardView>
-                      {card.order}번 작업
+                      {/* {card.order}번 작업 */}
+                      { card.workerId == null 
+                        ? (<>작업자 미배정</>)
+                        : (<>작업자 : {card.workerId}</>)}
                     </CardView>
                   </Link>
                   )
@@ -370,7 +403,10 @@ const MainWorkPage = () => {
                       alignItems:"center"
                     }}>
                     <CardView>
-                      {card.order}번 작업
+                      {/* {card.order}번 작업 */}
+                      { card.workerId == null 
+                        ? (<>작업자 미배정</>)
+                        : (<>작업자 : {card.workerId}</>)}
                     </CardView>
                   </Link>
                   )
@@ -378,9 +414,14 @@ const MainWorkPage = () => {
               </CardScroll>
             )
           }
+          { finalCreate == true
+          ? 
           <MakeButton onClick={resultPage}>
             최종 생성
           </MakeButton>
+          : null
+          }
+
         </CardContainer>
       </BigContainer>
     </div>
