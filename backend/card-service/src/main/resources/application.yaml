@@ -14,7 +14,7 @@ spring:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
 server:
-  port: 5050
+  port: 8080
   servlet:
     context-path: /api
 
@@ -31,20 +31,20 @@ cloud:
       auto: false
 
 ffmpeg:
-  path: src/main/resources/ffmpeg/bin/ffmpeg
+  path: ${FFMPEG_PATH}
 
 frame:
   input:
-    path: src/main/resources/frame/input/
+    path: ${FRAME_INPUT_PATH}
   output:
-    path: src/main/resources/frame/output/
+    path: ${FRAME_OUTPUT_PATH}
 
 eureka:
   client:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: ${EUREKA_SERVER_URI}
   instance:
     prefer-ip-address: true
     # instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}

@@ -142,7 +142,7 @@ public class FrameService {
     public List<String> getFrameUrlStrings(UUID cardId) {
         List<FrameLog> frameLogs = getCardFrameLogs(cardId);
         return frameLogs.stream()
-                .map(frameLog -> amazonS3.getUrl(bucket, frameLog.getFrameName()).toString())
+                .map(FrameLog::getFrameName)
                 .collect(Collectors.toList());
     }
 
@@ -150,8 +150,9 @@ public class FrameService {
         UUID projectId = requestDTO.getProjectId();
         List<FrameSplitRequestDTO.Segment> segments = requestDTO.getSegments();
 
-        String fileName = getFrameResource(projectId, FrameType.ORIGINAL).getFilename();
-        fileService.moveOriginalFrame(fileName);
+        fileService.createDir();
+        String fileName = getOriginalFrameName(projectId);
+        downloadFileFromS3(fileName);
 
         for (int i = 0; i < segments.size(); i++) {
             FrameSplitRequestDTO.Segment segment = segments.get(i);
@@ -159,6 +160,8 @@ public class FrameService {
             UUID frameId = createFrame(projectId, splitFileName, i + 1L);
             createCard(projectId, frameId, i + 1L, segment.getDetect());
         }
+
+        fileService.deleteDir();
         return "Frame split operation completed for project ID: " + projectId;
     }
 
@@ -232,6 +235,7 @@ public class FrameService {
 
     public String mergeFrame(UUID projectId) throws IOException, InterruptedException {
         List<Frame> frames = frameRepository.findByProjectId(projectId);
+        fileService.createDir();
 
         List<String> frameFiles = frames.stream()
                 .sorted(Comparator.comparingLong(Frame::getSequence))
@@ -239,24 +243,24 @@ public class FrameService {
                 .collect(Collectors.toList());
 
         for (int i = 1; i < frameFiles.size(); i++) {
-            File downloadedFile = downloadFileFromS3(frameFiles.get(i));
-            fileService.moveFileToInputDir(downloadedFile);
+            downloadFileFromS3(frameFiles.get(i));
         }
 
         File tempListFile = createFFmpegConcatFile(frameFiles);
 
         String mergedFileName = "merged_" + projectId + ".mp4";
-        String outputFilePath = ffmpegConfig.getOutputPath() + mergedFileName;
+        String outputFilePath = ffmpegConfig.getOutputPath() + "\\" + mergedFileName;
         mergeFrames(tempListFile, outputFilePath);
         uploadToS3(outputFilePath, mergedFileName, -1L);
         uploadMergedFrame(projectId, mergedFileName);
 
+        fileService.deleteDir();
         return "Frame merge operation completed for project ID: " + projectId;
     }
 
     private File downloadFileFromS3(String fileName) throws IOException {
         S3Object s3Object = amazonS3.getObject(bucket, fileName);
-        File downloadedFile = new File(System.getProperty("user.home") + "/Downloads/" + fileName);
+        File downloadedFile = new File(ffmpegConfig.getInputPath() + "\\" + fileName);
         try (FileOutputStream fos = new FileOutputStream(downloadedFile)) {
             IOUtils.copy(s3Object.getObjectContent(), fos);
         }
@@ -264,10 +268,10 @@ public class FrameService {
     }
 
     private File createFFmpegConcatFile(List<String> frameFiles) throws IOException {
-        File tempListFile = new File(ffmpegConfig.getOutputPath() + "file_list.txt");
+        File tempListFile = new File(ffmpegConfig.getOutputPath() +  "\\" + "file_list.txt");
         try (FileWriter writer = new FileWriter(tempListFile)) {
             for (int i = 1; i < frameFiles.size(); i++) {
-                writer.write("file '" + ffmpegConfig.getInputPath() + frameFiles.get(i) + "'\n");
+                writer.write("file '" + ffmpegConfig.getInputPath() + "\\" + frameFiles.get(i) + "'\n");
             }
         }
         return tempListFile;

@@ -24,9 +24,30 @@ const ImageProcessing = () => {
 	const [hour, setHour] = useState(0);
 
   const [aiTime, setAiTime] = useState([]);
-	const [splitTime, setSplitTime] = useState([]);
+  // TODO : 영상 총 길이를 미리 넣어두기
+	const [splitTime, setSplitTime] = useState([0, 30000]);
   const [result, setResult] = useState([]);
+
+  // 경고 메세지 상태 추가
+  const [warningMessage, setWarningMessage] = useState('');
   
+  const handleHourChange = (event) => {
+    const value = Math.max(0, Number(event.target.value)); // 음수 방지
+    setWarningMessage('');
+    setHour(value);
+  };
+  
+  const handleMinuteChange = (event) => {
+    const value = Math.max(0, Number(event.target.value)); // 음수 방지
+    setWarningMessage('');
+    setMinute(value);
+  };
+  
+  const handleSecondChange = (event) => {
+    const value = Math.max(0, Number(event.target.value)); // 음수 방지
+    setWarningMessage('');
+    setSecond(value);
+  };
 
   const moveSeconds = (event, seconds) => {
     event.preventDefault(); // 페이지 새로 고침 방지
@@ -53,9 +74,9 @@ const ImageProcessing = () => {
     // const data = await response.json();
     const response = [
       [1, 10],
-			[15, 30],
-			[150, 180],
-			[199, 210]
+      [15, 30],
+      [150, 180],
+      [199, 210]
     ]
 
     // setAiTime(data)
@@ -65,7 +86,51 @@ const ImageProcessing = () => {
   // 사용자가 입력한 시간 초 단위로 변환하여 splitTime에 추가
   const addSplitTime = () => {
     const totalSeconds = Number(hour) * 3600 + Number(minute) * 60 + Number(second);
-    setSplitTime(prev => [...prev, totalSeconds]);
+    // 중복 확인
+    if (splitTime.includes(totalSeconds)) {
+      setWarningMessage('이미 입력한 시간입니다');
+      return;
+    }
+
+    if (hour < 0 || minute < 0 || second < 0 ) {
+      setWarningMessage('0보다 작은 값을 입력할 수 없습니다.');
+      return
+    }
+
+    // 전체 길이 초과 확인
+    if (totalSeconds > splitTime[splitTime.length - 1] || totalSeconds < 0) {
+      setWarningMessage('영상의 전체 길이를 벗어나는 시간은 입력할 수 없습니다');
+      return;
+    }
+
+    setSplitTime(prev => {
+      const updatedSplitTime = [...prev, totalSeconds];
+      return updatedSplitTime.sort((a, b) => a - b); // 오름차순 정렬
+    });
+
+    // 입력 칸 초기화
+    setHour(0);
+    setMinute(0);
+    setSecond(0);
+  };
+
+  // splitTime을 초기화하고 입력 칸도 초기화
+  const resetSplitTime = () => {
+    // TODO : 영상 총길이를 end값으로 넣기
+    setSplitTime([0, 30000]);
+    
+    // 입력 칸 초기화
+    setHour(0);
+    setMinute(0);
+    setSecond(0);
+  };
+
+  // 초 단위 시간을 hh:mm:ss 형식으로 변환하는 함수
+  const formatTime = (seconds) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   };
 
   // 분할된 시간 범위를 aiTime과 비교하여 detect 값을 설정
@@ -89,13 +154,16 @@ const ImageProcessing = () => {
             break;
           }
         }
-
         tempResult.push({ start, end, detect });
       }
-
       setResult(tempResult);
     }
   }, [splitTime, aiTime]);
+
+  // splitTime이 변경될 때마다 콘솔에 출력
+  useEffect(() => {
+    console.log(splitTime);
+  }, [splitTime]);
 
   useEffect(() => {
     AiResult();
@@ -156,19 +224,15 @@ const ImageProcessing = () => {
 		}catch(error){
 			console.log(`분할 에러${error}`)
 		}
-
-
 	}
-
-
-// 	{
-//     "projectId": "b1ad7d6a-d40b-4eca-85e6-42d4f736c76d",
-//     "segments": [
-//         {"start": "0", "end": "10", "detect": false},
-//         {"start": "10", "end": "30", "detect": true},
-//         {"start": "30", "end": "60", "detect": false}
-//     ]
-// }
+	// {
+	// 	"projectId": "b1ad7d6a-d40b-4eca-85e6-42d4f736c76d",
+	// 	"segments": [
+	// 		{"start": "0", "end": "10", "detect": false},
+	// 		{"start": "10", "end": "30", "detect": true},
+	//         {"start": "30", "end": "60", "detect": false}
+	//     ]
+	// }
 	const imageSplit = async() => {
 		try{
 
@@ -265,12 +329,17 @@ const ImageProcessing = () => {
 							)
 						}
 						</TimeScroll>
-
 					</WorkingBox>
-
 					<WorkingBox>
 						<h4>타임스탬프 생성</h4>
-						<div>생성칸</div>
+            <div key={'timestamp'} style={{ padding: '10px 80px', border: '1px solid black' }}>
+              {splitTime.slice(0, -1).map((time, i) => (
+                <div key={i}>
+                  {formatTime(time)} ~ {formatTime(splitTime[i + 1])}
+                </div>
+              ))}
+            </div>
+            <br />
 						<div style={{display:'flex', width:'100%'}}>
 							<TimeInput 
 							type="number" 
@@ -286,13 +355,20 @@ const ImageProcessing = () => {
 							onChange={(event) => setSecond(event.target.value)} />초
 						</div>
 
+
 						<WorkingButton onClick={videoDownload}>
 							다운
 						</WorkingButton>
+
+            <br />
+            {/* 경고 메시지 표시 */}
+            {warningMessage && <div style={{ color: 'red' }}>{warningMessage}</div>}
+
 						<WorkingButton onClick={addSplitTime}>
 							추가하기
 						</WorkingButton>
-						<ResetButton onClick={() => setSplitTime([])}>
+            {/* TODO : 영상 총 길이를 미리 넣어두기 */}
+						<ResetButton onClick={resetSplitTime}>
 							초기화
 						</ResetButton>
 						
@@ -387,6 +463,22 @@ const TimeMove = styled.div`
 	cursor:pointer;
 `
 const TimeInput = styled.input`
-	width:30%;
+  text-align: right;
+  margin-right: 3px;
+  margin-left: 3px;
+  height: 20px;
+	width: 30%;
+  font-size: 15px;
+
+  /* 숫자 조정 버튼 숨기기 */
+  -moz-appearance: textfield;
+  appearance: none;
+  
+  /* Chrome, Safari, Edge용 숫자 조정 버튼 숨기기 */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `
 export default ImageProcessing
