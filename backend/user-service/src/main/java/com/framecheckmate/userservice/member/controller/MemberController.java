@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @ResponseBody
@@ -30,5 +31,11 @@ public class MemberController {
     public ResponseEntity<List<Member>> getUserByName(@PathVariable(value="name") String name) {
         List<Member> res = memberService.findAllByName(name);
         return ResponseEntity.ok().body(res);
+    }
+
+    @GetMapping("/{memberId}/name")
+    public ResponseEntity<String> getMember(@PathVariable UUID memberId) {
+        String memberName = memberService.getMember(memberId);
+        return ResponseEntity.ok(memberName);
     }
 }
