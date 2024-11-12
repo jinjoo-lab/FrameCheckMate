@@ -9,8 +9,8 @@ spring:
         locator:
           enabled: true
       httpclient:
-        connect-timeout: 10000
-        response-timeout: 20s
+        connect-timeout: 30000
+        response-timeout: 120s
       routes:
         - id: card-service
           uri: lb://CARD-SERVICE
@@ -42,7 +42,12 @@ spring:
             - Path=/notification/**
 #          filters:
 #            - AuthorizationHeaderFilter
-
+        - id: ai-service
+          uri: lb://AI-SERVICE
+          predicates:
+            - Path=/api/ai/**
+          filters:
+            - StripPrefix=2
 
 jwt:
   secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
