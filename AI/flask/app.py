@@ -1,18 +1,29 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import cv2
 from ultralytics import YOLO
 from datetime import datetime
+from py_eureka_client import eureka_client
+import server_config as server
 
 app = Flask(__name__)
 
-@app.route('/predict')
-def home(fileURL):
+eureka_client.init(eureka_server=server.EUREKA_SERVER,
+                   app_name=server.SERVICE_NAME,
+                   instance_host=server.SERVICE_HOST,
+                   instance_port=server.SERVICE_PORT)
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    # JSON 요청에서 URL 가져오기
+    data = request.get_json()
+    if not data or 'url' not in data:
+        return jsonify({'error': 'No URL provided in request'}), 400
+    
+    video_url = data['url']
+    cap = cv2.VideoCapture(video_url)
+
     # 학습된 모델 불러오기 -> 담배 탐지
     model = YOLO('./best.pt')
-
-    # TODO : 비디오 파일 경로 server내부로 재설정 해서 불러오기
-    # video_path = 'C:\\Users\\SSAFY\\Desktop\\test_video.mp4'
-    cap = cv2.VideoCapture(fileURL)
 
     # FPS 가져오기
     fps = cap.get(cv2.CAP_PROP_FPS)
@@ -45,14 +56,16 @@ def home(fileURL):
                     break
 
         frame_index += 1
- 
+
     if current_range:
         detection_times.append(current_range)
 
     cap.release()
 
-    # 2중 리스트 데이터를 JSON 형식으로 반환
-    return jsonify(detection_times)
+    return jsonify({
+        'status': 'success',
+        'detection_times': detection_times
+    })
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8083, debug=True)
