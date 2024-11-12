@@ -14,7 +14,7 @@ spring:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
 server:
-  port: 5050
+  port: 8080
   servlet:
     context-path: /api
 
@@ -44,7 +44,7 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: ${EUREKA_SERVER_URI}
   instance:
     prefer-ip-address: true
     # instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
