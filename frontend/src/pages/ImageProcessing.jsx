@@ -99,7 +99,36 @@ const ImageProcessing = () => {
 
   useEffect(() => {
     AiResult();
+
+		imageResult()
   }, []);
+
+	const videoDownload = async () => {
+		try{
+			
+			const response = await fetch(`${BASE_URL}/api/frame/original/${projectId}/download`, {
+        method: 'GET',
+        headers:{}
+        // headers: { access: `${accessToken}` },
+      },);
+
+			const blob = await response.blob();
+			console.log(response)
+
+      // Blob URL을 만들어서 다운로드
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'work-video.mp4'; 
+      link.click();
+
+      // 링크 제거
+      URL.revokeObjectURL(link.href);
+
+		}catch(error){
+			console.log(`다운로드 에러${error}`)
+			// console.log(`분할 에러${error}`)
+		}
+};
 
   // 동영상 총 시간 계산
   const goDuration = (a) => {
@@ -117,6 +146,7 @@ const ImageProcessing = () => {
         headers:{}
         // headers: { access: `${accessToken}` },
       },);
+			// const text = await response.text();
 			const text = await response.text();
       // console.log(text)
       console.log(`응답왔음${text}`)
@@ -126,7 +156,6 @@ const ImageProcessing = () => {
 		}catch(error){
 			console.log(`분할 에러${error}`)
 		}
-		// navigate('/imageProcessingResult');
 
 
 	}
@@ -142,54 +171,39 @@ const ImageProcessing = () => {
 // }
 	const imageSplit = async() => {
 		try{
-			
-			const response = await fetch(`${BASE_URL}/api/frame/original/${projectId}/download`, {
-        method: 'GET',
-        // body: formData,
-        headers:{}
-        // headers: { access: `${accessToken}` },
+
+			const Data = {
+				projectId:projectId,
+				segments:[
+					{"start": "0", "end": "3", "detect": false},
+					{"start": "3", "end": "5", "detect": true},
+					{"start": "5", "end": "8", "detect": true},
+				]
+			}
+			console.log(projectId)
+			const Datas = JSON.stringify(Data)
+			// const response = await axios.post(`${BASE_URL}/api/frame/split`, Data)
+			// console.log(response)
+      // const response = await fetch(`${BASE_URL}/api/frame/split`, {
+			const response = await fetch(`${BASE_URL}/api/frame/split`, {
+        method: 'POST',
+        body: Datas,
+				headers: {
+					"Access-Control-Allow-Origin": "*",
+					'Content-Type': 'application/json',
+				},
       },);
 
-			const blob = await response.blob();
-
-      // Blob URL을 만들어서 다운로드
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = '';  // 다운로드 파일 이름을 서버에서 자동으로 처리
-      link.click();
-
-      // 링크 제거
-      URL.revokeObjectURL(link.href);
-
-			// const Data = {
-			// 	projectId:projectId,
-			// 	segments:[
-			// 		{"start": "0", "end": "3", "detect": false},
-			// 		{"start": "3", "end": "5", "detect": true},
-			// 		{"start": "5", "end": "8", "detect": true},
-			// 	]
-			// }
-			// console.log(projectId)
-			// // const Datas = JSON.stringify(Data)
-			// // const response = await axios.post(`${BASE_URL}/api/frame/split`, Data)
-			// // console.log(response)
-      // const response = await fetch(`${BASE_URL}/api/frame/split`, {
-      //   method: 'POST',
-      //   body: Data,
-			// 	headers: {
-			// 		'Content-Type': 'application/json',
-			// 	},
-      // },);
-
-			// console.log(response)
-			// // const text = await response.text();
-      // // // console.log(text)
-      // // console.log(`응답왔음${text}`)
-			// // setFileURL(text)
-			// // setIsPlaying(true)
+			console.log(response)
+			// const text = await response.text();
+      // // console.log(text)
+      // console.log(`응답왔음${text}`)
+			// setFileURL(text)
+			// setIsPlaying(true)
+			navigate(`/mainWorkPage/${projectId}`);
 
 		}catch(error){
-			console.log(`다운로드 에러${error}`)
+			console.log(`분할 에러${error}`)
 			// console.log(`분할 에러${error}`)
 		}
 	}
@@ -272,13 +286,16 @@ const ImageProcessing = () => {
 							onChange={(event) => setSecond(event.target.value)} />초
 						</div>
 
+						<WorkingButton onClick={videoDownload}>
+							다운
+						</WorkingButton>
 						<WorkingButton onClick={addSplitTime}>
 							추가하기
 						</WorkingButton>
 						<ResetButton onClick={() => setSplitTime([])}>
 							초기화
 						</ResetButton>
-
+						
 						<WorkingButton 
 							onClick={imageSplit}>
 							영상 분할하기
