@@ -14,52 +14,55 @@ const MainHomePage = () => {
 
   const navigate = useNavigate();
 
+  // 프로젝트 이름 입력값
+  const [groupName, setGroupName] = useState('')
+
+  // 프로젝트 목록
+  const [groupList, setGroupList] = useState([])
+
+  // 프로젝트 생성 실행
   const makeGroup = async (event) => {
     event.preventDefault(); // 페이지 새로 고침 방지
     try{
-
       const formData = new FormData();
       formData.append('projectName', groupName);
       const accessToken = localStorage.getItem('accessToken');
-      
       const response = await fetch(`${USER_URL}/api/project`, {
         method: 'POST',
         body: formData,
         headers: { access: `${accessToken}` },
       });
+      console.log(response)
+      if (response.ok){
+        alert('프로젝트 생성이 완료되었습니다')
 
-      // const response = await fetch(`${BASE_URL}/api/project`, {
-      //   method: 'POST',
-      //   body: formData,
-      //   headers: { access: `${accessToken}` },
-      // });
+      }
+      groupImport()
 
-      console.log(response.data)
-      // groupImport()
-      // const Data = { projectName: groupName }
-      // const response = await createProject(Data)
     }catch(error){
       console.log(`그룹 생성 실패:${error}`)
     }
-    // navigate('/manageMember/${projectId}');
   }
 
-  const resultView = () => {
-    navigate('/resultWork');
+  // !!!!! 최종 영상 생성
+  const resultView = (event, projectId) => {
+    navigate(`/resultWork/${projectId}`);
   }
 
-  /* 모달 작동 */
+  /* 모달 작동 - true면 실행 false면 닫기 */
   const [modalIsOpen, setIsOpen] = useState(false);
 
+  // 모달 상태 true로 변경
   function openModal() {
     setIsOpen(true);
   }
 
+  // 모달 상태 false로 변경
   function closeModal() {
     setIsOpen(false);
   }
 
-  /* 모달 스타일 */
+  // 모달 스타일 
   const customStyles = {
     overlay: {
       top:0,
@@ -83,41 +86,33 @@ const MainHomePage = () => {
     },
   };
 
-  const workView = (event, projectId, projectName) => {
+  // 메인 작업페이지 이동
+  const workView = (event, projectId, projectName, managerId, isFinished) => {
     event.preventDefault(); // 페이지 새로 고침 방지
-    // 프로젝트 아이디 경로로 넘겨주기
-    console.log(projectId)
-    console.log(projectName)
+    localStorage.setItem('managerId', managerId);
+    localStorage.setItem('isFinished', isFinished);
     navigate(`/mainWorkPage/${projectId}`);
   }
+
+  // 멤버 관리 페이지 이동
   const memberView = (event, projectId) => {
     event.preventDefault(); // 페이지 새로 고침 방지
-    // 프로젝트 아이디 경로로 넘겨주기
     navigate(`/manageMember/${projectId}`);
   }
 
-  const [groupName, setGroupName] = useState('')
-
-  const [groupList, setGroupList] = useState([])
-
-
+  // 프로젝트 목록 조회
   const groupImport = async() => {
-
     try{
       const response = await viewProject()
-      // console.log(response.data)
-      const abc = response.data
-      setGroupList(abc)
-      if (response.OK){
-        // console.log(response)
-        // setGroupList(response)
-      }
+      const groupData = response.data
+      console.log(groupData)
+      setGroupList(groupData)
     }catch(error){
       console.log(`그룹조회 에러 ${error}`)
     }
-
   }
-
+  
+  /* 처음 접속 시 현재 있는 프로젝트 불러오기 */
   useEffect(() => {
 
     groupImport()
@@ -136,10 +131,10 @@ const MainHomePage = () => {
             <>
               { groupList.map((list) => 
                 <GroupView key={list.projectId}>
-                  <GroupText onClick={(event) => {workView(event, list.projectId, list.name)}}>{list.name}</GroupText>
+                  <GroupText onClick={(event) => {workView(event, list.projectId, list.name, list.managerId, list.isFinished)}}>{list.name}</GroupText>
                   {/* <GroupText onClick={(event) => {workView(event, list.projectId)}}>{list.name}</GroupText> */}
-                  { list.confirm ? 
-                    <PlayButton onClick={resultView}> 
+                  { list.isFinished == true ? 
+                    <PlayButton onClick={(event) => {resultView(event, list.projectId)}}> 
                       <GoVideo size={50} /> 
                     </PlayButton>
                     : null
