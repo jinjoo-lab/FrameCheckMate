@@ -3,7 +3,6 @@ package com.framecheckmate.cardservice.domain.frame.service;
 import com.framecheckmate.cardservice.config.FFmpegConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -20,21 +19,30 @@ public class FileService {
 
     private final FFmpegConfig ffmpegConfig;
 
-    public void moveOriginalFrame(String fileName) throws IOException {
-        Path downloadPath = Paths.get(System.getProperty("user.home"), "Downloads", fileName);
-        File file = new File(downloadPath.toString());
-        if (!file.exists()) throw new IOException("File not found in downloads: " + fileName);
-
-        Path targetPath = ffmpegConfig.getInputPath().resolve(fileName);
+    public void createDir() throws IOException {
         Files.createDirectories(ffmpegConfig.getInputPath());
-        Files.copy(downloadPath, targetPath);
-        Files.delete(downloadPath);
-
-        System.out.println("File moved successfully to: " + targetPath);
+        Files.createDirectories(ffmpegConfig.getOutputPath());
     }
 
-    public void moveFileToInputDir(File file) throws IOException {
-        File targetFile = new File(ffmpegConfig.getInputPath() + file.getName());
-        Files.move(file.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    public void deleteDir() throws IOException {
+        Files.walk(ffmpegConfig.getInputPath())
+                .sorted((path1, path2) -> path2.compareTo(path1))
+                .forEach(path -> {
+                    try {
+                        Files.delete(path);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to delete " + path, e);
+                    }
+                });
+
+        Files.walk(ffmpegConfig.getOutputPath())
+                .sorted((path1, path2) -> path2.compareTo(path1))
+                .forEach(path -> {
+                    try {
+                        Files.delete(path);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Failed to delete " + path, e);
+                    }
+                });
     }
 }
