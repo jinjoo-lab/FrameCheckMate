@@ -13,7 +13,7 @@ class KafkaConsumerConfig {
     @Bean
     fun consumerFactory(): ConsumerFactory<String, String> {
         val props = mutableMapOf<String, Any>(
-            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "54.180.247.169:9092",
+            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "43.203.240.20:9092",
             ConsumerConfig.GROUP_ID_CONFIG to "my-consumer-group",
             ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
             ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
