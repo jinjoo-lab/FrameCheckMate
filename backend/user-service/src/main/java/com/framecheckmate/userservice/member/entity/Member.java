@@ -13,19 +13,19 @@ public class Member {
     @Id
     @Column(columnDefinition = "BINARY(16)")
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID memberId;        // 회원ID
+    private UUID memberId;
 
     @Column(length = 25, nullable = false)
-    private String name;          // 이름
+    private String name;
 
     @Column(length = 25, nullable = false)
-    private String email;         // 이메일
+    private String email;
 
     @Column(length = 255, nullable = true)
-    private String image;         // 이미지
+    private String image;
 
     @Column(length = 255, nullable = false)
-    private String password;      // 비밀번호
+    private String password;
 
     @Column(length = 25, nullable = true)
     private String role;
