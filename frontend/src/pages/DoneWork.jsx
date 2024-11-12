@@ -11,26 +11,14 @@ const DoneWork = () => {
 
 	const { projectId, cardId } = useParams();
 
-	const closeButton = () => {
-		navigate('/mainWorkPage');
-	}
-
-	const uploadButton = () => {
-		navigate('/mainWorkPage')
-	}
-
 	return(
 		<div>
 			<TopBar title='작업 완료 영상' logoutView={true}/>
 			<DoneContainer>
 				<FeedbackAllocateWork 
 					confirmView={true} 
-					confirmTitle='작업 재요청' 
 					commentView={false} 
 					uploadView={false}/>
-				<ButtonsAlign>
-					<DoneCloseButton onClick={closeButton}>닫기</DoneCloseButton>
-				</ButtonsAlign>
 			</DoneContainer>
 		</div>
 	)

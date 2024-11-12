@@ -6,9 +6,10 @@ import { axiosClient } from '../axios';
 import ReactPlayer from "react-player";
 import { createGlobalStyle } from 'styled-components';
 import { cardView, commentSave, confirmSave } from '../api';
+import { BASE_URL } from '../axios';
 
 
-const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, uploadView }) => {
+const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 
 	const navigate = useNavigate();
 
@@ -30,73 +31,218 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, uploadVi
 		console.log(`총 시간${a}`);
 	};
 
-	const videoChange = (event) => {
+	/* 직접 영상 업로드 & 카드 영상 업로드 요청 */
+	const videoUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
       setFileURL(url);
       setIsPlaying(false); // 파일 선택 후 자동으로 재생
     }
+
+		try{
+			const url = URL.createObjectURL(file);
+      const responses = await fetch(url); // URL에서 파일을 fetch
+      const blob = await responses.blob(); // 파일을 Blob으로 변환
+
+      const formData = new FormData();
+      formData.append('file', blob, 'video.mp4');
+      
+      const response = await fetch(`${BASE_URL}/api/frame/card/${cardId}`, {
+        method: 'POST',
+        body: formData,
+        headers:{}
+        // headers: { access: `${accessToken}` },
+      },);
+			console.log(response)
+      const text = await response.json();
+			console.log(text)
+      console.log(`응답왔음${text.fileUrl}`)
+			alert('영상 업로드가 완료되었습니다')
+
+		}catch(error){
+			console.log(`영상 업로드 문제 ${error}`)
+		}
   };
 
-	const uploadVideo = () => {
-			
+	/* 비디오 다운로드 */
+	const downloadVideo = async () => {
+		try{
+			const response = await fetch(`${BASE_URL}/api/frame/card/${cardId}/download`, {
+        method: 'GET',
+        headers:{}
+        // headers: { access: `${accessToken}` },
+      },);
+
+			const blob = await response.blob();
+			console.log(response)
+
+      // Blob URL을 만들어서 다운로드
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'work-video.mp4'; 
+      link.click();
+
+      // 링크 제거
+      URL.revokeObjectURL(link.href);
+
+		}catch(error){
+			console.log(`다운로드 에러${error}`)
+			// console.log(`분할 에러${error}`)
+		}
 	}
 
-	const downloadVideo = () => {
-
-	}
+	// 현재 카드의 컨펌 정보, 코멘트 정보
 	const [confirmList, setConfirmList] = useState([])
 	const [commentList, setCommentList] = useState([])
 
+	// 현재 카드에 입력하는 컨펌, 코멘트
 	const [confirms, setConfirms] = useState('')
 	const [comments, setComments] = useState('')
 
+	/* 컨펌 저장 */
 	const confirmSubmit = async (event, confirms) => {
-		try{
-			const Data = { content: confirms }
-			const response = await confirmSave(Data)
-			if (response.OK){
-				console.log(response)
-			}
-		}catch(error){
-			console.log(error)
-		}
-
-		navigate('/mainWorkPage')
-	}
-
-	const commentSubmit = async (event, comments) => {
+		// try{
+		// 	const Data = { content: confirms }
+		// 	const response = await confirmSave(Data)
+		// 	console.log(response)
+		// }catch(error){
+		// 	console.log(error)
+		// }
 		try{
 			const Data = {
-				userId : "123e4567-e89b-12d3-a456-426614171233",
-				content : comments
+				content : confirms
 			}
-			const response = await commentSave(Data)
+			const response = await fetch(`${BASE_URL}/api/card/${cardId}/confirm`, {
+				method: 'POST',
+				headers:{
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(Data),
+				// headers: { access: `${accessToken}` },
+			});
+			console.log(response)
+			// setConfirms('')
+			// cardImport()
+			const ddd = thirdBackMove()
+			// navigate('/mainWorkPage')
 		}catch(error){
 			console.log(error)
 		}
 
 	}
 
-	const cardImport = async() => {
+	  /* 버튼 이동 - 컨펌 → 작업 중 */
+		const thirdBackMove = async () => {
+			// event.preventDefault(); // 페이지 새로 고침 방지
+			// event.stopPropagation()
+			try{
+				// const cardId = card.cardId
+				// 1번
+				const response = await fetch(`${BASE_URL}/api/card/${cardId}/inProgress`, {
+					method: 'PATCH', 
+					withCredentials: true,
+				});
+				console.log(response)
+				// 2번
+				// const response = await workingChange(cardId)
+				// const answer = await response.json()
+				// cardSort()
+				navigate(`/mainWorkPage/${projectId}`)
+			}catch(error){
+				console.log(error)
+			}
+		}
+
+		
+	/* 코멘트 저장 */
+	const commentSubmit = async (event, comments) => {
 		try{
-			const response = await cardView()
-			if (response.OK){
-        setStartDate(response.startDate)
-        setEndDate(response.endDate)
-				setNowContent(response.description)
-				setConfirmList(response.confirms)
-				setCommentList(response.comments)
-				setFileURL(response.frameInfo)
-      }
+			// !!!!! userid 받아와야 함
+			const myId = localStorage.getItem('myId')
+			try{
+				const Data = {
+					userId : myId,
+					content : comments
+				}
+				const response = await fetch(`${BASE_URL}/api/card/${cardId}/comment`, {
+					method: 'POST',
+					headers:{
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(Data),
+					// headers: { access: `${accessToken}` },
+				});
+				console.log(response)
+				// alert('코멘트 저장이 완료되었습니다')
+				setComments('')
+			}catch(error){
+				console.log(`그룹 생성 실패:${error}`)
+			}
+
+
+			// const response = await commentSave(Data)
+			// console.log(response)
+			cardImport()
 		}catch(error){
 			console.log(error)
+		}
+
+	}
+
+  /* 카드 조회 */
+  const cardImport = async() => {
+		try{
+      const response = await fetch(`${BASE_URL}/api/card/${cardId}/detail`, {
+        method: 'GET',
+        withCredentials: true,
+      });
+      const answer = await response.json()
+			console.log(answer)
+      if (answer && answer.workerId) {
+				setNowWorker(answer.workerId)
+      }
+      if (answer && answer.startDate) {
+				setStartDate(answer.startDate)
+      }
+      if (answer && answer.endDate) {
+				setEndDate(answer.endDate)
+      }
+			if (answer && answer.confirms){
+				setConfirmList(answer.confirms)
+			}
+			if (answer && answer.comments){
+				setCommentList(answer.comments)
+			}
+			if (answer && answer.description){
+				setNowContent(answer.description)
+			}
+			if (answer && answer.frameInfo){
+				console.log(answer.frameInfo)
+				setFileURL(answer.frameInfo)
+			}
+    }catch(error){
+      console.log(`카드 요청 조회 문제 ${error}`)
+    }
+  }
+
+	/* 닫기 버튼 */
+	const closeButton = () => {
+		navigate(`/mainWorkPage/${projectId}`);
+	}
+
+	/* 내 정보 조회 */
+	const myInfo = async() => {
+		try{
+			const emailInfo = localStorage.getItem('myEmail');
+			//
+		}catch(error){
+			console.log(`${error}`)
 		}
 	}
 
 	useEffect(() => {
-		/* 처음에 컨펌 목록, 코멘트 목록 불러오기 */
+		/* 처음에 카드 정보, 컨펌 목록, 코멘트 목록 불러오기 */
 		cardImport()
 
 	}, [])
@@ -145,16 +291,17 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, uploadVi
 						<DownloadButton onClick={downloadVideo}>
 							다운로드
 						</DownloadButton>
-						{ uploadView ?
+						{ uploadView 
+						?
             <UploadStyle>
 						업로드
-					<input 
-						type="file" 
-						accept="video/*" 
-						style={{ display: "none" }} 
-						onChange={videoChange} />
-					</UploadStyle>
-						: <div style={{width:'150px'}}></div>}
+						<input 
+							type="file" 
+							accept="video/*" 
+							style={{ display: "none" }} 
+							onChange={videoUpload} />
+						</UploadStyle>
+							: <div style={{width:'150px'}}></div>}
 					</ButtonBox>
 			</div>
 			<div style={{ width:'45%' }}>
@@ -189,7 +336,7 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, uploadVi
 							onChange={(event) => setConfirms(event.target.value)} />
 						<ReviewButton 
 							onClick={(event) => confirmSubmit(event, confirms)}>
-							{confirmTitle}
+							작업 재요청
 						</ReviewButton>
 					</ReviewInputContainer>
 					)
@@ -231,6 +378,12 @@ const FeedbackAllocateWork = ({ confirmView, confirmTitle, commentView, uploadVi
 					) 
 				: null
 			}
+			<ButtonAlign>
+					{/* <FinishButton 
+						onClick={uploadButton}>작업 완료</FinishButton>	 */}
+					<CloseButton 
+						onClick={closeButton}>닫기</CloseButton>
+			</ButtonAlign>
 
 			</div>
 		</FeedbackContainer>
@@ -379,5 +532,34 @@ const UploadStyle = styled.label`
   font-weight:bold;
 	color:white;
 `
-
+const ButtonAlign = styled.div`
+	width:100%; 
+	display:flex; 
+	justify-content:center; 
+	flex-direction:row;  
+`
+const FinishButton = styled.div`
+	width:150px; 
+	border:none; 
+	border-radius:5px; 
+	padding:10px 20px; 
+	margin:10px 5px; 
+	background-color:black; 
+	text-align:center; 
+	color:white; 
+	font-weight:bold; 
+	cursor:pointer;
+`
+const CloseButton = styled.div`
+	width:150px; 
+	border:none; 
+	border-radius:5px; 
+	padding:10px 20px; 
+	margin:10px 5px; 
+	background-color:gray; 
+	text-align:center; 
+	color:white; 
+	font-weight:bold; 
+	cursor:pointer;
+`
 export default FeedbackAllocateWork

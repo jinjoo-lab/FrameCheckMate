@@ -54,35 +54,14 @@ const UploadVideo = () => {
         // headers: { access: `${accessToken}` },
       },);
 
-    //   const response = axios.post(`${BASE_URL}/api/frame/original/${projectId}`, formData, {}
-    //   //   {
-    //   //   headers: {
-    //   //     'Content-Type': 'multipart/form-data', // 이 헤더는 axios가 자동으로 설정하므로 생략 가능
-    //   //   }
-    //   // }
-    // )
-    // const abc = await response.json()
       const text = await response.json();
-      // console.log(text)
+      console.log(text)
       console.log(`응답왔음${text.fileUrl}`)
       navigate(`/imageProcessing/${projectId}`);
     }catch(error){
       console.log(`전송에러${error}`)
     }
 
-
-  
-    // try {
-    //   const response = await axios.post(`${BASE_URL}/api/frame/original/${projectId}`, formData, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    //   });
-    //   console.log('Response:', response);
-    // } catch (error) {
-    //   console.error('Error:', error);
-    // }
-    //   navigate('/imageProcessing')
   }
 
   useEffect(() => {

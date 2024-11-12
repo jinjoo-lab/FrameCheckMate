@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import ReactPlayer from "react-player";
 import { axiosClient } from '../axios';
 import { workAssign, cardVideoView } from '../api';
-import { BASE_URL } from '../axios';
+import { BASE_URL, USER_URL } from '../axios';
 
 const AllocateWork = ({ workingBefore, uploadView }) => {
 
@@ -21,25 +21,12 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 	const playerRef = useRef(null); // ReactPlayer에 대한 ref 생성
 	const [playTime, setPlayTime] = useState();
 
-	// const videoPlaying = (event) => {
-	// 	const file = event.target.files[0];
-	// 	if (file) {
-	// 		const url = URL.createObjectURL(file);
-	// 		setFileURL(url);
-	// 		setIsPlaying(true); // 파일 선택 후 자동으로 재생
-	// 	}
-	// };
-
-	// 동영상 총 시간 계산
-	const goDuration = (a) => {
-		setPlayTime(a);
-		console.log(`총 시간${a}`);
-	};
-
 	/* 작업자 배정인 경우 */
 	// 작업자 
 	const [ workContent, setWorkContet ] = useState('')
 	const [ worker, setWorker ] = useState('')
+	const [ workerEmail, setWorkerEmail ] = useState('')
+
 	// 작업 기간 - 시작 날짜 & 종료 날짜
 	const [ startDate, setStartDate ] = useState(null);
 	const [ endDate, setEndDate ] = useState(null);
@@ -49,10 +36,14 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 	const [ nowContent, setNowContent ] = useState('')
 	const [ nowWorkDate, setNowWorkDate ] = useState('')
 
+	// 현재 프로젝트의 멤버 목록
+	const [memberData, setMemberData] = useState([])
+
 	const closeButton = () => {
 		navigate(`/mainWorkPage/${projectId}`);
 	}
 
+	// 할당된 영상 정보
 	const showVideo = async() => {
 		try{
       const response = await fetch(`${BASE_URL}/api/frame/card/${cardId}`, {
@@ -64,39 +55,60 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 			setFileURL(answer)
 			setIsPlaying(true)
 			console.log(`응답 ${answer}`)
-			}catch(error){
-				console.log(`에러 ${error}`)
-			}
+		}catch(error){
+			console.log(`에러 ${error}`)
+		}
 	}
-	const finButton = async() => {
-		// ★ workerId 프로젝트 멤버 조회해서 리스트에서 받는 걸로 수정해야함
 
+	/* 현재 속한 프로젝트의 멤버 목록 불러오기 */
+	const memberImport = async() => {
 		try{
+			const accessToken = localStorage.getItem('accessToken');
+			const response = await fetch(`${USER_URL}/api/project/${projectId}/members`, {
+				method: 'GET',
+				headers: { access: `${accessToken}` },
+			});
+			const members = await response.json()
+			console.log(members)
+			setMemberData(members)
+		}catch(error){
+			console.log(error)
+		}
+	}
 
+	// 작업 할당 요청
+	const workAllot = async() => {
+		try{
 			const startDay = formatDate(startDate)
 			const endDay = formatDate(endDate)
 			const Data = {
-				"workerId": "852e4567-e89b-12d3-a456-426614174124",
-				"startDate": startDate,
-				"endDate": endDate,
+				"workerId": worker,
+				"workerEmail": workerEmail,
+				"startDate": startDay,
+				"endDate": endDay,
 				"description": workContent,
 			}
+
 			const response = await fetch(`${BASE_URL}/api/card/${cardId}/assign`, {
         method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body:JSON.stringify(Data),
         withCredentials: true,
-      });
-			// const response = await workAssign(cardId, Data)
-	
-			console.log(response)
+      },
+		);
+
+		console.log(response)
+		navigate(`/mainWorkPage/${projectId}`)
 
 		}catch(error){
 			console.log(`작업 배정 에러:${error}`)
 		}
 
-		// navigate(`/mainWorkPage/${projectId}`)
-
-
 	}
+
+	
 
 	const uploadVideo = () => {
 			
@@ -108,17 +120,13 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 
 	useEffect(() => {
 		showVideo()
-	})
+		memberImport()
+	},[])
 
-	const Errors = (event) => {
-		console.log('이벤트에러')
-		console.log(event)
-	}
-
+	// 달력 헤더
 	const customHeader = ({ date, decreaseMonth, increaseMonth }) => {
 		const month = date.getMonth();
 		const year = date.getFullYear();
-
 		return (
 			<div 
 				style={{ 
@@ -143,12 +151,28 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 		const day = String(date.getDate()).padStart(2, '0');
 		const hour = String(date.getHours()).padStart(2, '0');
 		const minute = String(date.getMinutes()).padStart(2, '0');
-
 		return `${year}-${month}-${day}T${hour}:${minute}:00`;
 	};
 
-	useEffect(() => {
+	const [selectedName, setSelectedName] = useState('');
 
+  // 드롭다운에서 선택된 값을 처리하는 함수
+  const handleSelectChange = (event) => {
+    // 선택된 option의 value는 해당 id이므로
+    const selectedId = event.target.value;
+		console.log(selectedId)
+    // 선택된 id에 맞는 name을 찾기
+    const selectedItem = memberData.find(item => item.memberId === selectedId);
+    // selectedName을 업데이트
+    if (selectedItem) {
+      setSelectedName(selectedItem.name);
+			setWorker(selectedItem.memberId)
+			setWorkerEmail(selectedItem.email)
+    }
+  };
+
+	useEffect(() => {
+		memberImport()
 	},[])
 
 	return(
@@ -158,9 +182,17 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 					?(
 						<>
 							<div>작업자 배정</div>
-							<WorkerInput 
+							<select onChange={handleSelectChange}>
+								<option value="">선택하세요</option>
+								{memberData.map((item) => (
+									<option key={item.memberId} value={item.memberId}>
+										{item.name}
+									</option>
+								))}
+							</select>
+							{/* <WorkerInput 
 								type="text" 
-								onChange={(event) => setWorker(event.target.value)}/>
+								onChange={(event) => setWorker(event.target.value)}/> */}
 						</>
 					)
 					:(
@@ -260,15 +292,13 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 						width="100%"
 						height="100%"
 						ref={playerRef} // 여기서 ref 사용
-						onDuration={goDuration}
-						onError={Errors}
 					/>
 				</VideoBox>
 				
 				{ workingBefore 
 				? (
 					<ButtonBox>
-					<DownloadButton onClick={finButton}>
+					<DownloadButton onClick={workAllot}>
 						작업 배정
 					</DownloadButton>
 					<UploadButton onClick={closeButton}>
