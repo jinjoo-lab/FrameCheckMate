@@ -76,7 +76,7 @@ const WorkingLog = () => {
                   <GoVideo size={15} />
                 </PlayButton>
               </ListStyle>
-              {logList.frameConfirmPairs.map((pair, index) => (
+              {logList.frameConfirmPairs && logList.frameConfirmPairs.map((pair, index) => (
                 <ListStyle key={`${index}`}>
                   {pair.confirm ? (
                     // {pair.confirm.createAt} {pair.confirm.content}
@@ -88,7 +88,6 @@ const WorkingLog = () => {
                     <div>확인 대기중</div>
                   )}
                   {/* TODO : pair.frame.createAt : 영상 upload 시간이 들어오면 추가할 것 */}
-                  <div>{pair.frame}</div>
                   <PlayButton onClick={(event) => playVideo(event, pair.frame)}>
                     <GoVideo size={15} />
                   </PlayButton>
