@@ -24,6 +24,9 @@ const MainWorkPage = () => {
 
   const [ memberData, setMemberData ] = useState([])
 
+  /* 관리자 아이디 체크 */
+  const [ managerCheck, setManagerCheck ] = useState('what')
+
   /* toDo로 상태 변경 */
   const toDoMove = async (event, card) => {
     event.preventDefault(); // 페이지 새로 고침 방지
@@ -117,32 +120,10 @@ const MainWorkPage = () => {
     }
   }
 
-  // /* 버튼 이동 - 컨펌 → 작업 중 */
-  // const thirdBackMove = async (event, card) => {
-  //   event.preventDefault(); // 페이지 새로 고침 방지
-  //   event.stopPropagation()
-  //   try{
-  //     const cardId = card.cardId
-  //     // 1번
-  //     const response = await fetch(`http://k11a607.p.ssafy.io:8080/api/card/${cardId}/inProgress`, {
-  //     // const response = await fetch(`${BASE_URL}/api/card/${cardId}/inProgress`, {
-  //       method: 'PATCH', 
-  //       withCredentials: true,
-  //     });
-  //     // 2번
-  //     // const response = await workingChange(cardId)
-  //     // const answer = await response.json()
-  //     cardSort()
-  //   }catch(error){
-  //     console.log(error)
-  //   }
-  // }
-
   /* 페이지 이동 */
   const memberCheck = () => {
     navigate(`/manageMember/${projectId}/${projectName}`);
   }
-
 
   const videoAdd = () => {
     navigate(`/uploadVideo/${projectId}`);
@@ -173,16 +154,18 @@ const MainWorkPage = () => {
 
   /* 카드 분배 - 진행 상황 속성에 따라 카드 컨테이너에 넣기 */
   const cardSort = async() => {
-    // const testId = '123e4567-e89b-12d3-a456-426614174002'
     // !!!!! projectCompleted: false -> true일 때 전체 생성 버튼
     setBeforeList([])
     setWorkingList([])
     setConfirmList([])
     setFinishList([])
+    const accessToken = localStorage.getItem('accessToken');
     try{
       const response = await fetch(`${BASE_URL}/api/card/${projectId}`, {
         method: 'GET',
-        withCredentials: true,
+        // withCredentials: true,
+        // headers: { access: `${accessToken}` },
+      
       });
       const answer = await response.json()
       console.log(answer)
@@ -220,7 +203,16 @@ const MainWorkPage = () => {
         const idCheck = members.find(data => data.email === emailCheck);
         const idInfo = (idCheck.memberId)
         localStorage.setItem('myId', idInfo);
-        // setMemberData(members)
+        const manager = localStorage.getItem('managerId')
+        console.log(`my Id : ${idInfo}`)
+        console.log(`manager Id : ${manager}`)
+        if (manager == idInfo) {
+          setManagerCheck('ok')
+        } else{
+          setManagerCheck('false')
+        }
+        setMemberData(members)
+        // alert(`내가 매니저인가요/ ${managerCheck} / 내 아이디 ${idInfo} / 매니저 아이디 ${manager}`)
       }catch(error){
         console.log(error)
       }
@@ -229,14 +221,23 @@ const MainWorkPage = () => {
   /* 처음 접속 시 전체 카드 목록 불러오기 */
   useEffect(() => {
     cardSort();
-    console.log(projectId)
     const abc = localStorage.getItem('managerId')
     console.log(`관리자 아이디 : ${abc}`)
     const def = localStorage.getItem('isFinished') // string type으로 확인 필요
-    console.log(`작업 완료?: ${def}`)
-    console.log(typeof def)
     memberImport()
   }, []); 
+
+  useEffect(() => {
+    console.log('매니저 확인중..')
+  }, [managerCheck])
+
+  const getWorkerName = (workerId) => {
+    console.log(workerId)
+    console.log(memberData)
+    const worker = memberData.find((worker) => worker.memberId == workerId);
+    console.log(worker)
+    return worker ? worker.name : '이름을 가져올 수 없습니다.';
+  };
     
   return(
     <div>
@@ -277,10 +278,9 @@ const MainWorkPage = () => {
                 </MoveButton>
               </MoveButtonContainer>
               <CardView>
-                {/* {card.order} 작업 */}
-                { card.workerId == null 
-                  ? (<>작업자 미배정</>)
-                  : (<>작업자 : {card.workerId}</>)}
+              { card.workerId == null 
+                ? (<>작업자 미배정</>)
+                : (<>작업자 : {getWorkerName(card.workerId)}<br />{card.description}</>)}
               </CardView>
             </Link>
             )}
@@ -320,10 +320,9 @@ const MainWorkPage = () => {
                         </MoveButton>
                       </MoveButtonContainer>
                       <CardView>
-                        {/* {card.order}번 작업 */}
                         { card.workerId == null 
                         ? (<>작업자 미배정</>)
-                        : (<>작업자 : {card.workerId}</>)}
+                        : (<>작업자 : {getWorkerName(card.workerId)}<br />{card.description}</>)}
                       </CardView>
                     </Link>
                     )
@@ -339,7 +338,9 @@ const MainWorkPage = () => {
           <div>컨펌</div>
           { confirmList.length == 0 
             ? ( <NoCardView>컨펌 대상 영상이 없습니다</NoCardView> )
-            : (
+            : 
+            managerCheck == 'ok'
+            ? (
               <CardScroll>
                 { confirmList.map(card => 
                 
@@ -366,12 +367,41 @@ const MainWorkPage = () => {
                       </MoveButton>
                     </MoveButtonContainer>
                     <CardView>
-                      {/* {card.order}번 작업 */}
-                      { card.workerId == null 
-                        ? (<>작업자 미배정</>)
-                        : (<>작업자 : {card.workerId}</>)}
+                    { card.workerId == null 
+                      ? (<>작업자 미배정</>)
+                      : (<>작업자 : {getWorkerName(card.workerId)}<br />{card.description}</>)}
                     </CardView>
                   </Link>
+                  )
+                }
+              </CardScroll>
+            )
+            : 
+            (
+              <CardScroll>
+                { confirmList.map(card => 
+                
+                  <div
+                    key={card.frameId} 
+                    style={{
+                      color:'inherit',
+                      textDecoration:'none',
+                      width:'200px',
+                      padding:"15px 10px",
+                      height:'100px', 
+                      border:"1px solid black",
+                      margin:"5px 0px",
+                      justifyContent:"center",
+                      alignItems:"center"
+                    }}>
+                    <CardView>
+                    { card.workerId == null 
+                      ? (<>작업자 미배정</>)
+                      : (<>작업자 : {getWorkerName(card.workerId)}<br />{card.description}</>)}
+                        <br></br>
+                      컨펌 대기중입니다
+                    </CardView>
+                  </div>
                   )
                 }
               </CardScroll>
@@ -406,7 +436,7 @@ const MainWorkPage = () => {
                       {/* {card.order}번 작업 */}
                       { card.workerId == null 
                         ? (<>작업자 미배정</>)
-                        : (<>작업자 : {card.workerId}</>)}
+                        : (<>작업자 : {getWorkerName(card.workerId)}<br />{card.description}</>)}
                     </CardView>
                   </Link>
                   )
