@@ -42,8 +42,6 @@ spring:
           uri: lb://NOTIFICATION-SERVICE
           predicates:
             - Path=api/v1/notification/**
-#          filters:
-#            - AuthorizationHeaderFilter
         - id: ai-service
           uri: lb://AI-SERVICE
           predicates:
