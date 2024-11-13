@@ -35,7 +35,7 @@ const MainHomePage = () => {
       console.log(response)
       if (response.ok){
         alert('프로젝트 생성이 완료되었습니다')
-
+        setIsOpen(false);
       }
       groupImport()
 
