@@ -4,7 +4,7 @@ import { useNavigate, Link, useParams } from 'react-router-dom'; // eslint-disab
 import styled from 'styled-components'
 import ReactPlayer from "react-player";
 // import { videoSplit } from '../api';
-import { BASE_URL } from '../axios';
+import { BASE_URL, FLASK_URL } from '../axios';
 // import axios from 'axios';
 // import { detectTime } from '../api';
 
@@ -69,7 +69,7 @@ const ImageProcessing = () => {
   };
 	
   const AiResult = async () => {
-    const response = await fetch(`${BASE_URL}/predict`, {
+    const response = await fetch(`${FLASK_URL}/predict`, {
       method : 'POST',
       // withCredentials: true,
     });
