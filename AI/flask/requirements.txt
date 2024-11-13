@@ -1,0 +1,9 @@
+Flask==3.0.3
+Flask-Cors==5.0.0
+Werkzeug==3.0.4
+itsdangerous==2.2.0
+Jinja2==3.1.4
+MarkupSafe==2.1.5
+opencv-python-headless==4.10.0.84  # GUI가 없는 OpenCV
+ultralytics==8.2.86  # YOLO 모델
+py_eureka_client==0.11.13  # Eureka 클라이언트
