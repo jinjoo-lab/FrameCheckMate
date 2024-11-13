@@ -9,31 +9,31 @@ spring:
         locator:
           enabled: true
       httpclient:
-        connect-timeout: 30000
-        response-timeout: 120s
+        connect-timeout: 10000
+        response-timeout: 20s
       routes:
         - id: card-service
           uri: lb://CARD-SERVICE
           predicates:
             - Path=/api/card/**, /api/frame/**
-#          filters:
-#            - AuthorizationHeaderFilter
+        #          filters:
+        #            - AuthorizationHeaderFilter
         - id: member-service-post
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=api/member/**
+            - Path=/api/member/**
             - Method=POST
         - id: member-service-get
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=api/member/**
+            - Path=/api/member/**
             - Method=GET
           filters:
             - AuthorizationHeaderFilter
         - id: project-service
-          uri: lb://PROJECT-SERVICE
+          uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=api/project/**
+            - Path=/api/project/**
           filters:
             - AuthorizationHeaderFilter
         - id: notification-service
@@ -48,9 +48,20 @@ spring:
             - Path=/api/ai/**
           filters:
             - StripPrefix=2
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            allowedHeaders: "*"
+            allowCredentials: true
 
 jwt:
-  secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
+  secret: ${JWT_SECRET}
 
 eureka:
   client:

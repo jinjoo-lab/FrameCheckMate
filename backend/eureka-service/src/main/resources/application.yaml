@@ -3,9 +3,9 @@ server:
 
 eureka:
   server:
-    enable-self-preservation: false
+    enable-self-preservation: true
   instance:
-    hostname: k11a607.p.ssafy.io
+    hostname: ${EUREKA_HOST}
     prefer-ip-address: true
   client:
     register-with-eureka: false
