@@ -1,6 +1,6 @@
 spring:
   kafka:
-    bootstrap-servers: 54.180.247.169:9092
+    bootstrap-servers: 43.203.240.20:9092
   application:
     name: NOTIFICATION-SERVICE
   config:
