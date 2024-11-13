@@ -12,6 +12,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity security) {
-        return security.csrf(csrf -> csrf.disable()).build();
+        return security.csrf(csrf -> csrf.disable()).cors(cors -> cors.disable()).build();
     }
 }
