@@ -21,7 +21,7 @@ class CustomMailSender(
         message.subject = subject
 
         message.setText(content,"utf-8")
-        message.setFrom(InternetAddress(mailSender,"frameCheckMate"))
+        message.setFrom(InternetAddress(mailSender,"FrameCheckMate"))
 
         javaMailSender.send(message)
     }
