@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react'; // eslint-disable-line no-unused-vars
 import TopBar from "../components/TopBar";
-import { useNavigate, Link } from 'react-router-dom'; // eslint-disable-line no-unused-vars
+import { useNavigate, Link, useParams } from 'react-router-dom'; // eslint-disable-line no-unused-vars
 import ReactPlayer from "react-player";
 import styled from 'styled-components'
 import { axiosClient } from '../axios';
+import { USER_URL, BASE_URL } from '../axios';
 
 const ResultWork = () => {
 
   const navigate = useNavigate();
+
+  const { projectId } = useParams();
 
   const [fileURL, setFileURL] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
@@ -15,18 +18,51 @@ const ResultWork = () => {
   const [playTime, setPlayTime] = useState();
 
   const closeButton = () => {
-    navigate('/mainWorkPage');
+    navigate(`/mainWorkPage/${projectId}`);
   }
 
-  const uploadButton = () => {
-    navigate('/imageProcessing')
+  /* 병합 영상 다운로드 */
+  const downloadVideo = async() => {
+    try{
+			const response = await fetch(`${BASE_URL}/api/frame/merged/${projectId}/download`, {
+        method: 'GET',
+        headers:{},
+        // headers: { access: `${accessToken}` },
+        // withCredentials: true,
+      },);
+			const blob = await response.blob();
+			console.log(`응답 ${response}`)
+      // Blob URL을 만들어서 다운로드
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'work-video.mp4'; 
+      link.click();
+      // 링크 제거
+      URL.revokeObjectURL(link.href);
+
+    }catch(error){
+      console.log(`에러 ${error}`)
+    }
   }
 
-  const videoImport = () => {
-    const response = [{fileUrl:'', fileName:'이름'}]
-    setFileURL(response.fileURL)
-  }
+  /* 병합 영상 조회 */
+  const videoImport = async() => {
+		try{
+      const response = await fetch(`${BASE_URL}/api/frame/merged/${projectId}`, {
+        method: 'GET',
+        withCredentials: true,
+      });
+      const answer = await response.text()
+			console.log(answer)
+			setFileURL(answer)
+			setIsPlaying(true)
+			console.log(`응답 ${answer}`)
+    }catch(error){
+      console.log(`에러 ${error}`)
+    }
+	}
 
+  /* 처음 접속 시 병합 영상 불러오기 */
   useEffect(() => {
     videoImport()
   },[])
@@ -50,7 +86,7 @@ const ResultWork = () => {
             </div>
         }
         <ButtonContainer>
-          <WorkingButton onClick={uploadButton}>
+          <WorkingButton onClick={downloadVideo}>
             다운로드
           </WorkingButton>
           <CloseButton onClick={closeButton}>

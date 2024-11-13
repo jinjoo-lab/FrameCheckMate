@@ -24,9 +24,30 @@ const ImageProcessing = () => {
 	const [hour, setHour] = useState(0);
 
   const [aiTime, setAiTime] = useState([]);
-	const [splitTime, setSplitTime] = useState([]);
+  // TODO : 영상 총 길이를 미리 넣어두기
+	const [splitTime, setSplitTime] = useState([0, 30000]);
   const [result, setResult] = useState([]);
+
+  // 경고 메세지 상태 추가
+  const [warningMessage, setWarningMessage] = useState('');
   
+  const handleHourChange = (event) => {
+    const value = Math.max(0, Number(event.target.value)); // 음수 방지
+    setWarningMessage('');
+    setHour(value);
+  };
+  
+  const handleMinuteChange = (event) => {
+    const value = Math.max(0, Number(event.target.value)); // 음수 방지
+    setWarningMessage('');
+    setMinute(value);
+  };
+  
+  const handleSecondChange = (event) => {
+    const value = Math.max(0, Number(event.target.value)); // 음수 방지
+    setWarningMessage('');
+    setSecond(value);
+  };
 
   const moveSeconds = (event, seconds) => {
     event.preventDefault(); // 페이지 새로 고침 방지
@@ -48,58 +69,98 @@ const ImageProcessing = () => {
   };
 	
   const AiResult = async () => {
-    // TODO : AI로부터 온 list를 받아야 하는 곳
-    // const response = await detectTime(fileURL);
-    // const data = await response.json();
-    const response = [
-      [1, 10],
-			[15, 30],
-			[150, 180],
-			[199, 210]
-    ]
-
-    // setAiTime(data)
-    setAiTime(response)
+    const response = await fetch(`${BASE_URL}/predict`, {
+      method : 'POST',
+      // withCredentials: true,
+    });
+    const data = await response.json();
+    // const data = {
+    //   "detection_times": [
+    //       [40, 40],
+    //       [55, 55],
+    //       [114, 114],
+    //       [187, 187]
+    //   ],
+    //   "status": "success"
+    // }
+    setAiTime(data.detection_times)
   }
 
   // 사용자가 입력한 시간 초 단위로 변환하여 splitTime에 추가
   const addSplitTime = () => {
     const totalSeconds = Number(hour) * 3600 + Number(minute) * 60 + Number(second);
-    setSplitTime(prev => [...prev, totalSeconds]);
+    // 중복 확인
+    if (splitTime.includes(totalSeconds)) {
+      setWarningMessage('이미 입력한 시간입니다');
+      return;
+    }
+
+    if (hour < 0 || minute < 0 || second < 0 ) {
+      setWarningMessage('0보다 작은 값을 입력할 수 없습니다.');
+      return
+    }
+
+    // 전체 길이 초과 확인
+    if (totalSeconds > splitTime[splitTime.length - 1] || totalSeconds < 0) {
+      setWarningMessage('영상의 전체 길이를 벗어나는 시간은 입력할 수 없습니다');
+      return;
+    }
+
+    setSplitTime(prev => {
+      const updatedSplitTime = [...prev, totalSeconds];
+      return updatedSplitTime.sort((a, b) => a - b); // 오름차순 정렬
+    });
+
+    // 입력 칸 초기화
+    setHour(0);
+    setMinute(0);
+    setSecond(0);
   };
 
-  // 분할된 시간 범위를 aiTime과 비교하여 detect 값을 설정
-  useEffect(() => {
-    if (splitTime.length > 0 && aiTime.length > 0) {
-      const videoDuration = 600; // 예시로 총 비디오 길이(초)
+  // splitTime을 초기화하고 입력 칸도 초기화
+  const resetSplitTime = () => {
+    // TODO : 영상 총길이를 end값으로 넣기
+    setSplitTime([0, 30000]);
+    
+    // 입력 칸 초기화
+    setHour(0);
+    setMinute(0);
+    setSecond(0);
+  };
 
-      // 마지막 splitTime에 동영상 총 길이 추가
-      const timeRanges = [...splitTime, videoDuration];
-      const tempResult = [];
+  // 초 단위 시간을 hh:mm:ss 형식으로 변환하는 함수
+  const formatTime = (seconds) => {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  };
 
-      for (let i = 0; i < timeRanges.length - 1; i++) {
-        const start = timeRanges[i];
-        const end = timeRanges[i + 1];
-        let detect = false;
+	const videoDownload = async () => {
+		try{
+			const response = await fetch(`${BASE_URL}/api/frame/original/${projectId}/download`, {
+        method: 'GET',
+        headers:{}
+        // headers: { access: `${accessToken}` },
+      },);
 
-        // aiTime을 탐색하여 현재 구간에 탐지가 있는지 확인
-        for (const [aiStart, aiEnd] of aiTime) {
-          if ((aiStart >= start && aiStart < end) || (aiEnd > start && aiEnd <= end) || (aiStart <= start && aiEnd >= end)) {
-            detect = true;
-            break;
-          }
-        }
+			const blob = await response.blob();
+			console.log(response)
 
-        tempResult.push({ start, end, detect });
-      }
+      // Blob URL을 만들어서 다운로드
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'work-video.mp4'; 
+      link.click();
 
-      setResult(tempResult);
-    }
-  }, [splitTime, aiTime]);
+      // 링크 제거
+      URL.revokeObjectURL(link.href);
 
-  useEffect(() => {
-    AiResult();
-  }, []);
+		}catch(error){
+			console.log(`다운로드 에러${error}`)
+			// console.log(`분할 에러${error}`)
+		}
+  };
 
   // 동영상 총 시간 계산
   const goDuration = (a) => {
@@ -117,6 +178,7 @@ const ImageProcessing = () => {
         headers:{}
         // headers: { access: `${accessToken}` },
       },);
+			// const text = await response.text();
 			const text = await response.text();
       // console.log(text)
       console.log(`응답왔음${text}`)
@@ -126,43 +188,41 @@ const ImageProcessing = () => {
 		}catch(error){
 			console.log(`분할 에러${error}`)
 		}
-		// navigate('/imageProcessingResult');
-
-
 	}
 
+  const createSegments = (splitTime, aiTime, projectId) => {
+    // `segments` 배열을 초기화
+    const segments = splitTime.map(([start, end]) => {
+      // `detect` 변수를 false로 초기화하고, aiTime과의 비교를 통해 true로 변경
+      let detect = false;
+  
+      // aiTime 배열에서 `start`, `end` 구간과 겹치는지 확인
+      for (const [aiStart, aiEnd] of aiTime) {
+        if (
+          (aiStart >= start && aiStart < end) || // aiStart가 구간 내에 있음
+          (aiEnd > start && aiEnd <= end) ||     // aiEnd가 구간 내에 있음
+          (aiStart <= start && aiEnd >= end)     // aiTime이 구간 전체를 포함
+        ) {
+          detect = true;
+          break;
+        }
+      }
+      // `start`, `end`, `detect` 속성을 가진 객체로 반환
+      return { start, end, detect };
+    });
+    // `Data` 객체 생성
+    const Data = {
+      projectId,
+      segments,
+    };
+    return Data;
+  };
 
-// 	{
-//     "projectId": "b1ad7d6a-d40b-4eca-85e6-42d4f736c76d",
-//     "segments": [
-//         {"start": "0", "end": "10", "detect": false},
-//         {"start": "10", "end": "30", "detect": true},
-//         {"start": "30", "end": "60", "detect": false}
-//     ]
-// }
 	const imageSplit = async() => {
 		try{
-			
-			const response = await fetch(`${BASE_URL}/api/frame/original/${projectId}/download`, {
-        method: 'GET',
-        // body: formData,
-        headers:{}
-        // headers: { access: `${accessToken}` },
-      },);
-
-			const blob = await response.blob();
-
-      // Blob URL을 만들어서 다운로드
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = '';  // 다운로드 파일 이름을 서버에서 자동으로 처리
-      link.click();
-
-      // 링크 제거
-      URL.revokeObjectURL(link.href);
-
+      const Data = createSegments(splitTime, aiTime, projectId)
 			// const Data = {
-			// 	projectId:projectId,
+			// 	projectId : projectId,
 			// 	segments:[
 			// 		{"start": "0", "end": "3", "detect": false},
 			// 		{"start": "3", "end": "5", "detect": true},
@@ -170,35 +230,26 @@ const ImageProcessing = () => {
 			// 	]
 			// }
 			// console.log(projectId)
-			// // const Datas = JSON.stringify(Data)
-			// // const response = await axios.post(`${BASE_URL}/api/frame/split`, Data)
-			// // console.log(response)
-      // const response = await fetch(`${BASE_URL}/api/frame/split`, {
-      //   method: 'POST',
-      //   body: Data,
-			// 	headers: {
-			// 		'Content-Type': 'application/json',
-			// 	},
-      // },);
+			const Datas = JSON.stringify(Data)
 
-			// console.log(response)
-			// // const text = await response.text();
-      // // // console.log(text)
-      // // console.log(`응답왔음${text}`)
-			// // setFileURL(text)
-			// // setIsPlaying(true)
-
+			const response = await fetch(`${BASE_URL}/api/frame/split`, {
+        method: 'POST',
+        body: Datas,
+				headers: {
+					"Access-Control-Allow-Origin": "*",
+					'Content-Type': 'application/json',
+				},
+      },);
+			console.log(response)
+			navigate(`/mainWorkPage/${projectId}`);
 		}catch(error){
-			console.log(`다운로드 에러${error}`)
-			// console.log(`분할 에러${error}`)
+			console.log(`분할 에러${error}`)
 		}
 	}
 
   useEffect(() => {
-
-    // AiResult()
+    AiResult()
 		imageResult()
-
   }, [])
 
 	return(
@@ -251,12 +302,17 @@ const ImageProcessing = () => {
 							)
 						}
 						</TimeScroll>
-
 					</WorkingBox>
-
 					<WorkingBox>
 						<h4>타임스탬프 생성</h4>
-						<div>생성칸</div>
+            <div key={'timestamp'} style={{ padding: '10px 80px', border: '1px solid black' }}>
+              {splitTime.slice(0, -1).map((time, i) => (
+                <div key={i}>
+                  {formatTime(time)} ~ {formatTime(splitTime[i + 1])}
+                </div>
+              ))}
+            </div>
+            <br />
 						<div style={{display:'flex', width:'100%'}}>
 							<TimeInput 
 							type="number" 
@@ -272,13 +328,23 @@ const ImageProcessing = () => {
 							onChange={(event) => setSecond(event.target.value)} />초
 						</div>
 
+
+						<WorkingButton onClick={videoDownload}>
+							다운
+						</WorkingButton>
+
+            <br />
+            {/* 경고 메시지 표시 */}
+            {warningMessage && <div style={{ color: 'red' }}>{warningMessage}</div>}
+
 						<WorkingButton onClick={addSplitTime}>
 							추가하기
 						</WorkingButton>
-						<ResetButton onClick={() => setSplitTime([])}>
+            {/* TODO : 영상 총 길이를 미리 넣어두기 */}
+						<ResetButton onClick={resetSplitTime}>
 							초기화
 						</ResetButton>
-
+						
 						<WorkingButton 
 							onClick={imageSplit}>
 							영상 분할하기
@@ -370,6 +436,22 @@ const TimeMove = styled.div`
 	cursor:pointer;
 `
 const TimeInput = styled.input`
-	width:30%;
+  text-align: right;
+  margin-right: 3px;
+  margin-left: 3px;
+  height: 20px;
+	width: 30%;
+  font-size: 15px;
+
+  /* 숫자 조정 버튼 숨기기 */
+  -moz-appearance: textfield;
+  appearance: none;
+  
+  /* Chrome, Safari, Edge용 숫자 조정 버튼 숨기기 */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `
 export default ImageProcessing
