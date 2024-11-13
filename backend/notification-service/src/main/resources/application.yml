@@ -28,7 +28,7 @@ spring:
     show-sql: true
     database: mysql
 server:
-  port: 9090
+  port: 8082
 
 #eureka:
 #  client:
