@@ -36,5 +36,7 @@ logging:
 
 eureka:
   client:
+    register-with-eureka: true
+    fetch-registry: true
     serviceUrl:
       defaultZone: ${EUREKA_SERVER_URL}
