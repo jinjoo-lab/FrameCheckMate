@@ -48,17 +48,6 @@ spring:
             - Path=/api/ai/**
           filters:
             - StripPrefix=2
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: 'http://localhost:3000'
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-            allowedHeaders: "*"
-            allowCredentials: true
 
 jwt:
   secret: ${JWT_SECRET}
