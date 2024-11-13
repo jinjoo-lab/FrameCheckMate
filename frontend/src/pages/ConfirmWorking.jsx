@@ -10,14 +10,6 @@ const ConfirmWorking = () => {
 	const navigate = useNavigate();
 
 	const { projectId, cardId } = useParams();
-	
-	const closeButton = () => {
-		navigate(`/mainWorkPage/${projectId}`);
-	}
-
-	const uploadButton = () => {
-		navigate('/mainWorkPage')
-	}
 
 	return(
 		<div>
@@ -25,15 +17,8 @@ const ConfirmWorking = () => {
 			<RowContainer>
 				<FeedbackAllocateWork 
 					confirmView={true} 
-					confirmTitle='작업 재요청' 
 					commentView={false} 
-					uploadView={true}/>
-				<ButtonAlign>
-					<ConfirmButton 
-						onClick={uploadButton}>컨펌 완료</ConfirmButton>	
-					<ConfirmCloseButton 
-						onClick={closeButton}>닫기</ConfirmCloseButton>
-				</ButtonAlign>
+					uploadView={false}/>
 			</RowContainer>
 		</div>
 	)
