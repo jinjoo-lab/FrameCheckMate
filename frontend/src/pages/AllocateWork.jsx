@@ -95,7 +95,7 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 					'Content-Type': 'application/json',
 				},
 				body:JSON.stringify(Data),
-        withCredentials: true,
+        // withCredentials: true,
       },
 		);
 

@@ -13,7 +13,7 @@ const Working = () => {
 
   const detailButton = () => {
     console.log(cardId)
-    navigate(`/workingLog/${cardId}`)
+    navigate(`/workingLog/${projectId}/${cardId}`)
   }
 
   return(
