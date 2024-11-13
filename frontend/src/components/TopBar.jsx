@@ -14,6 +14,11 @@ const TopBar = ({ title, logoutView }) => {
   }
   const logoutTry = (event) => {
     event.preventDefault(); // 페이지 새로 고침 방지
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('myEmail')
+    localStorage.removeItem('myId')
+    localStorage.removeItem('managerId')
+    alert('로그아웃이 완료되었습니다')
     navigate("/loginSignup");
   };
 
