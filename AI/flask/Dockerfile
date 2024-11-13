@@ -15,7 +15,7 @@ ENV FLASK_APP=app.py
 ENV FLASK_ENV=production
 
 # 포트 노출
-EXPOSE 5000
+EXPOSE 8083
 
 # Flask 서버 실행
 CMD ["flask", "run", "--host=0.0.0.0"]
