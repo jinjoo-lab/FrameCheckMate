@@ -28,7 +28,7 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://localhost:3000"); // 허용할 도메인 추가
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-
+        config.setExposedHeaders(Arrays.asList("access"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
