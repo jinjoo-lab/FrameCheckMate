@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import cv2
 from ultralytics import YOLO
 from datetime import datetime
@@ -6,6 +7,7 @@ from py_eureka_client import eureka_client
 import server_config as server
 
 app = Flask(__name__)
+CORS(app)
 
 eureka_client.init(eureka_server=server.EUREKA_SERVER,
                    app_name=server.SERVICE_NAME,
