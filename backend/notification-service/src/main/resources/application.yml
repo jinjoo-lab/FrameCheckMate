@@ -1,6 +1,6 @@
 spring:
   kafka:
-    bootstrap-servers: 54.180.247.169:9092
+    bootstrap-servers: 43.203.240.20:9092
   application:
     name: NOTIFICATION-SERVICE
   config:
@@ -8,7 +8,7 @@ spring:
       - optional:file:.env[.properties]
 
   datasource:
-    url: jdbc:mysql://localhost:3306/notification
+    url: jdbc:mysql://db:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -23,15 +23,20 @@ spring:
       mail.smtp.starttls.enable: true
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     generate-ddl: true
     show-sql: true
     database: mysql
 server:
-  port: 9090
+  port: 8082
 
-#eureka:
-#  client:
-#    serviceUrl:
-#      defaultZone: http://localhost:8761/eureka/
+logging:
+  level:
+    org.apache.kafka.clients.consumer.ConsumerConfig: WARN
 
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER_URL}
