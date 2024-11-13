@@ -69,18 +69,21 @@ const ImageProcessing = () => {
   };
 	
   const AiResult = async () => {
-    // TODO : AI로부터 온 list를 받아야 하는 곳
-    // const response = await detectTime(fileURL);
-    // const data = await response.json();
-    const response = [
-      [1, 10],
-      [15, 30],
-      [150, 180],
-      [199, 210]
-    ]
-
-    // setAiTime(data)
-    setAiTime(response)
+    const response = await fetch(`${BASE_URL}/predict`, {
+      method : 'POST',
+      // withCredentials: true,
+    });
+    const data = await response.json();
+    // const data = {
+    //   "detection_times": [
+    //       [40, 40],
+    //       [55, 55],
+    //       [114, 114],
+    //       [187, 187]
+    //   ],
+    //   "status": "success"
+    // }
+    setAiTime(data.detection_times)
   }
 
   // 사용자가 입력한 시간 초 단위로 변환하여 splitTime에 추가
@@ -133,47 +136,8 @@ const ImageProcessing = () => {
     return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
   };
 
-  // 분할된 시간 범위를 aiTime과 비교하여 detect 값을 설정
-  useEffect(() => {
-    if (splitTime.length > 0 && aiTime.length > 0) {
-      const videoDuration = 600; // 예시로 총 비디오 길이(초)
-
-      // 마지막 splitTime에 동영상 총 길이 추가
-      const timeRanges = [...splitTime, videoDuration];
-      const tempResult = [];
-
-      for (let i = 0; i < timeRanges.length - 1; i++) {
-        const start = timeRanges[i];
-        const end = timeRanges[i + 1];
-        let detect = false;
-
-        // aiTime을 탐색하여 현재 구간에 탐지가 있는지 확인
-        for (const [aiStart, aiEnd] of aiTime) {
-          if ((aiStart >= start && aiStart < end) || (aiEnd > start && aiEnd <= end) || (aiStart <= start && aiEnd >= end)) {
-            detect = true;
-            break;
-          }
-        }
-        tempResult.push({ start, end, detect });
-      }
-      setResult(tempResult);
-    }
-  }, [splitTime, aiTime]);
-
-  // splitTime이 변경될 때마다 콘솔에 출력
-  useEffect(() => {
-    console.log(splitTime);
-  }, [splitTime]);
-
-  useEffect(() => {
-    AiResult();
-
-		imageResult()
-  }, []);
-
 	const videoDownload = async () => {
 		try{
-			
 			const response = await fetch(`${BASE_URL}/api/frame/original/${projectId}/download`, {
         method: 'GET',
         headers:{}
@@ -196,7 +160,7 @@ const ImageProcessing = () => {
 			console.log(`다운로드 에러${error}`)
 			// console.log(`분할 에러${error}`)
 		}
-};
+  };
 
   // 동영상 총 시간 계산
   const goDuration = (a) => {
@@ -225,30 +189,49 @@ const ImageProcessing = () => {
 			console.log(`분할 에러${error}`)
 		}
 	}
-	// {
-	// 	"projectId": "b1ad7d6a-d40b-4eca-85e6-42d4f736c76d",
-	// 	"segments": [
-	// 		{"start": "0", "end": "10", "detect": false},
-	// 		{"start": "10", "end": "30", "detect": true},
-	//         {"start": "30", "end": "60", "detect": false}
-	//     ]
-	// }
+
+  const createSegments = (splitTime, aiTime, projectId) => {
+    // `segments` 배열을 초기화
+    const segments = splitTime.map(([start, end]) => {
+      // `detect` 변수를 false로 초기화하고, aiTime과의 비교를 통해 true로 변경
+      let detect = false;
+  
+      // aiTime 배열에서 `start`, `end` 구간과 겹치는지 확인
+      for (const [aiStart, aiEnd] of aiTime) {
+        if (
+          (aiStart >= start && aiStart < end) || // aiStart가 구간 내에 있음
+          (aiEnd > start && aiEnd <= end) ||     // aiEnd가 구간 내에 있음
+          (aiStart <= start && aiEnd >= end)     // aiTime이 구간 전체를 포함
+        ) {
+          detect = true;
+          break;
+        }
+      }
+      // `start`, `end`, `detect` 속성을 가진 객체로 반환
+      return { start, end, detect };
+    });
+    // `Data` 객체 생성
+    const Data = {
+      projectId,
+      segments,
+    };
+    return Data;
+  };
+
 	const imageSplit = async() => {
 		try{
-
-			const Data = {
-				projectId:projectId,
-				segments:[
-					{"start": "0", "end": "3", "detect": false},
-					{"start": "3", "end": "5", "detect": true},
-					{"start": "5", "end": "8", "detect": true},
-				]
-			}
-			console.log(projectId)
+      const Data = createSegments(splitTime, aiTime, projectId)
+			// const Data = {
+			// 	projectId : projectId,
+			// 	segments:[
+			// 		{"start": "0", "end": "3", "detect": false},
+			// 		{"start": "3", "end": "5", "detect": true},
+			// 		{"start": "5", "end": "8", "detect": true},
+			// 	]
+			// }
+			// console.log(projectId)
 			const Datas = JSON.stringify(Data)
-			// const response = await axios.post(`${BASE_URL}/api/frame/split`, Data)
-			// console.log(response)
-      // const response = await fetch(`${BASE_URL}/api/frame/split`, {
+
 			const response = await fetch(`${BASE_URL}/api/frame/split`, {
         method: 'POST',
         body: Datas,
@@ -257,26 +240,16 @@ const ImageProcessing = () => {
 					'Content-Type': 'application/json',
 				},
       },);
-
 			console.log(response)
-			// const text = await response.text();
-      // // console.log(text)
-      // console.log(`응답왔음${text}`)
-			// setFileURL(text)
-			// setIsPlaying(true)
 			navigate(`/mainWorkPage/${projectId}`);
-
 		}catch(error){
 			console.log(`분할 에러${error}`)
-			// console.log(`분할 에러${error}`)
 		}
 	}
 
   useEffect(() => {
-
-    // AiResult()
+    AiResult()
 		imageResult()
-
   }, [])
 
 	return(
