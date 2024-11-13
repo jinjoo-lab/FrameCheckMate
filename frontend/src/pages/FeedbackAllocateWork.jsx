@@ -134,11 +134,7 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 
 	  /* 버튼 이동 - 컨펌 → 작업 중 */
 		const thirdBackMove = async () => {
-			// event.preventDefault(); // 페이지 새로 고침 방지
-			// event.stopPropagation()
 			try{
-				// const cardId = card.cardId
-				// 1번
 				const response = await fetch(`${BASE_URL}/api/card/${cardId}/inProgress`, {
 					method: 'PATCH', 
 					withCredentials: true,
@@ -268,8 +264,9 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 
 				<div>작업 기간</div>
           <WorkView>
-            <div style={{padding:"5px"}}>
-              {startDate}
+            <div
+							style={{fontSize:"13px", textAlign:"center", padding:"5px"}}>
+              {startDate} ~ 
 							{endDate}
             </div>
           </WorkView>
@@ -319,7 +316,7 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 						{ confirmList.map((list) => 
 							<ReviewAlign key={list.createdAt}>
 								<ReviewStyle>
-									<ReviewText>{list.content}</ReviewText>
+									<ReviewText>{list.createdAt}<br />{list.content}</ReviewText>
 								</ReviewStyle>
 							</ReviewAlign>
 						)}
@@ -356,7 +353,7 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 						{ commentList.map((list) => 
 							<ReviewAlign key={list.createdAt}>
 								<ReviewStyle>
-									<ReviewText>{list.content}</ReviewText>
+									<ReviewText>{list.createdAt}<br />{list.content}</ReviewText>
 								</ReviewStyle>
 							</ReviewAlign>
 						)}
@@ -410,7 +407,6 @@ const ReviewStyle = styled.div`
 	width:85%; 
 	display:flex; 
 	flex-direction:row; 
-	justify-content:center;
 `
 const ReviewText = styled.div`
 	font-size:12px; 

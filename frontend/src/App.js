@@ -34,7 +34,7 @@ function App() {
       <Route path="/confirmWorking/:projectId/:cardId" element={<ConfirmWorking />} />
       <Route path="/doneWork/:projectId/:cardId" element={<DoneWork />} />
       <Route path="/resultWork/:projectId" element={<ResultWork />} />
-      <Route path="/workingLog/:cardId" element={<WorkingLog />} />
+      <Route path="/workingLog/:projectId/:cardId" element={<WorkingLog />} />
     </Routes>
   );
 }

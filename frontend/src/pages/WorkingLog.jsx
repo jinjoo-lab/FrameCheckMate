@@ -6,9 +6,10 @@ import { GoVideo } from "react-icons/go";
 import styled from 'styled-components';
 import { axiosClient } from '../axios';
 import { allowView } from '../axios';
+import { BASE_URL } from '../axios';
 
 const WorkingLog = () => {
-  const { cardId } = useParams();
+  const { projectId, cardId } = useParams();
   const navigate = useNavigate();
 
   const [logList, setLogList] = useState([])
@@ -17,35 +18,49 @@ const WorkingLog = () => {
   const playerRef = useRef(null); // ReactPlayer에 대한 ref 생성
   const [playTime, setPlayTime] = useState();
 
-  const logImport = () => {
+  const logImport = async () => {
     // TODO response data 형식(naming) 수정 및 그에 따른 FE code 수정
     // const response = allowView(cardId)
-    const response = {
-      "cardId": "e7db3b9a-ab91-491c-a0f5-9e5174139a60",
-      "description": "됐나??????",
-      "originFrame": "1_b166ba99-374e-4d84-b15e-7b9b635b8fc9-209424_small.mp4",
-      "startDate": "2024-03-16 09:00:00",
-      "endDate": "2024-03-20 18:00:00",
-      "frameConfirmPairs": [
-        {   
-          // TODO : frame upload 시간이 추가되야 함
-          "frame": "11964b0f-8191-41d9-96db-f2fa70734a3f-b166ba99-374e-4d84-b15e-7b9b635b8fc9-209424_small.mp4",
-          "confirm": {
-              "content": "확인 완료",
-              "createdAt": "2024-11-11 15:18:33"
-          }
-        },
-        {
-          "frame": "1ca94305-2fe3-42b1-b557-4c439a017318-b166ba99-374e-4d84-b15e-7b9b635b8fc9-209424_small.mp4",
-          "confirm": null
-        }
-      ]
+    try{
+      const response = await fetch(`${BASE_URL}/api/card/${cardId}/logs`, {
+        method: 'GET',
+        // withCredentials: true,
+        // headers: { access: `${accessToken}` },
+      
+      });
+      const answer = await response.json()
+      console.log(answer)
+      setLogList(answer)
+
+    }catch(error){
+      console.log(error)
     }
-    setLogList(response)
+    // const response = {
+    //   "cardId": "e7db3b9a-ab91-491c-a0f5-9e5174139a60",
+    //   "description": "됐나??????",
+    //   "originFrame": "1_b166ba99-374e-4d84-b15e-7b9b635b8fc9-209424_small.mp4",
+    //   "startDate": "2024-03-16 09:00:00",
+    //   "endDate": "2024-03-20 18:00:00",
+    //   "frameConfirmPairs": [
+    //     {   
+    //       // TODO : frame upload 시간이 추가되야 함
+    //       "frame": "11964b0f-8191-41d9-96db-f2fa70734a3f-b166ba99-374e-4d84-b15e-7b9b635b8fc9-209424_small.mp4",
+    //       "confirm": {
+    //           "content": "확인 완료",
+    //           "createdAt": "2024-11-11 15:18:33"
+    //       }
+    //     },
+    //     {
+    //       "frame": "1ca94305-2fe3-42b1-b557-4c439a017318-b166ba99-374e-4d84-b15e-7b9b635b8fc9-209424_small.mp4",
+    //       "confirm": null
+    //     }
+    //   ]
+    // }
+    // setLogList(response)
   }
 
   const closeButton = () => {
-    navigate('/mainWorkPage');
+    navigate(`/mainWorkPage/${projectId}`);
   }
 
   const uploadButton = (event, fileURL) => {
@@ -55,7 +70,9 @@ const WorkingLog = () => {
 
   const playVideo = (event, file) => {
     event.preventDefault(); // 페이지 새로 고침 방지
-    setFileURL(file)
+    console.log(file)
+    setFileURL(`https://framecheckmate-bucket.s3.ap-northeast-2.amazonaws.com/${file}`)
+    setIsPlaying(true)
   }
 
   useEffect(() => {
