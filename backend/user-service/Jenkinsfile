@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKER = 'sudo docker'
+        DOCKERHUB_CREDENTIALS = credentials('sukkong')
     }
 
     stages {
@@ -9,6 +10,11 @@ pipeline {
             steps {
                 checkout scm
                 echo 'Checkout Scm'
+            }
+        }
+        stage('Docker Login'){
+            steps{
+                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
 
