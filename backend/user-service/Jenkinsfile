@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER = 'sudo docker'
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                checkout scm
+                echo 'Checkout Scm'
+            }
+        }
+
+        stage('Build image') {
+            steps {
+                sh 'ls -al'
+                dir('/var/jenkins_home/workspaces/S11P31A607/backend/user-service') {
+                    sh 'ls -al'
+                    sh 'chmod +x ./gradlew'
+                    sh './gradlew build'
+                    sh 'docker build -t sukkong/member-service:latest .'
+                }
+                echo 'Build image...'
+            }
+        }
+
+        stage('Remove Previous image') {
+            steps {
+                script {
+                    try {
+                        h 'docker stop member-service:latest'
+                        sh 'docker rm member-service:latest'
+                    } catch (e) {
+                        echo 'fail to stop and remove container'
+                    }
+                }
+            }
+        }
+        stage('Run New image') {
+            steps {
+                dir('~/member-service'){
+                    sh 'docker-compose up -d'
+                    echo 'Run New member-service image'
+                }
+            }
+        }
+    }
+}
