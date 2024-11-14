@@ -206,7 +206,7 @@ const ImageProcessing = () => {
       }
       // `start`, `end`, `detect` 속성을 가진 객체로 `segments`에 추가
       segments.push({ start, end, detect });
-    }
+    })
     // `Data` 객체 생성
     const Data = {
       projectId,
