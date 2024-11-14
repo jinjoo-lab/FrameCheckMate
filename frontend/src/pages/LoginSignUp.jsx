@@ -46,24 +46,30 @@ const LoginSignUp = () => {
         method: 'POST',
         body: formData,
         // headers:{"Access-Control-Allow-Origin": "*"}
+        withCredentials: true,
       });
+      const tokens = response.headers.get('access')
+      localStorage.setItem('accessToken', tokens);
+      const decodedTokens = jwtDecode(tokens);
+      const email = decodedTokens.email
+      localStorage.setItem('myEmail', email);
+      navigate('/mainHomePage');
 
-      if (response.ok) {
-        const tokens = response.headers.get('access')
-        localStorage.setItem('accessToken', tokens);
-        const decodedTokens = jwtDecode(tokens);
-        console.log(decodedTokens);
-        const email = decodedTokens.email
-        localStorage.setItem('myEmail', email);
-        navigate('/mainHomePage');
+      // if (response.ok) {
+      //   const tokens = response.headers.get('access')
+      //   localStorage.setItem('accessToken', tokens);
+      //   const decodedTokens = jwtDecode(tokens);
+      //   console.log(decodedTokens);
+      //   const email = decodedTokens.email
+      //   localStorage.setItem('myEmail', email);
+      //   navigate('/mainHomePage');
 
-      } else {
-        alert('로그인 정보를 다시 확인해주세요')
-        setLoginCheck(false)
-      }
+      // } else {
+      //   alert('로그인 정보를 다시 확인해주세요')
+      //   setLoginCheck(false)
+      // }
 
     }catch(error){
-      console.log(`로그인 에러 : ${error}`)
       alert('로그인 정보를 다시 확인해주세요')
       setLoginCheck(false)
     }
@@ -107,18 +113,28 @@ const LoginSignUp = () => {
 
     // 회원가입 조건 다 충족하면 요청
     if ( idTest && pwTest && pwReTest && nameTest ) {
+
+    try{
       const Data = {
         email:signId,
         username:signName,
         password:signPw,
       }
-      try {
-        const response = await signupUser(Data)
-        console.log(response)
-        alert('회원가입에 성공했습니다')
-      } catch (error) {
-        console.log(`회원가입 에러 ${error}`);
-      } 
+      // 1번
+      const response = await fetch(`${BASE_URL}/api/member/join`, {
+        method: 'POST', 
+        headers: {
+          // 'Access-Control-Allow-Methods':'POST',
+          'Content-Type': 'application/json'
+        },
+        body:JSON.stringify(Data),
+      });
+      console.log(response)
+      alert('회원가입에 성공했습니다!')
+      setLoginId(signId)
+      }catch(error){
+        console.log(error)
+      }
     }
   };
   
@@ -131,13 +147,13 @@ const LoginSignUp = () => {
         <LoginToggle 
           $nowView={nowView} 
           onClick={loginView}>
-          Login
+          로그인
         </LoginToggle>
         <p style={{ fontSize: "30px" }}> | </p>
         <SignupToggle 
           $nowView={nowView}
           onClick={signupView}>
-          Signup
+          회원가입
         </SignupToggle>
       </ToggleContainer>
 

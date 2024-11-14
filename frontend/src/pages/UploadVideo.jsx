@@ -14,7 +14,8 @@ const UploadVideo = () => {
   const [fileURL, setFileURL] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const playerRef = useRef(null); // ReactPlayer에 대한 ref 생성
-  const [playTime, setPlayTime] = useState();
+  const [ playTime, setPlayTime ] = useState();
+  const [ totalTime, setTotalTime ] = useState(0)
 
   const [loading, setLoading] = useState(false); // 로딩 상태 변수 추가
 
@@ -31,6 +32,8 @@ const UploadVideo = () => {
   const goDuration = (a) => {
     setPlayTime(a);
     console.log(`총 시간${a}`);
+    const timeCheck = Math.floor(a)
+    setTotalTime(timeCheck)
   };
 
   const closeButton = () => {
@@ -52,11 +55,11 @@ const UploadVideo = () => {
       });
   
       const text = await response.json();
-      console.log(text);
-      console.log(`응답왔음${text.fileUrl}`);
-      navigate(`/imageProcessing/${projectId}`);
-    } catch (error) {
-      console.log(`전송에러${error}`);
+      console.log(text)
+      console.log(`응답왔음${text.fileUrl}`)
+      navigate(`/imageProcessing/${projectId}`, { state: { totalTime } });
+    }catch(error){
+      console.log(`전송에러${error}`)
     } finally {
       setLoading(false); // 로딩 종료
     }

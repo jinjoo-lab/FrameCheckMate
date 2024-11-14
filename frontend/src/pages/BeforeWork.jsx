@@ -11,27 +11,11 @@ const BeforeWork = () => {
 
 	const { projectId, cardId } = useParams();
 
-	const closeButton = () => {
-		navigate(`/mainWorkPage/${projectId}`);
-		}
-
-	const finButton = () => {
-		navigate(`/mainWorkPage/${projectId}`)
-	}
-
 	return(
 		<div>
 			<TopBar title='작업 배정' logoutView={true}/>
 			<RowContainer>
 				<AllocateWork workingBefore={true}/>
-				{/* <ButtonContainer>
-					<BeforeFinButton onClick={finButton}>
-						작업 배정
-					</BeforeFinButton>
-					<BeforeCloseButton onClick={closeButton}>
-						닫기
-					</BeforeCloseButton>
-				</ButtonContainer> */}
 			</RowContainer>
 		</div>
 	)

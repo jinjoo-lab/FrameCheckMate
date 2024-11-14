@@ -33,7 +33,10 @@ const WorkingLog = () => {
       setLogList(answer)
 
     }catch(error){
-      console.log(error)
+      // console.log(error)
+      console.log('아직 로그가 없습니다')
+
+      setLogList([])
     }
     // const response = {
     //   "cardId": "e7db3b9a-ab91-491c-a0f5-9e5174139a60",
@@ -93,7 +96,7 @@ const WorkingLog = () => {
                   <GoVideo size={15} />
                 </PlayButton>
               </ListStyle>
-              {logList.frameConfirmPairs && logList.frameConfirmPairs.map((pair, index) => (
+              {Array.isArray(logList.frameConfirmPairs) && logList.frameConfirmPairs.map((pair, index) => (
                 <ListStyle key={`${index}`}>
                   {pair.confirm ? (
                     // {pair.confirm.createAt} {pair.confirm.content}
@@ -109,7 +112,8 @@ const WorkingLog = () => {
                     <GoVideo size={15} />
                   </PlayButton>
                 </ListStyle>
-              ))}
+              ))
+              }
             </ListBox>
           </LogContainer>
           { fileURL ? (
