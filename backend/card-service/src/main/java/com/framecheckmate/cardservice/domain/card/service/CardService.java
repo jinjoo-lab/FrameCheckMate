@@ -93,11 +93,14 @@ public class CardService {
             List<String> remainingFrameLogs,
             List<ConfirmDetail> confirms) {
         List<FrameConfirmMatch> matches = new ArrayList<>();
-        int maxSize = Math.max(remainingFrameLogs.size(), confirms.size());
+        List<String> frameLogs = (remainingFrameLogs != null) ? remainingFrameLogs : Collections.emptyList();
+        List<ConfirmDetail> confirmDetails = (confirms != null) ? confirms : Collections.emptyList();
+
+        int maxSize = Math.max(frameLogs.size(), confirmDetails.size());
         for (int i = 0; i < maxSize; i++) {
             matches.add(FrameConfirmMatch.builder()
-                    .frame(getElementOrNull(remainingFrameLogs, i))
-                    .confirm(getElementOrNull(confirms, i))
+                    .frame(getElementOrNull(frameLogs, i))
+                    .confirm(getElementOrNull(confirmDetails, i))
                     .build());
         }
         return matches;
