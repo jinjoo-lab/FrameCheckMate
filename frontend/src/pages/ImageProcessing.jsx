@@ -28,6 +28,9 @@ const ImageProcessing = () => {
 	const [splitTime, setSplitTime] = useState([0, 30000]);
   const [result, setResult] = useState([]);
 
+  const [fps, setfps] = useState(null);
+  const videoRef = useRef(null);
+
   // 경고 메세지 상태 추가
   const [warningMessage, setWarningMessage] = useState('');
   
@@ -184,7 +187,7 @@ const ImageProcessing = () => {
 		}
 	}
 
-  const createSegments = (splitTime, aiTime, projectId) => {
+  const createSegments = (splitTime, aiTime, projectId, fps) => {
     // `segments` 배열을 초기화
     const segments = splitTime.map(([start, end]) => {
       // `detect` 변수를 false로 초기화하고, aiTime과의 비교를 통해 true로 변경
@@ -207,6 +210,7 @@ const ImageProcessing = () => {
     // `Data` 객체 생성
     const Data = {
       projectId,
+      fps,
       segments,
     };
     return Data;
@@ -214,16 +218,16 @@ const ImageProcessing = () => {
 
 	const imageSplit = async() => {
 		try{
-      const Data = createSegments(splitTime, aiTime, projectId)
+      const Data = createSegments(splitTime, aiTime, projectId, fps)
 			// const Data = {
 			// 	projectId : projectId,
+      //  fps : fps,
 			// 	segments:[
 			// 		{"start": "0", "end": "3", "detect": false},
 			// 		{"start": "3", "end": "5", "detect": true},
 			// 		{"start": "5", "end": "8", "detect": true},
 			// 	]
 			// }
-			// console.log(projectId)
 			const Datas = JSON.stringify(Data)
 
 			const response = await fetch(`${BASE_URL}/api/frame/split`, {
@@ -240,6 +244,19 @@ const ImageProcessing = () => {
 			console.log(`분할 에러${error}`)
 		}
 	}
+
+  useEffect(() => {
+    if (fileURL) {
+      const videoElement = document.createElement("video");
+      videoElement.src = fileURL;
+      videoElement.onloadedmetadata = () => {
+        const duration = videoElement.duration;
+        const estimatedFrames = Math.floor(videoElement.videoWidth * videoElement.videoHeight * duration / 500000);
+        const calculatedFPS = estimatedFrames / duration;
+        setfps(calculatedFPS.toFixed(0)); // 추정 FPS 설정
+      };
+    }
+  }, [fileURL]);
 
   useEffect(() => {
     AiResult()
