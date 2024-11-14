@@ -27,6 +27,9 @@ const MainWorkPage = () => {
   /* 관리자 아이디 체크 */
   const [ managerCheck, setManagerCheck ] = useState('what')
 
+  /* 내 아이디 체크 */
+  const [ myUUID, setMyUUID ] = useState('')
+
   /* toDo로 상태 변경 */
   const toDoMove = async (event, card) => {
     event.preventDefault(); // 페이지 새로 고침 방지
@@ -129,6 +132,10 @@ const MainWorkPage = () => {
     navigate(`/uploadVideo/${projectId}`);
   }
 
+  const resultVideoPage = () => {
+    navigate(`/resultWork/${projectId}`)
+  }
+
   // 최종 작업 페이지
   const resultPage = async () => {
     try{
@@ -159,7 +166,7 @@ const MainWorkPage = () => {
     setWorkingList([])
     setConfirmList([])
     setFinishList([])
-    const accessToken = localStorage.getItem('accessToken');
+    // const accessToken = localStorage.getItem('accessToken');
     try{
       const response = await fetch(`${BASE_URL}/api/card/${projectId}`, {
         method: 'GET',
@@ -206,6 +213,7 @@ const MainWorkPage = () => {
         const manager = localStorage.getItem('managerId')
         console.log(`my Id : ${idInfo}`)
         console.log(`manager Id : ${manager}`)
+        setMyUUID(idInfo)
         if (manager == idInfo) {
           setManagerCheck('ok')
         } else{
@@ -229,7 +237,7 @@ const MainWorkPage = () => {
 
   useEffect(() => {
     console.log('매니저 확인중..')
-  }, [managerCheck])
+  }, [managerCheck, myUUID])
 
   const getWorkerName = (workerId) => {
     console.log(workerId)
@@ -245,8 +253,16 @@ const MainWorkPage = () => {
       <TitleContainer>
         <BigTextGroupName>그룹 이름</BigTextGroupName>
         <Block>
-          <BigText onClick={memberCheck}>멤버 관리</BigText>
-          <BigText onClick={videoAdd}>영상 분석</BigText>
+          { managerCheck== 'ok'
+          ?
+          (
+            <>
+            <BigText onClick={memberCheck}>멤버 관리</BigText>
+            <BigText onClick={videoAdd}>영상 분석</BigText>
+            </>
+          )
+          :null
+          }
         </Block>
       </TitleContainer>
       <BigContainer>
@@ -286,7 +302,7 @@ const MainWorkPage = () => {
             )}
           </CardScroll>
           )}
-          <div>분할 완료</div>
+          <div></div>
         </CardContainer>
 
         {/* 작업 중 목록 */}
@@ -298,7 +314,7 @@ const MainWorkPage = () => {
                 <CardScroll>
                   { workingList.map(card => 
                     <Link
-                      to={`/working/${card.projectId}/${card.cardId}`}
+                      to={`/working/${card.projectId}/${card.cardId}/${card.workerId}`}
                       key={card.frameId} 
                       style={{
                         color:'inherit',
@@ -306,18 +322,25 @@ const MainWorkPage = () => {
                         width:'200px',
                         padding:"15px 10px",
                         height:'100px',
-                        border:"1px solid black",
+                        border:"1px solid gray",
+                        borderRadius:"10px",
                         margin:"5px 0px",
                         justifyContent:"center",
-                        alignItems:"center"
+                        alignItems:"center",
+                        boxShadow:"0 5px 5px rgba(0, 0, 0, 0.15)"
                       }}>                        
                       <MoveButtonContainer>
                         <MoveButton onClick={(event)=>{toDoMove(event, card)}}>
                           <FaRegArrowAltCircleLeft size={25} />
                         </MoveButton>
+                        {card.workerId == myUUID
+                        ?
                         <MoveButton onClick={(event) => {confirmMove(event, card)}}>
                           <FaRegArrowAltCircleRight size={25} />
                         </MoveButton>
+                        :
+                        null
+                        }
                       </MoveButtonContainer>
                       <CardView>
                         { card.workerId == null 
@@ -330,7 +353,7 @@ const MainWorkPage = () => {
                 </CardScroll>
               )
             }
-          <div>작업 전/후</div>
+            <div></div>
         </CardContainer>
 
         {/* 컨펌 목록 */}
@@ -343,9 +366,8 @@ const MainWorkPage = () => {
             ? (
               <CardScroll>
                 { confirmList.map(card => 
-                
                   <Link
-                    to={`/confirmWorking/${card.projectId}/${card.cardId}`}
+                    to={`/confirmWorking/${card.projectId}/${card.cardId}/${card.workerId}`}
                     key={card.frameId} 
                     style={{
                       color:'inherit',
@@ -380,7 +402,6 @@ const MainWorkPage = () => {
             (
               <CardScroll>
                 { confirmList.map(card => 
-                
                   <div
                     key={card.frameId} 
                     style={{
@@ -407,19 +428,19 @@ const MainWorkPage = () => {
               </CardScroll>
             )
           }
-          <div>컨펌 필요</div>
+          <div></div>
         </CardContainer>
 
         {/* 완료 목록 */}
         <CardContainer>
           <div>완료</div>
           { finishList.length == 0 
-            ? ( <NoCardView>컨펌 완료 된 영상이 없습니다</NoCardView> )
+            ? ( <NoCardView>컨펌이 끝난 영상이 없습니다</NoCardView> )
             : (
               <CardScroll>
                 { finishList.map(card => 
                   <Link 
-                    to={`/doneWork/${card.projectId}/${card.cardId}`}
+                    to={`/doneWork/${card.projectId}/${card.cardId}/${card.workerId}`}
                     key={card.frameId} 
                     style={{
                       color:'inherit',
@@ -444,11 +465,17 @@ const MainWorkPage = () => {
               </CardScroll>
             )
           }
+          <div></div>
           { finalCreate == true
           ? 
+          <>
           <MakeButton onClick={resultPage}>
             최종 생성
           </MakeButton>
+          <MakeButton onClick={resultVideoPage}>
+            영상 확인
+          </MakeButton>
+          </>
           : null
           }
 

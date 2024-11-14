@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'; // eslint-disable-line no-unused-vars
 import TopBar from "../components/TopBar";
-import { useNavigate, Link, useParams } from 'react-router-dom'; // eslint-disable-line no-unused-vars
+import { useNavigate, Link, useParams, useLocation } from 'react-router-dom'; // eslint-disable-line no-unused-vars
 import styled from 'styled-components'
 import ReactPlayer from "react-player";
 // import { videoSplit } from '../api';
@@ -14,6 +14,10 @@ const ImageProcessing = () => {
 
   const { projectId } = useParams();
 
+  const location = useLocation();
+
+  const { totalTime } = location.state || {};
+
   const [fileURL, setFileURL] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const playerRef = useRef(null); // ReactPlayer에 대한 ref 생성
@@ -24,7 +28,6 @@ const ImageProcessing = () => {
 	const [hour, setHour] = useState(0);
 
   const [aiTime, setAiTime] = useState([]);
-  // TODO : 영상 총 길이를 미리 넣어두기
 	const [splitTime, setSplitTime] = useState([0, 30000]);
   const [result, setResult] = useState([]);
 
@@ -73,11 +76,24 @@ const ImageProcessing = () => {
 						${String(secs).padStart(2, '0')}`;
   };
 	
-  const AiResult = async () => {
+  const AiResult = async (fileURL) => {
     setLoading(true); // 로딩 시작
-    const response = await fetch(`${FLASK_URL}/predict`, {
+    const response = await fetch(`http://k11a607.p.ssafy.io:8083/predict`, {
       method : 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 'url': fileURL }),
     });
+    // const response = await fetch(`${FLASK_URL}/predict`, {
+    //   method : 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Access-Control-Allow-Origin':'*',
+    //   },
+    //   // withCredentials: true,
+    //   body:JSON.stringify(Data)
+    // });
     const data = await response.json();
     setAiTime(data.detection_times)
     setLoading(false); // 로딩 종료
@@ -117,7 +133,7 @@ const ImageProcessing = () => {
   // splitTime을 초기화하고 입력 칸도 초기화
   const resetSplitTime = () => {
     // TODO : 영상 총길이를 end값으로 넣기
-    setSplitTime([0, 30000]);
+    setSplitTime([0, totalTime]);
     
     // 입력 칸 초기화
     setHour(0);
@@ -138,52 +154,36 @@ const ImageProcessing = () => {
 			const response = await fetch(`${BASE_URL}/api/frame/original/${projectId}/download`, {
         method: 'GET',
         headers:{}
-        // headers: { access: `${accessToken}` },
       },);
-
 			const blob = await response.blob();
-			console.log(response)
-
       // Blob URL을 만들어서 다운로드
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = 'work-video.mp4'; 
       link.click();
-
       // 링크 제거
       URL.revokeObjectURL(link.href);
-
 		}catch(error){
-			console.log(`다운로드 에러${error}`)
-			// console.log(`분할 에러${error}`)
 		}
   };
 
   // 동영상 총 시간 계산
   const goDuration = (a) => {
-    // setPlayTime(a);
     console.log(`총 시간${a}`);
   };
 
-  // TODO 결과를 BE로 보내 영상을 자를 수 있도록 수정
+  // 업로드된 원본 영상을 받아온 후 ai 분석
   const imageResult = async() => {
-    // videoSplit
 		try{
       const response = await fetch(`${BASE_URL}/api/frame/original/${projectId}`, {
         method: 'GET',
-        // body: formData,
         headers:{}
-        // headers: { access: `${accessToken}` },
       },);
-			// const text = await response.text();
 			const text = await response.text();
-      // console.log(text)
-      console.log(`응답왔음${text}`)
 			setFileURL(text)
 			setIsPlaying(true)
-
+      AiResult(text)
 		}catch(error){
-			console.log(`분할 에러${error}`)
 		}
 	}
 
@@ -192,21 +192,21 @@ const ImageProcessing = () => {
     const segments = splitTime.map(([start, end]) => {
       // `detect` 변수를 false로 초기화하고, aiTime과의 비교를 통해 true로 변경
       let detect = false;
-  
+
       // aiTime 배열에서 `start`, `end` 구간과 겹치는지 확인
       for (const [aiStart, aiEnd] of aiTime) {
         if (
-          (aiStart >= start && aiStart < end) || // aiStart가 구간 내에 있음
-          (aiEnd > start && aiEnd <= end) ||     // aiEnd가 구간 내에 있음
-          (aiStart <= start && aiEnd >= end)     // aiTime이 구간 전체를 포함
+          (aiStart >= start && aiStart < end) ||   // aiStart가 구간 내에 있음
+          (aiEnd > start && aiEnd <= end) ||       // aiEnd가 구간 내에 있음
+          (aiStart <= start && aiEnd >= end)       // aiTime이 구간 전체를 포함
         ) {
           detect = true;
           break;
         }
       }
-      // `start`, `end`, `detect` 속성을 가진 객체로 반환
-      return { start, end, detect };
-    });
+      // `start`, `end`, `detect` 속성을 가진 객체로 `segments`에 추가
+      segments.push({ start, end, detect });
+    }
     // `Data` 객체 생성
     const Data = {
       projectId,
@@ -216,7 +216,13 @@ const ImageProcessing = () => {
     return Data;
   };
 
+  // 영상 분할
 	const imageSplit = async() => {
+    try{
+      await videoDownload()
+    }catch(error){
+      console.log(error)
+    }
 		try{
       const Data = createSegments(splitTime, aiTime, projectId, fps)
 			// const Data = {
@@ -238,10 +244,10 @@ const ImageProcessing = () => {
 					'Content-Type': 'application/json',
 				},
       },);
-			console.log(response)
+      alert('영상 분할이 완료되었습니다.')
 			navigate(`/mainWorkPage/${projectId}`);
 		}catch(error){
-			console.log(`분할 에러${error}`)
+      alert('영상 분할에 실패했습니다.')
 		}
 	}
 
@@ -261,6 +267,7 @@ const ImageProcessing = () => {
   useEffect(() => {
     AiResult()
 		imageResult()
+    setSplitTime([0, totalTime])
   }, [])
 
 	return(
@@ -343,22 +350,23 @@ const ImageProcessing = () => {
 						</div>
 
 
-						<WorkingButton onClick={videoDownload}>
-							다운
-						</WorkingButton>
-
             <br />
             {/* 경고 메시지 표시 */}
             {warningMessage && <div style={{ color: 'red' }}>{warningMessage}</div>}
 
-						<WorkingButton onClick={addSplitTime}>
-							추가하기
-						</WorkingButton>
-            {/* TODO : 영상 총 길이를 미리 넣어두기 */}
-						<ResetButton onClick={resetSplitTime}>
-							초기화
-						</ResetButton>
-						
+            <ButtonContainer>
+              <WorkingButton onClick={addSplitTime}>
+                추가하기
+              </WorkingButton>
+              {/* TODO : 영상 총 길이를 미리 넣어두기 */}
+              <ResetButton onClick={resetSplitTime}>
+                초기화
+              </ResetButton>
+            </ButtonContainer>
+
+						{/* <WorkingButton onClick={videoDownload}>
+							다운로드
+						</WorkingButton> */}
 						<WorkingButton 
 							onClick={imageSplit}>
 							영상 분할하기
@@ -389,6 +397,10 @@ const WorkingBox = styled.div`
 	border:1px solid black; 
 	width:40%; 
 	height:600px;
+`
+const ButtonContainer = styled.div`
+  display:flex; 
+	flex-direction:row; 
 `
 const WorkingButton = styled.button`
   width:150px; 

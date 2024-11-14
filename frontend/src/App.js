@@ -6,7 +6,6 @@ import ManageMember from "./pages/ManageMember.jsx";
 import MainWorkPage from "./pages/MainWorkPage.jsx";
 import UploadVideo from "./pages/UploadVideo.jsx";
 import ImageProcessing from "./pages/ImageProcessing.jsx";
-import ImageProcessingResult from "./pages/ImageProcessingResult.jsx";
 import BeforeWork from "./pages/BeforeWork.jsx";
 import FeedbackAllocateWork from "./pages/FeedbackAllocateWork.jsx";
 import Working from './pages/Working.jsx'
@@ -27,12 +26,11 @@ function App() {
       <Route path="/mainWorkPage/:projectId" element={<MainWorkPage />} />
       <Route path="/uploadVideo/:projectId" element={<UploadVideo />} />
       <Route path="/imageProcessing/:projectId" element={<ImageProcessing />} />
-      <Route path="/imageProcessingResult/:projectId" element={<ImageProcessingResult />} />
       <Route path="/beforeWork/:projectId/:cardId" element={<BeforeWork />} />
       <Route path="/feedbackAllocateWork" element={<FeedbackAllocateWork />} />
-      <Route path="/working/:projectId/:cardId" element={<Working />} />
-      <Route path="/confirmWorking/:projectId/:cardId" element={<ConfirmWorking />} />
-      <Route path="/doneWork/:projectId/:cardId" element={<DoneWork />} />
+      <Route path="/working/:projectId/:cardId/:workerId" element={<Working />} />
+      <Route path="/confirmWorking/:projectId/:cardId/:workerId" element={<ConfirmWorking />} />
+      <Route path="/doneWork/:projectId/:cardId/:workerId" element={<DoneWork />} />
       <Route path="/resultWork/:projectId" element={<ResultWork />} />
       <Route path="/workingLog/:projectId/:cardId" element={<WorkingLog />} />
     </Routes>

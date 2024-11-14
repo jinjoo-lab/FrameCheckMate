@@ -13,7 +13,7 @@ export const FLASK_URL = process.env.REACT_APP_FLASK_API_USER_URL;
 
 // json 요청 헤더
 export const HEADERS = {
-  "Access-Control-Allow-Origin": "*",
+  // "Access-Control-Allow-Origin": "*",
   "Content-Type": "application/json",
 };
 
@@ -22,6 +22,7 @@ export const FORMHEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Content-Type": "multipart/form-data"
 };
+
 
 // 카드서비스 요청 (9090)
 export const axiosClient = axios.create({
