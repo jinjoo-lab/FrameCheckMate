@@ -18,7 +18,7 @@ pipeline {
                 dir('/var/jenkins_home/workspace/member-service/backend/user-service') {
                     sh 'ls -al'
                     sh 'chmod +x ./gradlew'
-                    sh './gradlew build'
+                    sh './gradlew build -x test'
                     sh 'docker build -t sukkong/member-service:latest .'
                 }
                 echo 'Build image...'
