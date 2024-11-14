@@ -51,10 +51,8 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
         withCredentials: true,
       });
       const answer = await response.text()
-			console.log(answer)
 			setFileURL(answer)
 			setIsPlaying(true)
-			console.log(`응답 ${answer}`)
 		}catch(error){
 			console.log(`에러 ${error}`)
 		}
@@ -105,16 +103,6 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 		}catch(error){
 			console.log(`작업 배정 에러:${error}`)
 		}
-
-	}
-
-	
-
-	const uploadVideo = () => {
-			
-	}
-
-	const downloadVideo = () => {
 
 	}
 
@@ -182,10 +170,15 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 					?(
 						<>
 							<div>작업자 배정</div>
-							<select onChange={handleSelectChange}>
-								<option value="">선택하세요</option>
+							<select 
+								style={{width:'100%', height:'35px', margin:'10px 0px', borderRadius:'5px'}}
+								onChange={handleSelectChange}>
+								<option value="" style={{textAlign:'center'}}>선택하세요</option>
 								{memberData.map((item) => (
-									<option key={item.memberId} value={item.memberId}>
+									<option 
+										style={{textAlign:'center'}}
+										key={item.memberId} 
+										value={item.memberId}>
 										{item.name}
 									</option>
 								))}
@@ -307,15 +300,7 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 				</ButtonBox>
 				)
 				: (
-					<ButtonBox>
-						<DownloadButton onClick={downloadVideo}>
-							다운로드
-						</DownloadButton>
-						{ uploadView ?
-						<UploadButton onClick={uploadVideo}>
-							업로드
-						</UploadButton> : <div style={{width:'150px'}}></div>}
-					</ButtonBox>
+					<></>
 				)}
 		</div>
 	)
@@ -338,6 +323,7 @@ const DateStyle = createGlobalStyle`
 		text-align: center;
 		cursor: pointer;
 		caret-color: transparent;
+		height:20px;
 	}
 	.react-datepicker__input-container input:disabled {
 		background-color: #f0f0f0; 
@@ -379,7 +365,7 @@ const DownloadButton = styled.button`
 const UploadButton = styled.button`
 	width:150px; 
 	border:none; 
-	order-radius:5px; 
+	border-radius:5px; 
 	padding:10px 20px; 
 	margin:10px 5px; 
 	background-color:gray; 
