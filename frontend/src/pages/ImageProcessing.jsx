@@ -31,6 +31,9 @@ const ImageProcessing = () => {
 	const [splitTime, setSplitTime] = useState([0, 30000]);
   const [result, setResult] = useState([]);
 
+  const [fps, setfps] = useState(null);
+  const videoRef = useRef(null);
+
   // 경고 메세지 상태 추가
   const [warningMessage, setWarningMessage] = useState('');
   
@@ -184,12 +187,10 @@ const ImageProcessing = () => {
 		}
 	}
 
-  // `splitTime` 배열을 두 개씩 묶어서 구간을 만듭니다.
-  const createSegments = (splitTime, aiTime, projectId) => {
-    const segments = [];
-    for (let i = 0; i < splitTime.length - 1; i++) {
-      const start = splitTime[i];
-      const end = splitTime[i + 1];
+  const createSegments = (splitTime, aiTime, projectId, fps) => {
+    // `segments` 배열을 초기화
+    const segments = splitTime.map(([start, end]) => {
+      // `detect` 변수를 false로 초기화하고, aiTime과의 비교를 통해 true로 변경
       let detect = false;
 
       // aiTime 배열에서 `start`, `end` 구간과 겹치는지 확인
@@ -209,6 +210,7 @@ const ImageProcessing = () => {
     // `Data` 객체 생성
     const Data = {
       projectId,
+      fps,
       segments,
     };
     return Data;
@@ -222,9 +224,18 @@ const ImageProcessing = () => {
       console.log(error)
     }
 		try{
-      const videoResult = createSegments(splitTime, aiTime, projectId)
-			const Datas = JSON.stringify(videoResult)
-      console.log(Datas)
+      const Data = createSegments(splitTime, aiTime, projectId, fps)
+			// const Data = {
+			// 	projectId : projectId,
+      //  fps : fps,
+			// 	segments:[
+			// 		{"start": "0", "end": "3", "detect": false},
+			// 		{"start": "3", "end": "5", "detect": true},
+			// 		{"start": "5", "end": "8", "detect": true},
+			// 	]
+			// }
+			const Datas = JSON.stringify(Data)
+
 			const response = await fetch(`${BASE_URL}/api/frame/split`, {
         method: 'POST',
         body: Datas,
@@ -241,6 +252,20 @@ const ImageProcessing = () => {
 	}
 
   useEffect(() => {
+    if (fileURL) {
+      const videoElement = document.createElement("video");
+      videoElement.src = fileURL;
+      videoElement.onloadedmetadata = () => {
+        const duration = videoElement.duration;
+        const estimatedFrames = Math.floor(videoElement.videoWidth * videoElement.videoHeight * duration / 500000);
+        const calculatedFPS = estimatedFrames / duration;
+        setfps(calculatedFPS.toFixed(0)); // 추정 FPS 설정
+      };
+    }
+  }, [fileURL]);
+
+  useEffect(() => {
+    AiResult()
 		imageResult()
     setSplitTime([0, totalTime])
   }, [])

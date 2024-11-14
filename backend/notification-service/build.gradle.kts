@@ -43,6 +43,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
     implementation("org.springframework.kafka:spring-kafka")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
+    implementation("com.slack.api:slack-api-client:1.43.0")
 }
 
 kotlin {
