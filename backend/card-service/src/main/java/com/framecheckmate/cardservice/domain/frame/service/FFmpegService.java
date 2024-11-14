@@ -17,12 +17,16 @@ public class FFmpegService {
     private final S3Service s3Service;
 
     private String[] buildSplitFFmpegCommand(String fileName, String startTime, String endTime, Long seq) {
+        double startSeconds = Long.parseLong(startTime);
+        double duration = (Long.parseLong(endTime) - Long.parseLong(startTime));
+
         return new String[]{
                 ffmpegConfig.getFFmpegPath().toString(),
                 "-i", ffmpegConfig.getInputPath() + "\\" + fileName,
-                "-ss", startTime,
-                "-to", endTime,
-                "-c", "copy",
+                "-ss", String.valueOf(startSeconds),
+                "-t", String.valueOf(duration),
+                "-c:v", "libx264",
+                "-crf", "18",
                 ffmpegConfig.getOutputPath() + "\\" + seq + "_" + fileName
         };
     }

@@ -10,6 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class FrameSplitRequestDTO {
     private UUID projectId;
+    private String fps;
     private List<Segment> segments;
 
     @Data
