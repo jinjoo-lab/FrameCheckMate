@@ -34,6 +34,8 @@ const ImageProcessing = () => {
   // 경고 메세지 상태 추가
   const [warningMessage, setWarningMessage] = useState('');
   
+  const [loading, setLoading] = useState(true); // 로딩 상태 변수 추가
+
   const handleHourChange = (event) => {
     const value = Math.max(0, Number(event.target.value)); // 음수 방지
     setWarningMessage('');
@@ -72,6 +74,7 @@ const ImageProcessing = () => {
   };
 	
   const AiResult = async (fileURL) => {
+    setLoading(true); // 로딩 시작
     const response = await fetch(`http://k11a607.p.ssafy.io:8083/predict`, {
       method : 'POST',
       headers: {
@@ -89,16 +92,8 @@ const ImageProcessing = () => {
     //   body:JSON.stringify(Data)
     // });
     const data = await response.json();
-    // const data = {
-    //   "detection_times": [
-    //       [40, 40],
-    //       [55, 55],
-    //       [114, 114],
-    //       [187, 187]
-    //   ],
-    //   "status": "success"
-    // }
     setAiTime(data.detection_times)
+    setLoading(false); // 로딩 종료
   }
 
   // 사용자가 입력한 시간 초 단위로 변환하여 splitTime에 추가
@@ -274,31 +269,34 @@ const ImageProcessing = () => {
 					</div>
 
 					<h4>타임스탬프</h4>
-					<TimeScroll>
-						{ aiTime.length == 0 
-						? (
-							<NoReview>
-								<p>탐지 내용이 없습니다</p>
-							</NoReview>
-							)	
-						: (
-								<>
-								{ aiTime.map((list) => 
-									<ReviewAlign key={list[0]}>
-										<ReviewStyle>
-											<TimeMove onClick={(event) => moveSeconds(event, list[0])}>
-												{timeView(list[0])}
-											</TimeMove> 
-												~ 
-											<TimeMove onClick={(event) => moveSeconds(event, list[1])}>
-												{timeView(list[1])}
-											</TimeMove>
-										</ReviewStyle>
-									</ReviewAlign>
-								)}
-								</>
-							)
-						}
+            <TimeScroll>
+              {loading ? (
+                <NoReview>
+                  <p>분석 중입니다</p> {/* 로딩 중일 때 표시 */}
+                </NoReview>
+              ) : (
+                aiTime.length === 0 ? (
+                  <NoReview>
+                    <p>탐지 내용이 없습니다</p>
+                  </NoReview>
+                ) : (
+                  <>
+                    {aiTime.map((list) => 
+                      <ReviewAlign key={list[0]}>
+                        <ReviewStyle>
+                          <TimeMove onClick={(event) => moveSeconds(event, list[0])}>
+                            {timeView(list[0])}
+                          </TimeMove> 
+                            ~ 
+                          <TimeMove onClick={(event) => moveSeconds(event, list[1])}>
+                            {timeView(list[1])}
+                          </TimeMove>
+                        </ReviewStyle>
+                      </ReviewAlign>
+                    )}
+                  </>
+                )
+              )}
 						</TimeScroll>
 					</WorkingBox>
 					<WorkingBox>
