@@ -30,7 +30,7 @@ def predict():
     if not data or 'url' not in data:
         print('error', ':', 'No URL provided in request')
         return jsonify({'error': 'No URL provided in request'}), 400
-    print(11111)
+
     video_url = data['url']
     cap = cv2.VideoCapture(video_url)
 
@@ -74,10 +74,13 @@ def predict():
 
     cap.release()
 
-    return jsonify({
+    # POST 요청에 대한 응답에 CORS 헤더 추가
+    response = jsonify({
         'status': 'success',
         'detection_times': detection_times
     })
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8083, debug=True)
