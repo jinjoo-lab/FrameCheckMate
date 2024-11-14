@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Link, useParams } from 'react-router-dom'; // eslint-disable-line no-unused-vars
+import { useNavigate, Link, useParams, useLocation } from 'react-router-dom'; // eslint-disable-line no-unused-vars
 import AllocateWork from './AllocateWork';
 import styled from 'styled-components';
 import { axiosClient } from '../axios';
 import ReactPlayer from "react-player";
 import { createGlobalStyle } from 'styled-components';
 import { cardView, commentSave, confirmSave } from '../api';
-import { BASE_URL } from '../axios';
+import { BASE_URL, USER_URL } from '../axios';
 
 
 const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 
 	const navigate = useNavigate();
 
-	const { projectId, cardId } = useParams();
+	const { projectId, cardId, workerId } = useParams();
 
 	// 현재 작업자 정보
 	const [ nowWorker, setNowWorker ] = useState('')
@@ -28,7 +28,6 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
   // 동영상 총 시간 계산
 	const goDuration = (a) => {
 		setPlayTime(a);
-		console.log(`총 시간${a}`);
 	};
 
 	/* 직접 영상 업로드 & 카드 영상 업로드 요청 */
@@ -52,14 +51,9 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
         method: 'POST',
         body: formData,
         headers:{}
-        // headers: { access: `${accessToken}` },
       },);
-			console.log(response)
       const text = await response.json();
-			console.log(text)
-      console.log(`응답왔음${text.fileUrl}`)
 			alert('영상 업로드가 완료되었습니다')
-
 		}catch(error){
 			console.log(`영상 업로드 문제 ${error}`)
 		}
@@ -71,12 +65,9 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 			const response = await fetch(`${BASE_URL}/api/frame/card/${cardId}/download`, {
         method: 'GET',
         headers:{}
-        // headers: { access: `${accessToken}` },
       },);
 
 			const blob = await response.blob();
-			console.log(response)
-
       // Blob URL을 만들어서 다운로드
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
@@ -88,7 +79,6 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 
 		}catch(error){
 			console.log(`다운로드 에러${error}`)
-			// console.log(`분할 에러${error}`)
 		}
 	}
 
@@ -100,15 +90,11 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 	const [confirms, setConfirms] = useState('')
 	const [comments, setComments] = useState('')
 
+	// 프로젝트 멤버 불러오기
+	const [memberData, setMemberData] = useState([])
+
 	/* 컨펌 저장 */
 	const confirmSubmit = async (event, confirms) => {
-		// try{
-		// 	const Data = { content: confirms }
-		// 	const response = await confirmSave(Data)
-		// 	console.log(response)
-		// }catch(error){
-		// 	console.log(error)
-		// }
 		try{
 			const Data = {
 				content : confirms
@@ -119,31 +105,40 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify(Data),
-				// headers: { access: `${accessToken}` },
 			});
-			console.log(response)
-			// setConfirms('')
-			// cardImport()
-			const ddd = thirdBackMove()
-			// navigate('/mainWorkPage')
+			if (nowWorker.length == 0){
+				const goAllot = beforeMove()
+			}
+			else{
+				const goWorking = workingMove()
+			}
 		}catch(error){
 			console.log(error)
 		}
-
 	}
 
-	  /* 버튼 이동 - 컨펌 → 작업 중 */
-		const thirdBackMove = async () => {
+	  /* 작업중으로 이동시키기 */
+		const workingMove = async () => {
 			try{
 				const response = await fetch(`${BASE_URL}/api/card/${cardId}/inProgress`, {
 					method: 'PATCH', 
 					withCredentials: true,
 				});
-				console.log(response)
-				// 2번
-				// const response = await workingChange(cardId)
-				// const answer = await response.json()
-				// cardSort()
+				alert('컨펌 요청이 완료되었습니다')
+				navigate(`/mainWorkPage/${projectId}`)
+			}catch(error){
+				console.log(error)
+			}
+		}
+
+	  /* 작업 배정으로 이동시키기 */
+		const beforeMove = async () => {
+			try{
+				const response = await fetch(`${BASE_URL}/api/card/${cardId}/toDo`, {
+					method: 'PATCH', 
+					withCredentials: true,
+				});
+				alert('컨펌 요청이 완료되었습니다')
 				navigate(`/mainWorkPage/${projectId}`)
 			}catch(error){
 				console.log(error)
@@ -167,23 +162,16 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify(Data),
-					// headers: { access: `${accessToken}` },
 				});
-				console.log(response)
-				// alert('코멘트 저장이 완료되었습니다')
+				alert('코멘트 저장이 완료되었습니다')
 				setComments('')
 			}catch(error){
-				console.log(`그룹 생성 실패:${error}`)
+				console.log(`실패:${error}`)
 			}
-
-
-			// const response = await commentSave(Data)
-			// console.log(response)
 			cardImport()
 		}catch(error){
 			console.log(error)
 		}
-
 	}
 
   /* 카드 조회 */
@@ -237,10 +225,44 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 		}
 	}
 
+	/* 현재 속한 프로젝트의 멤버 목록 불러오기 */
+	const memberImport = async() => {
+		try{
+			const accessToken = localStorage.getItem('accessToken');
+			const response = await fetch(`${USER_URL}/api/project/${projectId}/members`, {
+				method: 'GET',
+				headers: { access: `${accessToken}` },
+			});
+			const members = await response.json()
+			console.log(members)
+			// const myId = localStorage.getItem('myId')
+			const workerInfo = members.find(data => data.memberId === workerId);
+			const infoName = workerInfo.name
+			console.log(infoName)
+			setNowWorker(infoName)
+			// console.log(workerInfo)
+			// const cardWorker = (workerInfo.memberId)
+			// console.log(`my Id : ${myId}`)
+			// console.log(`workerIds : ${cardWorker}`)
+			setMemberData(members)
+		}catch(error){
+			console.log(error)
+		}
+	}
+
+  const getCommentName = (workerId) => {
+    const worker = memberData.find((worker) => worker.memberId == workerId);
+    console.log(worker)
+    return worker ? worker.name : '이름을 가져올 수 없습니다.';
+  };
+
 	useEffect(() => {
 		/* 처음에 카드 정보, 컨펌 목록, 코멘트 목록 불러오기 */
 		cardImport()
-
+	}, [])
+	
+	useEffect(() => {
+		memberImport()
 	}, [])
 
 	return(
@@ -353,7 +375,11 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 						{ commentList.map((list) => 
 							<ReviewAlign key={list.createdAt}>
 								<ReviewStyle>
-									<ReviewText>{list.createdAt}<br />{list.content}</ReviewText>
+									<ReviewText>
+										{getCommentName(list.userId)}&nbsp;&nbsp;
+										{list.createdAt}<br />
+										{list.content}
+									</ReviewText>
 								</ReviewStyle>
 							</ReviewAlign>
 						)}
