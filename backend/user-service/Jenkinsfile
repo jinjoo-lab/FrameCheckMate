@@ -9,7 +9,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 checkout scm
-                echo 'Checkout Scm'
+                echo 'Checkout'
             }
         }
         stage('Docker Login'){
