@@ -45,6 +45,3 @@ eureka:
     register-with-eureka: true
     service-url:
       defaultZone: ${EUREKA_SERVER_URI}
-  instance:
-    prefer-ip-address: true
-    # instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
