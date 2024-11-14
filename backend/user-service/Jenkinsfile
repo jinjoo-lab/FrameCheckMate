@@ -39,7 +39,7 @@ pipeline {
         }
         stage('Run New image') {
             steps {
-                dir('~/member-service'){
+                dir('/var/jenkins_home/workspace/member-service/backend/user-service'){
                     sh 'docker-compose up -d'
                     echo 'Run New member-service image'
                 }
