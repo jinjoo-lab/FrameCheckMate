@@ -40,3 +40,8 @@ eureka:
     fetch-registry: true
     serviceUrl:
       defaultZone: ${EUREKA_SERVER_URL}
+
+slack:
+  webhook:
+    url: https://hooks.slack.com/services/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
+
