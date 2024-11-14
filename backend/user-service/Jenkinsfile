@@ -15,7 +15,7 @@ pipeline {
         stage('Build image') {
             steps {
                 sh 'ls -al'
-                dir('/var/jenkins_home/workspaces/S11P31A607/backend/user-service') {
+                dir('/var/jenkins_home/workspace/member-service/backend/user-service') {
                     sh 'ls -al'
                     sh 'chmod +x ./gradlew'
                     sh './gradlew build'
