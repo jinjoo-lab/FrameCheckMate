@@ -4,6 +4,8 @@ spring:
   application:
     name: FRAME-CHECKMATE-GATEWAY
   cloud:
+    default-filters:
+      - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
     gateway:
       discovery:
         locator:
@@ -39,26 +41,13 @@ spring:
         - id: notification-service
           uri: lb://NOTIFICATION-SERVICE
           predicates:
-            - Path=/notification/**
-#          filters:
-#            - AuthorizationHeaderFilter
+            - Path=api/v1/notification/**
         - id: ai-service
           uri: lb://AI-SERVICE
           predicates:
             - Path=/api/ai/**
           filters:
             - StripPrefix=2
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOriginPatterns: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-            allowedHeaders: "*"
-            allowCredentials: true
 
 jwt:
   secret: ${JWT_SECRET}

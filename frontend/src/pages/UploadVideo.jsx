@@ -3,9 +3,7 @@ import { useNavigate, Link, useParams } from 'react-router-dom'; // eslint-disab
 import TopBar from "../components/TopBar";
 import ReactPlayer from "react-player";
 import styled from 'styled-components'
-import { axiosClient } from '../axios';
 import { BASE_URL } from '../axios';
-import axios from 'axios';
 
 const UploadVideo = () => {
 
@@ -18,6 +16,8 @@ const UploadVideo = () => {
   const playerRef = useRef(null); // ReactPlayer에 대한 ref 생성
   const [ playTime, setPlayTime ] = useState();
   const [ totalTime, setTotalTime ] = useState(0)
+
+  const [loading, setLoading] = useState(false); // 로딩 상태 변수 추가
 
   const videoPlaying = (event) => {
     const file = event.target.files[0];
@@ -41,31 +41,29 @@ const UploadVideo = () => {
   }
 
   const uploadButton = async () => {
-
-    try{
-      const responses = await fetch(fileURL); // URL에서 파일을 fetch
-      const blob = await responses.blob(); // 파일을 Blob으로 변환
-
+    setLoading(true); // 로딩 시작
+    try {
+      const responses = await fetch(fileURL);
+      const blob = await responses.blob();
+  
       const formData = new FormData();
-      // formData.append('file', fileURL); 
       formData.append('file', blob, 'video.mp4');
       
       const response = await fetch(`${BASE_URL}/api/frame/original/${projectId}`, {
         method: 'POST',
         body: formData,
-        headers:{}
-        // headers: { access: `${accessToken}` },
-      },);
-
+      });
+  
       const text = await response.json();
       console.log(text)
       console.log(`응답왔음${text.fileUrl}`)
       navigate(`/imageProcessing/${projectId}`, { state: { totalTime } });
     }catch(error){
       console.log(`전송에러${error}`)
+    } finally {
+      setLoading(false); // 로딩 종료
     }
-
-  }
+  };
 
   useEffect(() => {
     console.log(`프로젝트 아이디${projectId}`)
@@ -88,9 +86,13 @@ const UploadVideo = () => {
                 onDuration={goDuration}
               />
             </div>
-            <WorkingButton onClick={uploadButton}>
-              분석하기
-            </WorkingButton>
+            {loading ? (
+              <LoadingMessage>분석 중...</LoadingMessage> // 로딩 메시지 표시
+            ) : (
+              <WorkingButton onClick={uploadButton}>
+                분석하기
+              </WorkingButton>
+            )}
             <WorkingCloseButton onClick={closeButton}>
               닫기
             </WorkingCloseButton>
@@ -157,5 +159,11 @@ const WorkingCloseButton = styled.button`
   color:white;
   fontWeight:bold;
   cursor:pointer;
+`
+const LoadingMessage = styled.div`
+  font-size:18px;
+  font-weight:bold;
+  color:gray;
+  margin-top:10px;
 `
 export default UploadVideo
