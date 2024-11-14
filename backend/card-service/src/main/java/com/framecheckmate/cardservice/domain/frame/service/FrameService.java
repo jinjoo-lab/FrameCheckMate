@@ -246,6 +246,7 @@ public class FrameService {
             downloadFileFromS3(frameFiles.get(i));
         }
 
+        reencodeFrames(frameFiles);
         File tempListFile = createFFmpegConcatFile(frameFiles);
 
         String mergedFileName = "merged_" + projectId + ".mp4";
@@ -282,10 +283,39 @@ public class FrameService {
                 ffmpegConfig.getFFmpegPath().toString(),
                 "-f", "concat",
                 "-safe", "0",
+                "-fflags", "+genpts",
                 "-i", fileList.getAbsolutePath(),
-                "-c", "copy",
-                outputFilePath
+                "-c:v", "libx264",
+                "-preset", "fast",
+                "-force_key_frames", "expr:gte(t,n_forced*0.5)",
+                outputFilePath,
+                "-fps_mode", "vfr"
         };
+    }
+
+    private void reencodeFrames(List<String> frameFiles) throws IOException, InterruptedException {
+        for (int i = 1; i < frameFiles.size(); i++) {
+            String inputFilePath = ffmpegConfig.getInputPath() + "\\" + frameFiles.get(i);
+            String outputFilePath = ffmpegConfig.getInputPath() + "\\" + "reencoded_" + frameFiles.get(i);
+
+            String[] command = new String[]{
+                    ffmpegConfig.getFFmpegPath().toString(),
+                    "-i", inputFilePath,
+                    "-c:v", "libx264",
+                    "-preset", "fast",
+                    "-crf", "23",
+                    "-r", "30",
+                    outputFilePath
+            };
+
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+            if (process.waitFor() != 0) {
+                throw new RuntimeException("Failed to reencode video: " + frameFiles.get(i));
+            }
+            frameFiles.set(i, "reencoded_" + frameFiles.get(i));
+        }
     }
 
     private void mergeFrames(File fileList, String outputFilePath) throws IOException, InterruptedException {
