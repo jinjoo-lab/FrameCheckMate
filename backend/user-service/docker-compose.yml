@@ -1,0 +1,34 @@
+services:
+  member-service:
+    image: sukkong/member-service:latest
+    environment:
+      - MYSQL_URL=${MYSQL_URL}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - EUREKA_SERVER_URI=${EUREKA_SERVER_URI}
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - eureka-network
+      - gateway-network
+      - member-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - member-network
+
+networks:
+  eureka-network:
+    external: true
+  gateway-network:
+    external: true
+  member-network:
+    driver: bridge
