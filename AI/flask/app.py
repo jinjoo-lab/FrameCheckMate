@@ -7,15 +7,19 @@ from py_eureka_client import eureka_client
 import server_config as server
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "OPTIONS"], "allow_headers": ["Content-Type", "Authorization"]}})
 
 eureka_client.init(eureka_server=server.EUREKA_SERVER,
                    app_name=server.SERVICE_NAME,
                    instance_host=server.SERVICE_HOST,
                    instance_port=server.SERVICE_PORT)
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['POST', 'OPTIONS'])
 def predict():
+    # OPTIONS 요청을 처리하여 프리플라이트 요청에 응답
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'preflight'}), 200
+
     # JSON 요청에서 URL 가져오기
     data = request.get_json()
     if not data or 'url' not in data:
