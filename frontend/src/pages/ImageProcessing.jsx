@@ -78,7 +78,7 @@ const ImageProcessing = () => {
 	
   const AiResult = async (fileURL) => {
     setLoading(true); // 로딩 시작
-    const response = await fetch(`http://k11a607.p.ssafy.io:8083/predict`, {
+    const response = await fetch(`${FLASK_URL}/predict`, {
       method : 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -189,10 +189,29 @@ const ImageProcessing = () => {
 
   const createSegments = (splitTime, aiTime, projectId, fps) => {
     // `segments` 배열을 초기화
-    const segments = splitTime.map(([start, end]) => {
-      // `detect` 변수를 false로 초기화하고, aiTime과의 비교를 통해 true로 변경
+    const segments = [];
+  
+    // splitTime 배열의 각 구간을 [start, end]로 만들기
+    for (let i = 0; i < splitTime.length - 1; i++) {
+      const start = splitTime[i];      // 현재 값 (start)
+      const end = splitTime[i + 1];    // 다음 값 (end)
+  
+      processSegment(start, end);      // 구간 처리
+    }
+  
+    // `Data` 객체 생성
+    const Data = {
+      projectId,
+      fps,
+      segments,
+    };
+  
+    return Data;
+  
+    // segment 처리 로직
+    function processSegment(start, end) {
       let detect = false;
-
+  
       // aiTime 배열에서 `start`, `end` 구간과 겹치는지 확인
       for (const [aiStart, aiEnd] of aiTime) {
         if (
@@ -204,25 +223,13 @@ const ImageProcessing = () => {
           break;
         }
       }
+  
       // `start`, `end`, `detect` 속성을 가진 객체로 `segments`에 추가
       segments.push({ start, end, detect });
-    })
-    // `Data` 객체 생성
-    const Data = {
-      projectId,
-      fps,
-      segments,
-    };
-    return Data;
+    }
   };
-
   // 영상 분할
 	const imageSplit = async() => {
-    try{
-      await videoDownload()
-    }catch(error){
-      console.log(error)
-    }
 		try{
       const Data = createSegments(splitTime, aiTime, projectId, fps)
 			// const Data = {
@@ -235,6 +242,8 @@ const ImageProcessing = () => {
 			// 	]
 			// }
 			const Datas = JSON.stringify(Data)
+      console.log('데이터')
+      console.log(Datas)
 
 			const response = await fetch(`${BASE_URL}/api/frame/split`, {
         method: 'POST',
@@ -247,10 +256,18 @@ const ImageProcessing = () => {
       alert('영상 분할이 완료되었습니다.')
 			navigate(`/mainWorkPage/${projectId}`);
 		}catch(error){
+      console.log(error)
       alert('영상 분할에 실패했습니다.')
 		}
 	}
 
+  
+  useEffect(() => {
+    // AiResult()
+		imageResult()
+    setSplitTime([0, totalTime])
+  }, [])
+  
   useEffect(() => {
     if (fileURL) {
       const videoElement = document.createElement("video");
@@ -259,17 +276,11 @@ const ImageProcessing = () => {
         const duration = videoElement.duration;
         const estimatedFrames = Math.floor(videoElement.videoWidth * videoElement.videoHeight * duration / 500000);
         const calculatedFPS = estimatedFrames / duration;
-        setfps(calculatedFPS.toFixed(0)); // 추정 FPS 설정
+        setfps('24'); // 임시 FPS 설정 값 (초당 24프레임)
+        // setfps(calculatedFPS.toFixed(0)); // 추정 FPS 설정
       };
     }
   }, [fileURL]);
-
-  useEffect(() => {
-    AiResult()
-		imageResult()
-    setSplitTime([0, totalTime])
-  }, [])
-
 	return(
 		<div>
 			<TopBar title='영상 분석 점검' logoutView={true}/>
