@@ -28,6 +28,12 @@ const WorkingLog = () => {
         // headers: { access: `${accessToken}` },
       
       });
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
       const answer = await response.json()
       setLogList(answer)
 
