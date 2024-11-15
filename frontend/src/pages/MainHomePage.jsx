@@ -32,6 +32,12 @@ const MainHomePage = () => {
         body: formData,
         headers: { access: `${accessToken}` },
       });
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
       if (response.ok){
         alert('프로젝트 생성이 완료되었습니다')
         setIsOpen(false);
@@ -103,6 +109,12 @@ const MainHomePage = () => {
   const groupImport = async() => {
     try{
       const response = await viewProject()
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
       const groupData = response.data
       setGroupList(groupData)
     }catch(error){
