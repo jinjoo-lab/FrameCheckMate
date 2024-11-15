@@ -53,6 +53,14 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
         body: formData,
         headers:{}
       },);
+
+			// ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
+
       const text = await response.json();
 			alert('영상 업로드가 완료되었습니다')
 		}catch(error){
@@ -67,6 +75,13 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
         method: 'GET',
         headers:{}
       },);
+
+		// ★★★★★★★★★★★★★★★★★★★★★★★
+		if (response.status === 401 || response.status === 500) {
+			console.log('???');
+			// alert('로그인이 만료되었습니다')
+			navigate('/loginSignup')
+		}
 
 			const blob = await response.blob();
       // Blob URL을 만들어서 다운로드
@@ -107,6 +122,14 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 				},
 				body: JSON.stringify(Data),
 			});
+
+			// ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
+
 			if (nowWorker.length == 0){
 				const goAllot = beforeMove()
 			}
@@ -125,6 +148,14 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 					method: 'PATCH', 
 					withCredentials: true,
 				});
+
+			// ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
+
 				alert('컨펌 요청이 완료되었습니다')
 				navigate(`/mainWorkPage/${projectId}`)
 			}catch(error){
@@ -139,6 +170,13 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 					method: 'PATCH', 
 					withCredentials: true,
 				});
+
+			// ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
 				alert('컨펌 요청이 완료되었습니다')
 				navigate(`/mainWorkPage/${projectId}`)
 			}catch(error){
@@ -164,6 +202,13 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 					},
 					body: JSON.stringify(Data),
 				});
+
+			// ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
 				alert('코멘트 저장이 완료되었습니다')
 				setComments('')
 			}catch(error){
@@ -182,6 +227,13 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
         method: 'GET',
         withCredentials: true,
       });
+
+		// ★★★★★★★★★★★★★★★★★★★★★★★
+		if (response.status === 401 || response.status === 500) {
+			console.log('???');
+			// alert('로그인이 만료되었습니다')
+			navigate('/loginSignup')
+		}
       const answer = await response.json()
       if (answer && answer.workerId) {
 				setNowWorker(answer.workerId)
@@ -232,6 +284,12 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 				method: 'GET',
 				headers: { access: `${accessToken}` },
 			});
+		// ★★★★★★★★★★★★★★★★★★★★★★★
+		if (response.status === 401 || response.status === 500) {
+			console.log('???');
+			// alert('로그인이 만료되었습니다')
+			navigate('/loginSignup')
+		}
 			const members = await response.json()
 			// const myId = localStorage.getItem('myId')
 			const workerInfo = members.find(data => data.memberId === workerId);
