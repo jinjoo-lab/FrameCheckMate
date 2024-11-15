@@ -31,7 +31,6 @@ const ResultWork = () => {
         // withCredentials: true,
       },);
 			const blob = await response.blob();
-			console.log(`응답 ${response}`)
       // Blob URL을 만들어서 다운로드
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
@@ -53,10 +52,8 @@ const ResultWork = () => {
         withCredentials: true,
       });
       const answer = await response.text()
-			console.log(answer)
 			setFileURL(answer)
 			setIsPlaying(true)
-			console.log(`응답 ${answer}`)
     }catch(error){
       console.log(`에러 ${error}`)
     }
