@@ -67,7 +67,6 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 				headers: { access: `${accessToken}` },
 			});
 			const members = await response.json()
-			console.log(members)
 			setMemberData(members)
 		}catch(error){
 			console.log(error)
@@ -97,7 +96,6 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
       },
 		);
 
-		console.log(response)
 		navigate(`/mainWorkPage/${projectId}`)
 
 		}catch(error){
@@ -148,7 +146,6 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
   const handleSelectChange = (event) => {
     // 선택된 option의 value는 해당 id이므로
     const selectedId = event.target.value;
-		console.log(selectedId)
     // 선택된 id에 맞는 name을 찾기
     const selectedItem = memberData.find(item => item.memberId === selectedId);
     // selectedName을 업데이트
