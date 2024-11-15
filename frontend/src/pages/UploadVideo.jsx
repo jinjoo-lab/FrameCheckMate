@@ -54,6 +54,12 @@ const UploadVideo = () => {
         body: formData,
       });
   
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
       const text = await response.json();
       navigate(`/imageProcessing/${projectId}`, { state: { totalTime } });
     }catch(error){

@@ -85,6 +85,13 @@ const ImageProcessing = () => {
       },
       body: JSON.stringify({ 'url': fileURL }),
     });
+
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+  if (response.status === 401 || response.status === 500) {
+    console.log('???');
+    // alert('로그인이 만료되었습니다')
+    navigate('/loginSignup')
+  }
     // const response = await fetch(`${FLASK_URL}/predict`, {
     //   method : 'POST',
     //   headers: {
@@ -155,6 +162,13 @@ const ImageProcessing = () => {
         method: 'GET',
         headers:{}
       },);
+
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
 			const blob = await response.blob();
       // Blob URL을 만들어서 다운로드
       const link = document.createElement('a');
@@ -179,6 +193,12 @@ const ImageProcessing = () => {
         method: 'GET',
         headers:{}
       },);
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
 			const text = await response.text();
 			setFileURL(text)
 			setIsPlaying(true)
@@ -252,6 +272,12 @@ const ImageProcessing = () => {
 					'Content-Type': 'application/json',
 				},
       },);
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
       alert('영상 분할이 완료되었습니다.')
 			navigate(`/mainWorkPage/${projectId}`);
 		}catch(error){
