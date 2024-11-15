@@ -32,7 +32,6 @@ const MainHomePage = () => {
         body: formData,
         headers: { access: `${accessToken}` },
       });
-      console.log(response)
       if (response.ok){
         alert('프로젝트 생성이 완료되었습니다')
         setIsOpen(false);
@@ -105,7 +104,6 @@ const MainHomePage = () => {
     try{
       const response = await viewProject()
       const groupData = response.data
-      console.log(groupData)
       setGroupList(groupData)
     }catch(error){
       console.log(`그룹조회 에러 ${error}`)

@@ -29,11 +29,9 @@ const WorkingLog = () => {
       
       });
       const answer = await response.json()
-      console.log(answer)
       setLogList(answer)
 
     }catch(error){
-      // console.log(error)
       console.log('아직 로그가 없습니다')
 
       setLogList([])
@@ -68,12 +66,10 @@ const WorkingLog = () => {
 
   const uploadButton = (event, fileURL) => {
     event.preventDefault() // 페이지 새로 고침 방지
-    console.log(fileURL)
   }
 
   const playVideo = (event, file) => {
     event.preventDefault(); // 페이지 새로 고침 방지
-    console.log(file)
     setFileURL(`https://framecheckmate-bucket.s3.ap-northeast-2.amazonaws.com/${file}`)
     setIsPlaying(true)
   }

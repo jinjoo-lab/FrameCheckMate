@@ -129,7 +129,6 @@ const LoginSignUp = () => {
         },
         body:JSON.stringify(Data),
       });
-      console.log(response)
       alert('회원가입에 성공했습니다!')
       setLoginId(signId)
       }catch(error){

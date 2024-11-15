@@ -55,8 +55,6 @@ const UploadVideo = () => {
       });
   
       const text = await response.json();
-      console.log(text)
-      console.log(`응답왔음${text.fileUrl}`)
       navigate(`/imageProcessing/${projectId}`, { state: { totalTime } });
     }catch(error){
       console.log(`전송에러${error}`)
@@ -66,7 +64,6 @@ const UploadVideo = () => {
   };
 
   useEffect(() => {
-    console.log(`프로젝트 아이디${projectId}`)
   })
   return(
     <div>

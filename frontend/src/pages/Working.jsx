@@ -12,7 +12,6 @@ const Working = () => {
   const { projectId, cardId } = useParams();
 
   const detailButton = () => {
-    console.log(cardId)
     navigate(`/workingLog/${projectId}/${cardId}`)
   }
 

@@ -7,7 +7,8 @@ import ReactPlayer from "react-player";
 import { createGlobalStyle } from 'styled-components';
 import { cardView, commentSave, confirmSave } from '../api';
 import { BASE_URL, USER_URL } from '../axios';
-
+import { FcVoicePresentation } from "react-icons/fc";
+import { FaUserCircle } from "react-icons/fa";
 
 const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 
@@ -182,7 +183,6 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
         withCredentials: true,
       });
       const answer = await response.json()
-			console.log(answer)
       if (answer && answer.workerId) {
 				setNowWorker(answer.workerId)
       }
@@ -202,7 +202,6 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 				setNowContent(answer.description)
 			}
 			if (answer && answer.frameInfo){
-				console.log(answer.frameInfo)
 				setFileURL(answer.frameInfo)
 			}
     }catch(error){
@@ -234,11 +233,9 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 				headers: { access: `${accessToken}` },
 			});
 			const members = await response.json()
-			console.log(members)
 			// const myId = localStorage.getItem('myId')
 			const workerInfo = members.find(data => data.memberId === workerId);
 			const infoName = workerInfo.name
-			console.log(infoName)
 			setNowWorker(infoName)
 			// console.log(workerInfo)
 			// const cardWorker = (workerInfo.memberId)
@@ -252,7 +249,6 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 
   const getCommentName = (workerId) => {
     const worker = memberData.find((worker) => worker.memberId == workerId);
-    console.log(worker)
     return worker ? worker.name : '이름을 가져올 수 없습니다.';
   };
 
@@ -325,7 +321,7 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 			</div>
 			<div style={{ width:'45%' }}>
 
-			<div style={{ margin:'10px 5px'}}>컨펌 내용</div>
+			<div style={{ margin:'15px', fontWeight:"bold"}}>컨펌 내용</div>
 			<ReviewScroll>
 				{ confirmList.length == 0 
 				? (
@@ -362,7 +358,7 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 				: null
 			}
 
-			<div style={{ margin:'10px 5px'}}>코멘트</div>
+			<div style={{ margin:'15px', fontWeight:"bold"}}>코멘트</div>
 			<ReviewScroll>
 				{ commentList.length == 0 
 				? (
@@ -375,10 +371,15 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 						{ commentList.map((list) => 
 							<ReviewAlign key={list.createdAt}>
 								<ReviewStyle>
+									<div style={{ display:"flex", alignItems:"center", margin:"0px 10px"}}>
+										<FaUserCircle size={25}/>
+									</div>
 									<ReviewText>
+										<div style={{padding:"1px 5px"}}> 
 										{getCommentName(list.userId)}&nbsp;&nbsp;
 										{list.createdAt}<br />
 										{list.content}
+										</div>
 									</ReviewText>
 								</ReviewStyle>
 							</ReviewAlign>
@@ -419,24 +420,40 @@ const FeedbackContainer = styled.div`
 	align-items:center;
 `
 const ReviewScroll = styled.div`
-	border:1px solid black;
+	border:1px solid #ccc;
 	width:90%; 
+	border-radius:10px;
+	box-shadow:0 5px 5px rgba(0, 0, 0, 0.15);
 	height:200px; 
 	margin:5px; 
-	padding:10px; 
+	padding:10px 5px; 
 	display:flex; 
 	flex-direction:column; 
 	overflow-y:auto;
+	&::-webkit-scrollbar {
+	padding:10px 5px;
+  border-radius: 10px;
+	width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #ccc;
+  }
 `
+
 const ReviewStyle = styled.div`
-	border-bottom:1px solid black; 
-	width:85%; 
+	// border:1px solid gray; 
+	border-radius:10px;
+	box-shadow:0 3px 3px rgba(0, 0, 0, 0.10);
+	width:90%;
+	padding:10px 0px; 
 	display:flex; 
 	flex-direction:row; 
 `
 const ReviewText = styled.div`
 	font-size:12px; 
-	font-weight:bold; 
+	margin:3px 0px;
+	// font-weight:bold; 
 	white-space:normal
 `
 const NoReview = styled.div`
@@ -458,6 +475,7 @@ const ReviewInputContainer = styled.div`
 	flex-direction:row; 
 	justify-content:center;
 `
+
 const ReviewInput = styled.input`
 	width:70%;
 	padding:5px 10px; 

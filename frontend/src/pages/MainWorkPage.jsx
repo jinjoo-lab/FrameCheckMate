@@ -41,6 +41,12 @@ const MainWorkPage = () => {
         method: 'PATCH', 
         withCredentials: true,
       });
+    // ★★★★★★★★★★★★★★★★★★★★★★★
+    if (response.status === 401 || response.status === 500) {
+      console.log('???');
+      // alert('로그인이 만료되었습니다')
+      navigate('/loginSignup')
+    }
       // 2번
       // const response = await toDoChange(cardId)
       const answer = await response.json()
@@ -67,6 +73,13 @@ const MainWorkPage = () => {
         },
       // withCredentials: true,
       });
+
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+      if (response.status === 401 || response.status === 500) {
+        console.log('???');
+        // alert('로그인이 만료되었습니다')
+        navigate('/loginSignup')
+      }
       // 2번
       // const response = await workingChange(cardId)
       const answer = await response.json()
@@ -91,10 +104,12 @@ const MainWorkPage = () => {
           'Access-Control-Allow-Methods':'PATCH',
         },
       });
-      // 2번
-      // const response = await confirmChange(cardId)
-      // const answer = await response.json()
-      // console.log(answer)
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+    if (response.status === 401 || response.status === 500) {
+      console.log('???');
+      // alert('로그인이 만료되었습니다')
+      navigate('/loginSignup')
+    }
       const answer = await response.json()
       cardSort()
     }catch(error){
@@ -114,8 +129,12 @@ const MainWorkPage = () => {
         method: 'PATCH', 
         withCredentials: true,
       });
-      // 2번
-      // const response = await resultChange(cardId)
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+      if (response.status === 401 || response.status === 500) {
+        console.log('???');
+        // alert('로그인이 만료되었습니다')
+        navigate('/loginSignup')
+      }
       const answer = await response.json()
       cardSort()
     }catch(error){
@@ -147,10 +166,13 @@ const MainWorkPage = () => {
         method: 'POST',
         // headers: { access: `${accessToken}` },
       });
-      // 2번
-      // const response = await videoMerge(projectId)
-      // const text = await response.json();
-      console.log(response)
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+      if (response.status === 401 || response.status === 500) {
+        console.log('???');
+        // alert('로그인이 만료되었습니다')
+        navigate('/loginSignup')
+      }
+
       alert('병합한 영상 생성이 완료되었습니다')
       navigate(`/resultWork/${projectId}`)
     }catch(error){
@@ -172,10 +194,15 @@ const MainWorkPage = () => {
         method: 'GET',
         // withCredentials: true,
         // headers: { access: `${accessToken}` },
-      
       });
+    // ★★★★★★★★★★★★★★★★★★★★★★★
+    if (response.status === 401 || response.status === 500) {
+      console.log('???');
+      // alert('로그인이 만료되었습니다')
+      navigate('/loginSignup')
+    }
+      
       const answer = await response.json()
-      console.log(answer)
       if (answer && answer.cardsByStatus && answer.cardsByStatus.TODO) {
         setBeforeList(answer.cardsByStatus.TODO);
       }
@@ -204,15 +231,19 @@ const MainWorkPage = () => {
           method: 'GET',
           headers: { access: `${accessToken}` },
         });
+
+        // ★★★★★★★★★★★★★★★★★★★★★★★
+        if (response.status === 401 || response.status === 500) {
+          console.log('???');
+          // alert('로그인이 만료되었습니다')
+          navigate('/loginSignup')
+        }
         const members = await response.json()
-        console.log(members)
         const emailCheck = localStorage.getItem('myEmail')
         const idCheck = members.find(data => data.email === emailCheck);
         const idInfo = (idCheck.memberId)
         localStorage.setItem('myId', idInfo);
         const manager = localStorage.getItem('managerId')
-        console.log(`my Id : ${idInfo}`)
-        console.log(`manager Id : ${manager}`)
         setMyUUID(idInfo)
         if (manager == idInfo) {
           setManagerCheck('ok')
@@ -230,20 +261,15 @@ const MainWorkPage = () => {
   useEffect(() => {
     cardSort();
     const abc = localStorage.getItem('managerId')
-    console.log(`관리자 아이디 : ${abc}`)
     const def = localStorage.getItem('isFinished') // string type으로 확인 필요
     memberImport()
   }, []); 
 
   useEffect(() => {
-    console.log('매니저 확인중..')
   }, [managerCheck, myUUID])
 
   const getWorkerName = (workerId) => {
-    console.log(workerId)
-    console.log(memberData)
     const worker = memberData.find((worker) => worker.memberId == workerId);
-    console.log(worker)
     return worker ? worker.name : '이름을 가져올 수 없습니다.';
   };
     
