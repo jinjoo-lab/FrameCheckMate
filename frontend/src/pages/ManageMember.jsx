@@ -28,6 +28,12 @@ const ManageMember = () => {
         method: 'GET',
         headers: { access: `${accessToken}` },
       });
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
       const names = await response.json()
       if (names.length == 0){
         setWordView('검색 결과가 없습니다')
@@ -76,8 +82,15 @@ const ManageMember = () => {
         'projectId':projectId,
         'members':datas
       }
+      
       const response = await inviteProject(Data)
 
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
       alert('초대가 완료되었습니다')
       setInviteData([])
 
@@ -105,6 +118,12 @@ const ManageMember = () => {
         method: 'GET',
         headers: { access: `${accessToken}` },
       });
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
       const members = await response.json()
       setMemberData(members)
     }catch(error){
