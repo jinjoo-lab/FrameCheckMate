@@ -29,7 +29,6 @@ const ManageMember = () => {
         headers: { access: `${accessToken}` },
       });
       const names = await response.json()
-      console.log(names)
       if (names.length == 0){
         setWordView('검색 결과가 없습니다')
         setNameSearchData([])
@@ -78,7 +77,6 @@ const ManageMember = () => {
         'members':datas
       }
       const response = await inviteProject(Data)
-      console.log(response)
 
       alert('초대가 완료되었습니다')
       setInviteData([])
@@ -108,7 +106,6 @@ const ManageMember = () => {
         headers: { access: `${accessToken}` },
       });
       const members = await response.json()
-      console.log(members)
       setMemberData(members)
     }catch(error){
       console.log(error)
