@@ -243,7 +243,6 @@ const ImageProcessing = () => {
 			// }
 			const Datas = JSON.stringify(Data)
       console.log('데이터')
-      console.log(Datas)
 
 			const response = await fetch(`${BASE_URL}/api/frame/split`, {
         method: 'POST',
