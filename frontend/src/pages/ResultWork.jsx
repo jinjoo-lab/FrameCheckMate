@@ -30,6 +30,12 @@ const ResultWork = () => {
         // headers: { access: `${accessToken}` },
         // withCredentials: true,
       },);
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
 			const blob = await response.blob();
       // Blob URL을 만들어서 다운로드
       const link = document.createElement('a');
@@ -51,6 +57,12 @@ const ResultWork = () => {
         method: 'GET',
         withCredentials: true,
       });
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
       const answer = await response.text()
 			setFileURL(answer)
 			setIsPlaying(true)

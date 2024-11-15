@@ -50,6 +50,12 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
         method: 'GET',
         withCredentials: true,
       });
+			// ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
       const answer = await response.text()
 			setFileURL(answer)
 			setIsPlaying(true)
@@ -66,6 +72,12 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 				method: 'GET',
 				headers: { access: `${accessToken}` },
 			});
+			// ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
 			const members = await response.json()
 			setMemberData(members)
 		}catch(error){
@@ -95,6 +107,13 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
         // withCredentials: true,
       },
 		);
+
+		// ★★★★★★★★★★★★★★★★★★★★★★★
+		if (response.status === 401 || response.status === 500) {
+			console.log('???');
+			// alert('로그인이 만료되었습니다')
+			navigate('/loginSignup')
+		}
 
 		navigate(`/mainWorkPage/${projectId}`)
 
@@ -313,18 +332,18 @@ const WorkerInput = styled.input`
 
 const DateStyle = createGlobalStyle`
 	.react-datepicker__input-container input {
-		border: 1px solid gray;
-		border-radius: 10px;
-		margin: 3px 2px;
-		padding: 5px 5px;
-		text-align: center;
-		cursor: pointer;
-		caret-color: transparent;
-		height:20px;
+		border: 1px solid gray !important;
+		border-radius: 10px !important;
+		margin: 3px 2px !important;
+		padding: 5px 5px !important;
+		text-align: center !important;
+		cursor: pointer !important;
+		caret-color: transparent !important;
+		height:20px !important;
 	}
 	.react-datepicker__input-container input:disabled {
-		background-color: #f0f0f0; 
-		color: #a9a9a9; 
+		background-color: #f0f0f0 !important; 
+		color: #a9a9a9 !important; 
 	}
 `
 const VideoBox = styled.div`
