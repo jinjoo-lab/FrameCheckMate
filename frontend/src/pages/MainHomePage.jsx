@@ -8,7 +8,8 @@ import { axiosClient } from '../axios';
 import { viewProject, createProject } from '../api';
 import { BASE_URL } from '../axios';
 import { USER_URL } from '../axios';
-
+import { FcVideoFile } from "react-icons/fc";
+import { toast } from "react-toastify";
 
 const MainHomePage = () => {
 
@@ -39,7 +40,7 @@ const MainHomePage = () => {
 				navigate('/loginSignup')
 			}
       if (response.ok){
-        alert('프로젝트 생성이 완료되었습니다')
+        toast.success(`프로젝트 생성이 완료되었습니다`);
         setIsOpen(false);
       }
       groupImport()
@@ -96,6 +97,7 @@ const MainHomePage = () => {
     event.preventDefault(); // 페이지 새로 고침 방지
     localStorage.setItem('managerId', managerId);
     localStorage.setItem('isFinished', isFinished);
+    localStorage.setItem('projectName', projectName)
     navigate(`/mainWorkPage/${projectId}`);
   }
 
@@ -131,7 +133,7 @@ const MainHomePage = () => {
 
   return(
     <div>
-      <TopBar title={'그룹 리스트'} logoutView={true}/>
+      <TopBar title={'프로젝트 리스트'} logoutView={true}/>
       <RowContainer> 
         {/* 그룹 목록 */}
         <GroupScroll>
@@ -141,6 +143,7 @@ const MainHomePage = () => {
             <>
               { groupList.map((list) => 
                 <GroupView key={list.projectId}>
+                  &nbsp;&nbsp;<FcVideoFile size={30} />&nbsp;&nbsp;&nbsp;
                   <GroupText onClick={(event) => {workView(event, list.projectId, list.name, list.managerId, list.isFinished)}}>{list.name}</GroupText>
                   {/* <GroupText onClick={(event) => {workView(event, list.projectId)}}>{list.name}</GroupText> */}
                   { list.isFinished == true ? 
@@ -156,7 +159,7 @@ const MainHomePage = () => {
           }
 
         </GroupScroll>
-        <ModalClick onClick={openModal}>그룹 생성</ModalClick>
+        <ModalClick onClick={openModal}>프로젝트 생성</ModalClick>
       </RowContainer>
 
       {/* 모달 */}
@@ -165,12 +168,12 @@ const MainHomePage = () => {
         ariaHideApp={false} 
         style={customStyles}>
         <ModalContainer> 
-          <h2>그룹 생성</h2>
+          <h2>프로젝트 생성</h2>
           <ModalContent>
-            <h3>그룹 이름</h3>
+            <div style={{margin:"5px 15px", width:'90%'}}>프로젝트 이름</div>
             <GroupInput type="text" onChange={(event) => setGroupName(event.target.value)} />
             <ButtonAlignBox>
-              <GroupButton onClick={makeGroup}>그룹 만들기</GroupButton>
+              <GroupButton onClick={makeGroup}>생성하기</GroupButton>
               <ModalClose onClick={closeModal}>닫기</ModalClose>
             </ButtonAlignBox>
           </ModalContent>
@@ -181,15 +184,18 @@ const MainHomePage = () => {
 };
 
 const RowContainer = styled.div`
-  border:4px dashed black;
-  width:90%;
+  width:50%;
   padding:60px 10px;
   height:100%;
   display:flex;
   justify-content:center;
   align-items:center;
-  margin:0 auto;
+  margin:20px auto;
   flex-direction:column;
+	border:1px solid #ccc;
+	box-shadow:0px 8px 7px rgba(0, 0, 0, 0.4);
+  border-radius:10px;
+  background-color: rgba(50, 50, 120, 0.03); 
 `
 const GroupScroll = styled.div`
   width:80%;
@@ -199,19 +205,31 @@ const GroupScroll = styled.div`
   display:flex;
   flex-direction:column;
   align-items:center;
+  &::-webkit-scrollbar {
+	padding:10px 5px;
+  border-radius: 10px;
+	width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #ccc;
+  }
 `
 const GroupView = styled.div`
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:3px solid black;
-  margin:15px 0px;
-  width:80%;
+	// border:1px solid #333; 
+	border-radius:10px;
+  background-color:white;
+	box-shadow:0 5px 6px rgba(0, 0, 100, 0.23);
+	width:75%;
+  margin:10px 0px;
+	padding:20px 20px; 
+	display:flex; 
+	flex-direction:row; 
 `
 const GroupText = styled.p`
-  font-size:25px;
+  font-size:20px;
   font-weight:bold;
-  margin:0;
+  margin:0px 10px;
   cursor:pointer;
 `
 const PlayButton = styled.button`
@@ -223,8 +241,8 @@ const PlayButton = styled.button`
 const ModalClick = styled.button`
   width:150px;
   border:none;
-  border-radius:5px;
-  padding:5px 10px;
+  border-radius:20px;
+  padding:10px 20px;
   background-color:black;
   color:white;
   font-weight:bold;
@@ -235,46 +253,51 @@ const ModalContainer= styled.div`
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  padding:0px 30px 40px 40px;
+  padding:0px 50px 30px 40px;
 `
 const ModalContent = styled.div`
   display:flex;
   flex-direction:column;
   justify-content:center;
-  align-items:flex-start;
-  margin:10px 0px
+  align-items:center;
+  margin:10px 0px;
+  padding:30px 30px 10px 30px;
 `
 const ButtonAlignBox = styled.div`
   display:flex;
   flex-direction:row;
+  margin-top:40px; 
 `
 const GroupButton = styled.button`
-  width:150px;
+  width:100px;
   border:none;
-  border-radius:5px;
-  padding:10px 20px;
+  border-radius:20px;
+  padding:0px 0px;
   background-color:black;
-  margin:5px;
+  margin:5px 10px;
   color:white;
   font-weight:bold;
+  font-size:12px;
   cursor:pointer;
 `
 const ModalClose = styled.button`
-  width:150px;
+  width:100px;
   border:none;
-  border-radius:5px;
-  padding:10px 20px;
+  border-radius:20px;
+  padding:10px;
   background-color:gray;
   margin:5px;
   color:white;
   font-weight:bold;
+  font-size:12px;
   cursor:pointer;
 `
 const GroupInput = styled.input`
   border:1px solid gray;
   border-radius:10px;
   margin:10px 0px;
+  padding:0px 10px;
   height:30px;
-  width:300px;
+  width:90%;
 `
 export default MainHomePage

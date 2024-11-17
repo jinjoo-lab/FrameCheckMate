@@ -6,10 +6,17 @@ import TopBar from "../components/TopBar";
 import { axiosClient } from '../axios';
 import { allCardView, toDoChange, workingChange, confirmChange, resultChange, videoMerge } from '../api';
 import { BASE_URL, USER_URL } from '../axios';
+import { FaUserCircle } from "react-icons/fa";
+import { IoMdArrowDroprightCircle } from "react-icons/io";
+import { IoMdArrowDropleftCircle } from "react-icons/io";
+import { MdOutlineSlowMotionVideo } from "react-icons/md";
+import { BiSolidCameraMovie } from "react-icons/bi";
+import { toast } from "react-toastify";
+import { MdLocalMovies } from "react-icons/md";
 
 const MainWorkPage = () => {
 
-  const { projectId, projectName } = useParams();
+  const { projectId } = useParams();
 
   const navigate = useNavigate();
     
@@ -29,6 +36,8 @@ const MainWorkPage = () => {
 
   /* 내 아이디 체크 */
   const [ myUUID, setMyUUID ] = useState('')
+
+  const [ pjName, setPjName ] = useState('')
 
   /* toDo로 상태 변경 */
   const toDoMove = async (event, card) => {
@@ -144,7 +153,7 @@ const MainWorkPage = () => {
 
   /* 페이지 이동 */
   const memberCheck = () => {
-    navigate(`/manageMember/${projectId}/${projectName}`);
+    navigate(`/manageMember/${projectId}`);
   }
 
   const videoAdd = () => {
@@ -172,11 +181,10 @@ const MainWorkPage = () => {
         // alert('로그인이 만료되었습니다')
         navigate('/loginSignup')
       }
-
-      alert('병합한 영상 생성이 완료되었습니다')
+      toast.success(`영상 병합이 완료되었습니다`);
       navigate(`/resultWork/${projectId}`)
     }catch(error){
-      alert('영상 병합에 실패했습니다')
+      toast.error(`영상 병합에 실패했습니다`);
       console.log(`최종 영상 생성 실패:${error}`)
     }
   }
@@ -262,6 +270,8 @@ const MainWorkPage = () => {
     cardSort();
     const abc = localStorage.getItem('managerId')
     const def = localStorage.getItem('isFinished') // string type으로 확인 필요
+    const projectName = localStorage.getItem('projectName')
+    setPjName(projectName)
     memberImport()
   }, []); 
 
@@ -277,7 +287,7 @@ const MainWorkPage = () => {
     <div>
       <TopBar logoutView={true}/>
       <TitleContainer>
-        <BigTextGroupName>그룹 이름</BigTextGroupName>
+        <BigTextGroupName><MdLocalMovies size={30}/>&nbsp;{pjName}</BigTextGroupName>
         <Block>
           { managerCheck== 'ok'
           ?
@@ -294,35 +304,61 @@ const MainWorkPage = () => {
       <BigContainer>
         {/* 작업 전 목록 */}
         <CardContainer>
-          <div>작업 전</div>
+
+        <div style={{height:'150px', width:'100%'}}>
+            <div style={{textAlign:"center"}}>
+            <MdOutlineSlowMotionVideo size={30} style={{color:"gray" }}/>
+            <h5>작업 전</h5>
+            </div>
+            <div style={{width:"100%", borderBottom:"3px solid gray", margin:"10px 0px 0px 0px"}}></div>
+          </div>
           { beforeList.length == 0 
           ? ( <NoCardView>분할 된 영상이 없습니다</NoCardView> )
           : (
           <CardScroll>
             { beforeList.map(card => 
             <Link 
-              to={`/beforeWork/${card.projectId}/${card.cardId}`}
+              // to={`/beforeWork/${card.projectId}/${card.cardId}`}
+              to={`/beforeWork/${card.projectId}/${card.cardId}` }
+              state={{allotId:card.workerId, 
+                      allotContent:card.description, 
+                      allotStart:card.startDate,
+                      allotEnd:card.endDate}}
               key={card.frameId} 
               style={{
-                color:'inherit',
-                textDecoration:'none',
-                width:'200px',
-                padding:"15px 10px",
-                height:'100px', 
-                border:"1px solid black",
-                margin:"5px 0px",
-                justifyContent:"center",
-                alignItems:"center"
+                      color:'inherit',
+                      textDecoration:'none',
+                      width:'200px',
+                      height:'150px',
+                      minHeight:'150px',
+                      border:"1px solid gray",
+                      borderRadius:"10px",
+                      margin:"5px",
+                      justifyContent:"center",
+                      alignItems:"center",
+                      boxShadow:"0 5px 5px rgba(0, 0, 0, 0.15)",
               }}>
+              <div style={{backgroundColor:"#2a2c5d", height:"65%", borderRadius:"10px 10px 0px 0px"}}>
               <MoveButtonContainer>
-                <MoveButton onClick={(event) => {inProgressMove(event, card)}}>
-                  <FaRegArrowAltCircleRight size={25} />
-                </MoveButton>
-              </MoveButtonContainer>
+                { card.workerId == null 
+                  ?<></>
+                  : (
+                  <MoveButton onClick={(event) => {inProgressMove(event, card)}}>
+                    <IoMdArrowDroprightCircle size={25} style={{color:'#dcdcdc'}}/>
+                  </MoveButton>
+                  )}
+                </MoveButtonContainer>
+                <div style={{color:"white", textAlign:"center", fontWeight:"400"}}>
+                  {card.workerId == null ? <div></div> : <>{card.description}</>}
+                </div>
+              </div>
               <CardView>
               { card.workerId == null 
-                ? (<>작업자 미배정</>)
-                : (<>작업자 : {getWorkerName(card.workerId)}<br />{card.description}</>)}
+                ? (<div>작업자 미배정</div>)
+                : (<>
+                  <FaUserCircle size={25}/>
+                  &nbsp;
+                  {getWorkerName(card.workerId)}</>)}
               </CardView>
             </Link>
             )}
@@ -333,7 +369,13 @@ const MainWorkPage = () => {
 
         {/* 작업 중 목록 */}
         <CardContainer>
-          <div>작업중</div>
+          <div style={{height:'150px', width:'100%'}}>
+            <div style={{textAlign:"center"}}>
+            <MdOutlineSlowMotionVideo size={30} style={{color:"green", }}/>
+            <h5>작업중</h5>
+            </div>
+            <div style={{width:"100%", borderBottom:"3px solid green", margin:"10px 0px 0px 0px"}}></div>
+          </div>
             { workingList.length == 0 
               ? ( <NoCardView>작업 중인 영상이 없습니다</NoCardView> )
               : (
@@ -346,32 +388,43 @@ const MainWorkPage = () => {
                         color:'inherit',
                         textDecoration:'none',
                         width:'200px',
-                        padding:"15px 10px",
-                        height:'100px',
-                        border:"1px solid gray",
+                        height:'150px',
+                        border:"1px solid green",
                         borderRadius:"10px",
-                        margin:"5px 0px",
+                        margin:"5px",
                         justifyContent:"center",
+                        minHeight:'150px',
                         alignItems:"center",
-                        boxShadow:"0 5px 5px rgba(0, 0, 0, 0.15)"
-                      }}>                        
+                        boxShadow:"0 5px 5px rgba(0, 0, 0, 0.15)",
+                      }}>          
+                      <div style={{backgroundColor:"green", height:"65%", borderRadius:"10px 10px 0px 0px",}}>
+                      {/* <div style={{backgroundColor:"#2a2c5d", height:"65%", borderRadius:"10px 10px 0px 0px"}}> */}
                       <MoveButtonContainer>
-                        <MoveButton onClick={(event)=>{toDoMove(event, card)}}>
-                          <FaRegArrowAltCircleLeft size={25} />
-                        </MoveButton>
-                        {card.workerId == myUUID
-                        ?
-                        <MoveButton onClick={(event) => {confirmMove(event, card)}}>
-                          <FaRegArrowAltCircleRight size={25} />
-                        </MoveButton>
-                        :
-                        null
-                        }
+                          {card.workerId == myUUID
+                          ?
+                          <>
+                          <MoveButton onClick={(event)=>{toDoMove(event, card)}}>
+                            <IoMdArrowDropleftCircle size={25} style={{color:'#dcdcdc'}}/>
+                          </MoveButton>
+                          <MoveButton onClick={(event) => {confirmMove(event, card)}}>
+                            <IoMdArrowDroprightCircle size={25} style={{color:'#dcdcdc'}}/>
+                          </MoveButton>
+                          </>
+                          :
+                          <div style={{height:'40px'}}></div>
+                          }
                       </MoveButtonContainer>
+                          <div style={{color:"white", textAlign:"center", fontWeight:"400"}}>
+                          {card.workerId == null ? null : <>{card.description}</>}
+                          </div>
+                        </div>       
                       <CardView>
                         { card.workerId == null 
                         ? (<>작업자 미배정</>)
-                        : (<>작업자 : {getWorkerName(card.workerId)}<br />{card.description}</>)}
+                        : (<>
+										      <FaUserCircle size={25}/>
+                          &nbsp;
+                          {getWorkerName(card.workerId)}</>)}
                       </CardView>
                     </Link>
                     )
@@ -384,7 +437,13 @@ const MainWorkPage = () => {
 
         {/* 컨펌 목록 */}
         <CardContainer>
-          <div>컨펌</div>
+          <div style={{height:'150px', width:'100%'}}>
+            <div style={{textAlign:"center"}}>
+            <MdOutlineSlowMotionVideo size={30} style={{color:"#F1C232", }}/>
+            <h5>컨펌</h5>
+            </div>
+            <div style={{width:"100%", borderBottom:"3px solid #F1C232", margin:"10px 0px 0px 0px"}}></div>
+          </div>
           { confirmList.length == 0 
             ? ( <NoCardView>컨펌 대상 영상이 없습니다</NoCardView> )
             : 
@@ -399,25 +458,37 @@ const MainWorkPage = () => {
                       color:'inherit',
                       textDecoration:'none',
                       width:'200px',
-                      padding:"15px 10px",
-                      height:'100px', 
-                      border:"1px solid black",
-                      margin:"5px 0px",
+                      height:'150px',
+                      border:"1px solid gray",
+                      borderRadius:"10px",
+                      minHeight:'150px', 
+                      margin:"5px",
                       justifyContent:"center",
-                      alignItems:"center"
+                      alignItems:"center",
+                      boxShadow:"0 5px 5px rgba(0, 0, 0, 0.15)",
                     }}>
+                    <div style={{backgroundColor:"#F1C232", height:"65%", borderRadius:"10px 10px 0px 0px"}}>
+                    <div style={{color:"white", textAlign:"center", fontWeight:"400"}}>
                     <MoveButtonContainer>
-                      <MoveButton onClick={(event)=>{inProgressMove(event, card)}}>
+                      {/* <MoveButton onClick={(event)=>{inProgressMove(event, card)}}>
                         <FaRegArrowAltCircleLeft size={25} />
-                      </MoveButton>
+                      </MoveButton> */}
                       <MoveButton onClick={(event) => {completionMove(event, card)}}>
-                        <FaRegArrowAltCircleRight size={25} />
+                        <IoMdArrowDroprightCircle size={25} style={{color:'white'}} />
                       </MoveButton>
                     </MoveButtonContainer>
+                        <div style={{height:"30px",}}>
+                        {card.workerId == null ? null : <>{card.description}</>}
+                        </div>
+                        </div>
+                    </div>
                     <CardView>
                     { card.workerId == null 
                       ? (<>작업자 미배정</>)
-                      : (<>작업자 : {getWorkerName(card.workerId)}<br />{card.description}</>)}
+                      : (<>
+                        <FaUserCircle size={25}/>
+                        &nbsp;
+                        {getWorkerName(card.workerId)}</>)}
                     </CardView>
                   </Link>
                   )
@@ -434,19 +505,34 @@ const MainWorkPage = () => {
                       color:'inherit',
                       textDecoration:'none',
                       width:'200px',
-                      padding:"15px 10px",
-                      height:'100px', 
-                      border:"1px solid black",
-                      margin:"5px 0px",
+                      height:'150px',
+                      border:"1px solid #F1C232",
+                      borderRadius:"10px",
+                      margin:"5px",
                       justifyContent:"center",
-                      alignItems:"center"
+                      minHeight:'150px',
+                      alignItems:"center",
+                      boxShadow:"0 5px 5px rgba(0, 0, 0, 0.15)",
                     }}>
+                    <div style={{backgroundColor:"#F1C232", height:"65%", display:"flex", alignItems:"center", justifyContent:"center", borderRadius:"10px 10px 0px 0px", flexDirection: "column"}}>
+                      <div style={{color:"white", textAlign:"center", fontWeight:"400",}}>
+                        컨펌 대기중입니다
+                        <br />
+                        {card.workerId == null 
+                        ? null 
+                        : 
+                        <>{card.description}</>
+                        }
+                      </div>
+                    </div>
                     <CardView>
                     { card.workerId == null 
                       ? (<>작업자 미배정</>)
-                      : (<>작업자 : {getWorkerName(card.workerId)}<br />{card.description}</>)}
-                        <br></br>
-                      컨펌 대기중입니다
+                      : (<>
+                        <FaUserCircle size={25}/>
+                        &nbsp;
+                        {getWorkerName(card.workerId)}</>)}
+
                     </CardView>
                   </div>
                   )
@@ -459,7 +545,13 @@ const MainWorkPage = () => {
 
         {/* 완료 목록 */}
         <CardContainer>
-          <div>완료</div>
+          <div style={{height:'150px', width:'100%'}}>
+            <div style={{textAlign:"center"}}>
+              <MdOutlineSlowMotionVideo size={30} style={{color:"#3A8DFF", }}/>
+              <h5>컨펌 완료</h5>
+            </div>
+            <div style={{width:"100%", borderBottom:"3px solid #3A8DFF", margin:"10px 0px 0px 0px"}}></div>
+          </div>
           { finishList.length == 0 
             ? ( <NoCardView>컨펌이 끝난 영상이 없습니다</NoCardView> )
             : (
@@ -472,18 +564,31 @@ const MainWorkPage = () => {
                       color:'inherit',
                       textDecoration:'none',
                       width:'200px',
-                      padding:"15px 10px",
-                      height:'100px', 
-                      border:"1px solid black",
-                      margin:"5px 0px",
+                      height:'150px',
+                      border:"1px solid gray",
+                      borderRadius:"10px",
+                      margin:"5px",
                       justifyContent:"center",
-                      alignItems:"center"
+                      minHeight:'150px',
+                      alignItems:"center",
+                      boxShadow:"0 5px 5px rgba(0, 0, 0, 0.15)",
                     }}>
+                    <div style={{backgroundColor:"#3A8DFF", height:"65%", display:"flex", alignItems:"center", justifyContent:"center", borderRadius:"10px 10px 0px 0px", flexDirection: "column"}}>
+                      <div style={{color:"white", textAlign:"center", fontWeight:"400"}}>
+                        {card.workerId == null 
+                        ? null 
+                        : 
+                        <>{card.description}</>
+                        }
+                      </div>
+                    </div>
                     <CardView>
-                      {/* {card.order}번 작업 */}
                       { card.workerId == null 
                         ? (<>작업자 미배정</>)
-                        : (<>작업자 : {getWorkerName(card.workerId)}<br />{card.description}</>)}
+                        : (<>
+                          <FaUserCircle size={25}/>
+                          &nbsp;
+                          {getWorkerName(card.workerId)}</>)}
                     </CardView>
                   </Link>
                   )
@@ -517,42 +622,47 @@ const TitleContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding:0px 350px;
+  background-color:#f2f2f2;
 `
-
 const Block = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
 `
 const BigText = styled.div`
-  width:150px;
+  width:100px;
+  background-color: #f1f1f1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
   border:none;
-  border-radius:5px;
-  font-size:25px;
+  border-radius:25px;
   padding:10px 10px;
-  background-color:black;
-  color:white;
+  background-color:white;
+  color:black;
   font-weight:bold;
-  font-weight: bold;
-  font-size: 30px;
+  font-size:15px;
   cursor:pointer;
   text-align:center;
-  border: 1px solid black;
+  border: 2px solid gray;
   margin: 0px 10px;
 `
 const BigTextGroupName = styled.div`
   font-weight: bold;
-  font-size: 30px;
-  cursor:default;
-  margin left: 20px
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+  flex-direction: row; 
 `
 const BigContainer = styled.div`
   color: black;
-  height: 700px;
+  height: 850px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin:0px 20px;
+  justify-content: center;
+  margin:0px 0px 20px 0px;
+  padding-top:15px;
+  background-color:#f2f2f2;
 `
 const CardContainer = styled.div`
   display:flex;
@@ -560,12 +670,15 @@ const CardContainer = styled.div`
   font-weight: bold;
   align-items:center;
   justify-content:space-between;
-  font-size: 30px;
-  margin: 0px 5px;
+  font-size: 20px;
+  margin: 0px 10px;
   padding:30px;
-  border:1px solid black;
-  width:300px;
-  height:600px;
+  // border:1px solid gray;
+  width:270px;
+  height:750px;
+  border-radius:10px;
+	box-shadow:0 3px 8px rgba(0, 0, 122, 0.3);
+  background-color:white;
 `
 const NoCardView = styled.div`
   height:70%;
@@ -582,6 +695,15 @@ const CardScroll = styled.div`
   flex-direction:column;
   overflow-y: auto;
   margin:20px 0px;
+  &::-webkit-scrollbar {
+	padding:10px 5px;
+  border-radius: 10px;
+	width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #ccc;
+  }
 `
 const MoveButtonContainer = styled.div`
   display:flex;
@@ -592,18 +714,21 @@ const MoveButton = styled.button`
   outline:none;
   background-color:inherit;
   cursor:pointer;
+  margin:5px 0px;
 `
 const CardView = styled.div`
   display:flex;
   justify-content:center;
   align-items:center;
+  margin-top:10px;
 `
 const MakeButton = styled.button`
-  width:150px;
+  width:100px;
   border:none;
-  border-radius:5px;
-  font-size:25px;
+  border-radius:20px;
+  font-size:12px;
   padding:10px 20px;
+  margin:10px 0px;
   background-color:black;
   color:white;
   font-weight:bold;

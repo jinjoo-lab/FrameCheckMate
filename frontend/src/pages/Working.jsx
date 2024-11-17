@@ -27,19 +27,23 @@ const Working = () => {
           commentView={true} 
           uploadView={true}/>
       </WorkingContainer>
+      <div style={{marginBottom:"50px"}}></div>
     </div>
   )
 }
 const LogContainer = styled.div`
   width:90%;
-  padding:5px;
+  padding:0px;
   display:flex;
   justify-content:flex-end;
   align-items:center;
-  margin:0 auto;
+  margin:10px auto;
 `
 const WorkingContainer = styled.div`
-  border:4px dashed black;
+  border:1px solid #ccc;
+  	box-shadow:0px 8px 7px rgba(0, 0, 0, 0.4);
+  // background-color:#ccc;
+  border-radius:10px;
   width:90%;
   padding:5px;
   height:100%;
