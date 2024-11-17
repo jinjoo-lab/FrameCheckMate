@@ -2,14 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import TopBar from "../components/TopBar";
 import styled from 'styled-components'
-import { axiosClient } from '../axios';
-import { findUser, viewProjectMember, inviteProject } from '../api';
-import { BASE_URL } from '../axios';
+import { inviteProject } from '../api';
 import { USER_URL } from '../axios';
 import { IoMdSearch } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
-import { IoPersonAdd } from "react-icons/io5";
-import { MdAddCircleOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 
 const ManageMember = () => {
