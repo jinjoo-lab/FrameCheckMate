@@ -22,7 +22,7 @@ function App() {
       <Route path="/" element={<Navigate to={loginCheck ? "/mainHomePage" : "loginSignup"} />}/>
       <Route path="/loginSignup" element={<LoginSignUp />} />
       <Route path="/mainHomePage" element={<MainHomePage />} />
-      <Route path="/manageMember/:projectId/:projectName" element={<ManageMember />} />
+      <Route path="/manageMember/:projectId" element={<ManageMember />} />
       <Route path="/mainWorkPage/:projectId" element={<MainWorkPage />} />
       <Route path="/uploadVideo/:projectId" element={<UploadVideo />} />
       <Route path="/imageProcessing/:projectId" element={<ImageProcessing />} />

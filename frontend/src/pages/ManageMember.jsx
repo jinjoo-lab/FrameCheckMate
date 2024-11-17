@@ -6,6 +6,11 @@ import { axiosClient } from '../axios';
 import { findUser, viewProjectMember, inviteProject } from '../api';
 import { BASE_URL } from '../axios';
 import { USER_URL } from '../axios';
+import { IoMdSearch } from "react-icons/io";
+import { FaUserCircle } from "react-icons/fa";
+import { IoPersonAdd } from "react-icons/io5";
+import { MdAddCircleOutline } from "react-icons/md";
+import { toast } from "react-toastify";
 
 const ManageMember = () => {
 
@@ -56,12 +61,10 @@ const ManageMember = () => {
       setNameSearchData(prev => prev.filter(data => data.email !== search.email)); // 검색 결과에서 해당 회원 제거
     } else {
       if (inviteAdded){
-        console.log("이미 추가된 이메일입니다.");
-        alert('이미 초대 목록에 추가된 이메일입니다')
+        toast.warning(`이미 초대 목록에 추가된 이메일입니다`)
       }
       if (memberAdded){
-        console.log("이미 프로젝트에 있는 멤버입니다.");
-        alert("이미 프로젝트에 있는 멤버입니다.")
+        toast.warning(`이미 프로젝트에 있는 멤버입니다.`)
       }
     }
   };
@@ -91,7 +94,7 @@ const ManageMember = () => {
 				// alert('로그인이 만료되었습니다')
 				navigate('/loginSignup')
 			}
-      alert('초대가 완료되었습니다')
+      toast.success(`초대가 완료되었습니다`);
       setInviteData([])
 
       memberImport()
@@ -154,8 +157,8 @@ const ManageMember = () => {
             <InputBox>
               <SearchInput type="text" onChange={(event) => setName(event.target.value)} />
               <SearchButton onClick={(event) => nameSearch(event)}>
-                검색하기
-              </SearchButton>
+              <IoMdSearch size={15}/>
+            </SearchButton>
             </InputBox>
             { nameSearchData.length == 0
               ? (<NotView>{wordView}</NotView>)
@@ -164,9 +167,13 @@ const ManageMember = () => {
                   { nameSearchData.map((list) => 
                     <MemberList key={list.email}>
                       <MemberContent>
+                      <div style={{ display:"flex", alignItems:"center", margin:"0px 10px"}}>
+                        <FaUserCircle size={25}/>
+                      </div>
+                      <div style={{display:"flex", flexDirection:"column"}}>
                         <MemberText>{list.name}</MemberText>
-                        {/* <MemberText>{list.depart}</MemberText> */}
                         <MemberText>{list.email}</MemberText>
+                      </div>
                       </MemberContent>
                       <MemberButton onClick={(event) => addList(event, list)}>
                         추가
@@ -191,9 +198,13 @@ const ManageMember = () => {
                   { inviteData.map((list) => 
                     <MemberList key={list.email}>
                       <MemberContent>
-                        <MemberText>{list.name}</MemberText>
-                        {/* <MemberText>{list.depart}</MemberText> */}
-                        <MemberText>{list.email}</MemberText>
+                        <div style={{ display:"flex", alignItems:"center", margin:"0px 10px"}}>
+                          <FaUserCircle size={25}/>
+                        </div>
+                        <div style={{display:"flex", flexDirection:"column"}}>
+                          <MemberText>{list.name}</MemberText>
+                          <MemberText>{list.email}</MemberText>
+                        </div>
                       </MemberContent>
                       <MemberButton onClick={(event) => removeList(event, list)}>
                         취소
@@ -224,13 +235,17 @@ const ManageMember = () => {
                   { memberData.map((list) => 
                     <MemberList key={list.email}>
                       <MemberContent>
-                        <MemberText>{list.name}</MemberText>
-                        {/* <MemberText>{list.depart}</MemberText> */}
-                        <MemberText>{list.email}</MemberText>
+                        <div style={{ display:"flex", alignItems:"center", margin:"0px 10px"}}>
+                          <FaUserCircle size={25}/>
+                        </div>
+                        <div style={{display:"flex", flexDirection:"column", padding:"5px 0px"}}>
+                          <MemberText>{list.name}</MemberText>
+                          <MemberText>{list.email}</MemberText>
+                        </div>
                       </MemberContent>
-                      <MemberButton onClick = {(event) => {removeMember(event,list)}}>
+                      {/* <MemberButton onClick = {(event) => {removeMember(event,list)}}>
                         추방
-                      </MemberButton>
+                      </MemberButton> */}
                     </MemberList>
                     )
                   }
@@ -250,15 +265,18 @@ const ManageMember = () => {
 }
 
 const RowContainer = styled.div`
-  border:4px dashed black;
-  width:90%;
-  padding: 10px;
-  height:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  margin:0 auto;
-  flex-direction:column;
+	width:90%; 
+	padding:60px 10px; 
+	height:100%; 
+	display:flex; 
+	justify-content:center; 
+	align-items:center; 
+	margin:0 auto; 
+	flex-direction:column;
+	// border:1px solid #ccc;
+	// box-shadow:0px 8px 7px rgba(0, 0, 0, 0.4);
+  border-radius:10px;
+  // background-color:#f5f5f5
 `
 const MemberContainer = styled.div`
   width:100%;
@@ -268,10 +286,17 @@ const MemberContainer = styled.div`
   margin:0 auto;
 `
 const MemberColumnContainer = styled.div`
-  border:1px solid black;
+  // border:1px solid black;
+	box-shadow:0 3px 6px rgba(0, 0, 62, 0.3);
+  border-radius:10px;
   width:30%;
-  margin:5px;
+  margin:10px;
   height:400px;
+  // *****
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  background-color:white;
 `
 const MemberTitle = styled.div`
   font-size:20px;
@@ -281,15 +306,27 @@ const MemberTitle = styled.div`
   text-align:center;
 `
 const MemberScroll = styled.div`
-  border:1px solid black;
-  width:80%;
+  // border:1px solid gray;
+  background-color:#e0e6eb;
+	box-shadow:0 3px 3px rgba(0, 0, 0, 0.1);
+  width:70%;
   height:200px;
   overflow-y:auto;
   margin:0 auto;
   padding:0px 10px;
   display:flex;
   flex-direction:column;
+  // background:white;
   align-items:center;
+  &::-webkit-scrollbar {
+	padding:10px 5px;
+  border-radius: 10px;
+	width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #ccc;
+  }
 `
 const MemberList = styled.div`
   display:flex;
@@ -298,10 +335,13 @@ const MemberList = styled.div`
   margin:15px 0px;
   width:90%;
   padding:0px 5px;
+  background-color:white;
+  box-shadow:0 3px 3px rgba(0, 0, 0, 0.1);
+  border:1px solid #e6e6e6;
 `
 const MemberContent = styled.div`
-  border-bottom:2px solid black;
-  width:85%;
+  // border-bottom:2px solid black;
+  width:30%;
   display:flex;
   flex-direction:row;
   justify-content:space-between;
@@ -309,22 +349,22 @@ const MemberContent = styled.div`
 const MemberText = styled.div`
   font-size:12px;
   font-weight:bold;
-  width:33%;
+  width:100%;
   white-space:normal;
   overflow-wrap:break-word;
 `
 const MemberButton = styled.button`
-  width:150px;
+  width:50px;
   outline:none;
   border:none;
-  border-radius:10px;
+  // border-radius:10px;
   padding:5px 10px;
   margin:10px 5px;
-  background-color:black;
+  background-color:inherit;
   text-align:center;
-  color:white;
+  color:#444;
   font-weight:bold;
-  font-size:10px;
+  font-size:11px;
   cursor:pointer;
   text-align:center;
 `
@@ -333,46 +373,51 @@ const InputBox = styled.div`
   flex-direction:row;
   justify-content:center;
   align-items:center;
+  position:relative;
+  width:80%;
 `
 const SearchInput = styled.input`
   border:1px solid gray;
-  border-radius:10px;
+  border-radius:20px;
   width:60%;
   height:30px;
   margin:10px 5px;
+  padding:20px 40px 20px 20px;
+  box-sizing: border-box;
 `
 const SearchButton = styled.div`
   width:20%;
   border:none;
-  border-radius:5px;
-  padding:10px 5px;
+  border-radius:0px 15px 15px 0px;
+  padding:8px 0px;
   margin:10px 5px;
-  background-color:black;
   font-size:10px;
-  color:white;
+  color:black;
   font-weight:bold;
   text-align:center;
   cursor:pointer;
+  position:absolute;
+  right: 50px;
 `
 const RequestButton = styled.div`
-  width:150px;
+  width:130px;
   border:none;
-  border-radius:5px;
+  border-radius:20px;
   padding:10px 20px;
   background-color:black;
   color:white;
-  font-weight:bold;
+  // font-weight:bold;
   text-align:center;
   cursor:pointer;
 `
 const ClosingButton = styled.div`
-  width:150px;
+  width:100px;
   border:none;
-  border-radius:5px;
+  border-radius:20px;
   padding:10px 20px;
   background-color:gray;
   color:white;
-  font-weight:bold;
+  // font-weight:bold;
   text-align:center;
   cursor:pointer;
 `

@@ -6,6 +6,8 @@ import { loginUser, signupUser } from '../api';
 import { BASE_URL } from '../axios';
 import { USER_URL } from '../axios';
 import { jwtDecode } from 'jwt-decode';
+import logo from '../assets/images/logo.png'
+import { toast } from "react-toastify";
 
 const LoginSignUp = () => {
 
@@ -70,7 +72,7 @@ const LoginSignUp = () => {
       // }
 
     }catch(error){
-      alert('로그인 정보를 다시 확인해주세요')
+      toast.warning(`로그인 정보를 다시 확인해주세요`);
       setLoginCheck(false)
     }
   };
@@ -129,7 +131,7 @@ const LoginSignUp = () => {
         },
         body:JSON.stringify(Data),
       });
-      alert('회원가입에 성공했습니다!')
+      toast.success(`회원가입에 성공했습니다!`);
       setLoginId(signId)
       }catch(error){
         console.log(error)
@@ -139,7 +141,16 @@ const LoginSignUp = () => {
   
   return (
     <>
-      <TopBar logoutView={false} />
+      {/* <TopBar logoutView={false} /> */}
+      <div style={{width:'100%', 
+            height:'240px', 
+            background:'linear-gradient(to bottom, gray, white)', 
+            display:'flex', 
+            justifyContent:'center',
+            alignItems:'center'}}>
+      <img src={logo} alt="카드 이미지" style={{width:'25%', height:'240px',margin:'0px', }}/>
+
+    </div>
 
       {/* 클릭에 따라 로그인 / 회원가입 화면 전환 */}
       <ToggleContainer>
@@ -148,7 +159,7 @@ const LoginSignUp = () => {
           onClick={loginView}>
           로그인
         </LoginToggle>
-        <p style={{ fontSize: "30px" }}> | </p>
+        <p style={{ fontSize: "20px" }}> | </p>
         <SignupToggle 
           $nowView={nowView}
           onClick={signupView}>
@@ -213,25 +224,42 @@ const LoginSignUp = () => {
 };
 
 const ToggleContainer = styled.div`
-  height:100px; margin:15px 0px; display:flex; justify-content:center; align-items:center;
+  height:100px; margin:5px 0px; display:flex; justify-content:center; align-items:center;
 `
 const SignupToggle = styled.p`
-  font-size: 30px; font-weight: bold; margin: 0px 10px; cursor: pointer; color: ${props => (props.$nowView ? 'gray' : 'black')};
+  font-size: 20px; font-weight: bold; margin: 0px 10px; cursor: pointer; color: ${props => (props.$nowView ? 'gray' : 'black')};
 `;
 const LoginToggle = styled.p`
-  font-size: 30px; font-weight: bold; margin: 0px 10px; cursor: pointer; color: ${props => (props.$nowView ? 'black' : 'gray')};
+  font-size: 20px; font-weight: bold; margin: 0px 10px; cursor: pointer; color: ${props => (props.$nowView ? 'black' : 'gray')};
 `;
 const FormContainer = styled.div`
   display:flex; justify-content:center; align-items:center;
 `
 const FormStyle = styled.form`
-  width: 400px; display:flex; flex-direction:column; padding:50px 150px; border:4px dashed black; border-radius:20px; justify-content:center; align-items:center;
+	width:30%; 
+	padding:40px 10px; 
+	height:100%; 
+	display:flex; 
+	justify-content:center; 
+	align-items:center; 
+	margin:0 auto; 
+	flex-direction:column;
+	border:1px solid #ccc;
+	box-shadow:0px 8px 7px rgba(0, 0, 0, 0.4);
+  border-radius:10px;
+  background-color:#fafafa;
+  // width: 400px; display:flex; flex-direction:column; padding:50px 150px; border:4px dashed black; border-radius:20px; justify-content:center; align-items:center;
 `
 const LabelText = styled.label`
-  text-align:left; width:300px; font-weight:bold;
+  text-align:left; width:260px; font-weight:bold; color:#333333;
 `
 const InputStyle = styled.input`
-  border:1px solid gray; border-radius:10px; margin:10px 0px; height:30px; width:300px;
+  border:1px solid #d3d3d3; border-radius:10px; margin:10px 0px; height:30px; width:250px; padding:0px 10px;
+  &:focus {
+    border-color: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15); 
+    outline:none;
+  }
 `
 const ButtonsAligns = styled.div`
   display:flex; justify-content:center; align-items:center; margin-top:30px;
@@ -240,6 +268,6 @@ const SubmitButton = styled.button`
   width:150px; border:none; border-radius:5px; padding:10px 20px; background-color:black; color:white; font-weight:bold; cursor:pointer;
 `
 const Warning = styled.div`
-  width:300px; margin:5px; color:red; font-size:12px; white-space:normal;
+  width:250px; margin:5px 0px; color:red; font-size:12px; overflow-wrap: break-word; word-break: keep-all;
 `
 export default LoginSignUp;

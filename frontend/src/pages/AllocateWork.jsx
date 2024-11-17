@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import { ko } from "date-fns/locale";
 import styled from 'styled-components';
@@ -9,6 +9,7 @@ import ReactPlayer from "react-player";
 import { axiosClient } from '../axios';
 import { workAssign, cardVideoView } from '../api';
 import { BASE_URL, USER_URL } from '../axios';
+import { toast } from "react-toastify";
 
 const AllocateWork = ({ workingBefore, uploadView }) => {
 
@@ -38,6 +39,13 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 
 	// 현재 프로젝트의 멤버 목록
 	const [memberData, setMemberData] = useState([])
+
+	const location = useLocation();
+
+  const { allotId, 
+		allotContent, 
+		allotStart,
+		allotEnd } = location.state || {};
 
 	const closeButton = () => {
 		navigate(`/mainWorkPage/${projectId}`);
@@ -114,7 +122,7 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 			// alert('로그인이 만료되었습니다')
 			navigate('/loginSignup')
 		}
-
+		toast.success(`작업 배정이 완료되었습니다`);
 		navigate(`/mainWorkPage/${projectId}`)
 
 		}catch(error){
@@ -127,6 +135,7 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 		showVideo()
 		memberImport()
 	},[])
+
 
 	// 달력 헤더
 	const customHeader = ({ date, decreaseMonth, increaseMonth }) => {
@@ -161,6 +170,11 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 
 	const [selectedName, setSelectedName] = useState('');
 
+	const getWorkerName = (workerId) => {
+    const worker = memberData.find((worker) => worker.memberId == allotId);
+    return worker ? worker.name : '이름 확인중';
+  };
+
   // 드롭다운에서 선택된 값을 처리하는 함수
   const handleSelectChange = (event) => {
     // 선택된 option의 value는 해당 id이므로
@@ -182,12 +196,12 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 	return(
 		<div>
 				{
-					workingBefore
+					allotId == null
 					?(
 						<>
-							<div>작업자 배정</div>
+							<div style={{fontWeight:"bold"}}>작업자 배정</div>
 							<select 
-								style={{width:'100%', height:'35px', margin:'10px 0px', borderRadius:'5px'}}
+								style={{width:'90%', height:'35px', margin:'10px 0px', borderRadius:'10px'}}
 								onChange={handleSelectChange}>
 								<option value="" style={{textAlign:'center'}}>선택하세요</option>
 								{memberData.map((item) => (
@@ -206,20 +220,20 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 					)
 					:(
 						<>
-							<div>작업자</div>
+							<div style={{fontWeight:"bold"}}>작업자</div>
 							<WorkView>
 								<div 
 									style={{padding:"5px"}}>
-									{nowWorker}
+										{getWorkerName(allotId)}
 								</div>
 							</WorkView>
 						</>
 					)
 				}
 				
-				<div>작업 내용</div>
+				<div style={{fontWeight:"bold"}}>작업 내용</div>
 				{
-					workingBefore
+					allotContent == null
 					?(
 						<WorkerInput
 							type="text" 
@@ -229,15 +243,15 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 						<WorkView>
 							<div 
 								style={{padding:"5px"}}>
-								{nowContent}
+								{allotContent}
 							</div>
 						</WorkView>
 					)
 				}
 
-				<div>작업 기간</div>
+				<div style={{fontWeight:"bold"}}>작업 기간</div>
 				{
-					workingBefore
+					allotStart == null
 					?(
 						<div 
 							style={{ 
@@ -286,13 +300,13 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 					:(
 						<WorkView>
 							<div style={{padding:"5px"}}>
-								{nowWorkDate}
+								{allotStart} ~ {allotEnd}
 							</div>
 						</WorkView>
 					)
 				}
 
-				<div>작업 영상</div>
+				<div style={{fontWeight:"bold"}}>작업 영상</div>
 				<VideoBox>
 					<ReactPlayer
 						url={fileURL}
@@ -307,9 +321,13 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 				{ workingBefore 
 				? (
 					<ButtonBox>
+					{allotId == null
+					?					
 					<DownloadButton onClick={workAllot}>
-						작업 배정
+					작업 배정
 					</DownloadButton>
+					:null}
+
 					<UploadButton onClick={closeButton}>
 						닫기
 					</UploadButton>
@@ -327,7 +345,7 @@ const WorkerInput = styled.input`
 	border-radius: 10px; 
 	margin: 10px 0px; 
 	height: 30px; 
-	width: 350px;
+	width: 360px;
 `
 
 const DateStyle = createGlobalStyle`
@@ -335,7 +353,7 @@ const DateStyle = createGlobalStyle`
 		border: 1px solid gray !important;
 		border-radius: 10px !important;
 		margin: 3px 2px !important;
-		padding: 5px 5px !important;
+		padding: 15px 5px !important;
 		text-align: center !important;
 		cursor: pointer !important;
 		caret-color: transparent !important;
@@ -355,8 +373,13 @@ const VideoBox = styled.div`
 const WorkView = styled.div`
 	width:100%; 
 	height:30px; 
-	border:1px solid black; 
+	border:1px solid gray; 
 	margin:10px 0px;
+	border-radius:10px;
+	padding:5px 15px;
+	display:flex;
+	align-items:center;
+	color:#333;
 `
 
 const ButtonBox = styled.div`
@@ -369,7 +392,7 @@ const ButtonBox = styled.div`
 const DownloadButton = styled.button`
 	width:150px; 
 	border:none; 
-	border-radius:5px; 
+	border-radius:20px; 
 	padding:10px 20px; 
 	margin:10px 5px; 
 	background-color:black; 
@@ -381,7 +404,7 @@ const DownloadButton = styled.button`
 const UploadButton = styled.button`
 	width:150px; 
 	border:none; 
-	border-radius:5px; 
+	border-radius:20px; 
 	padding:10px 20px; 
 	margin:10px 5px; 
 	background-color:gray; 
