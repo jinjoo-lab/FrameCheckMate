@@ -298,11 +298,12 @@ const ImageProcessing = () => {
       const videoElement = document.createElement("video");
       videoElement.src = fileURL;
       videoElement.onloadedmetadata = () => {
-        const duration = videoElement.duration;
-        const estimatedFrames = Math.floor(videoElement.videoWidth * videoElement.videoHeight * duration / 500000);
-        const calculatedFPS = estimatedFrames / duration;
-        setfps('24'); // 임시 FPS 설정 값 (초당 24프레임)
-        // setfps(calculatedFPS.toFixed(0)); // 추정 FPS 설정
+        const duration = videoElement.duration; // 영상 길이 초
+        const frameRate = videoElement.getVideoPlaybackQuality?.().totalVideoFrames / duration || 24; // 기본 fps를 24로 설정
+        setfps(frameRate.toFixed(0)); // 추정 FPS 설정 (정수)
+        // const estimatedFrames = Math.floor(videoElement.videoWidth * videoElement.videoHeight * duration / 500000);
+        // const calculatedFPS = estimatedFrames / duration;
+        // setfps('24'); // 임시 FPS 설정 값 (초당 24프레임)
       };
     }
   }, [fileURL]);
