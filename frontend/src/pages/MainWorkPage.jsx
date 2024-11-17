@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom';
-import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft } from "react-icons/fa";
 import styled from 'styled-components';
 import TopBar from "../components/TopBar";
-import { axiosClient } from '../axios';
-import { allCardView, toDoChange, workingChange, confirmChange, resultChange, videoMerge } from '../api';
 import { BASE_URL, USER_URL } from '../axios';
 import { FaUserCircle } from "react-icons/fa";
 import { IoMdArrowDroprightCircle } from "react-icons/io";
 import { IoMdArrowDropleftCircle } from "react-icons/io";
 import { MdOutlineSlowMotionVideo } from "react-icons/md";
-import { BiSolidCameraMovie } from "react-icons/bi";
 import { toast } from "react-toastify";
 import { MdLocalMovies } from "react-icons/md";
 
@@ -622,7 +618,7 @@ const TitleContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding:0px 350px;
+  padding:0px 100px;
   background-color:#f2f2f2;
 `
 const Block = styled.div`
