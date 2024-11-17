@@ -6,15 +6,15 @@ import { BrowserRouter } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css"; 
 import { ToastContainer } from "react-toastify";
 import "./index.css";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>
     <BrowserRouter>
-      <App />
       <ToastContainer 
         position="top-center"
         autoClose={2000}
-        hideProgressBar="true"
+        hideProgressBar={true}
         toastStyle={{
           minHeight:"100px",
           minWidth:"400px",
@@ -22,6 +22,7 @@ root.render(
           fontWeight:"bold",
         }}
       />
+      <App />
     </BrowserRouter>
   // </React.StrictMode>
 );
