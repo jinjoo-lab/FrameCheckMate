@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
+import React from 'react';
 import TopBar from "../components/TopBar";
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import AllocateWork from './AllocateWork';
 import styled from 'styled-components';
-import { axiosClient } from '../axios';
 
 const BeforeWork = () => {
 

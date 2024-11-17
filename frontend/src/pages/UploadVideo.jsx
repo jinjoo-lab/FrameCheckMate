@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'; // eslint-disable-line no-unused-vars
-import { useNavigate, Link, useParams } from 'react-router-dom'; // eslint-disable-line no-unused-vars
+import React, { useState, useEffect, useRef } from 'react'; 
+import { useNavigate, useParams } from 'react-router-dom';
 import TopBar from "../components/TopBar";
 import ReactPlayer from "react-player";
 import styled from 'styled-components'

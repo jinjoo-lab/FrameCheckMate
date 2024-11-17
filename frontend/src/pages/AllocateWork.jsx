@@ -6,8 +6,6 @@ import styled from 'styled-components';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ReactPlayer from "react-player";
-import { axiosClient } from '../axios';
-import { workAssign, cardVideoView } from '../api';
 import { BASE_URL, USER_URL } from '../axios';
 import { toast } from "react-toastify";
 
@@ -157,6 +155,24 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 			</div>
 		);
 	};
+
+	// 달력 스타일
+	const DateStyle = createGlobalStyle`
+	.react-datepicker__input-container input {
+		border: 1px solid gray !important;
+		border-radius: 10px !important;
+		margin: 3px 2px !important;
+		padding: 15px 5px !important;
+		text-align: center !important;
+		cursor: pointer !important;
+		caret-color: transparent !important;
+		height:20px !important;
+	}
+	.react-datepicker__input-container input:disabled {
+		background-color: #f0f0f0 !important; 
+		color: #a9a9a9 !important; 
+	}
+`
 
 	// 날짜 변환해서 보내줘야 함
 	const formatDate = (date) => {
@@ -348,22 +364,6 @@ const WorkerInput = styled.input`
 	width: 360px;
 `
 
-const DateStyle = createGlobalStyle`
-	.react-datepicker__input-container input {
-		border: 1px solid gray !important;
-		border-radius: 10px !important;
-		margin: 3px 2px !important;
-		padding: 15px 5px !important;
-		text-align: center !important;
-		cursor: pointer !important;
-		caret-color: transparent !important;
-		height:20px !important;
-	}
-	.react-datepicker__input-container input:disabled {
-		background-color: #f0f0f0 !important; 
-		color: #a9a9a9 !important; 
-	}
-`
 const VideoBox = styled.div`
 	margin-top:20px; 
 	width:100%; 

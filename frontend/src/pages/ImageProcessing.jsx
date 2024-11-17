@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'; // eslint-disable-line no-unused-vars
 import TopBar from "../components/TopBar";
-import { useNavigate, Link, useParams, useLocation } from 'react-router-dom'; // eslint-disable-line no-unused-vars
+import { useNavigate, useParams, useLocation } from 'react-router-dom'; // eslint-disable-line no-unused-vars
 import styled from 'styled-components'
 import ReactPlayer from "react-player";
 // import { videoSplit } from '../api';

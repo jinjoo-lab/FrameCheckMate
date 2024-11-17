@@ -1,17 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Link, useParams, useLocation } from 'react-router-dom'; // eslint-disable-line no-unused-vars
-import AllocateWork from './AllocateWork';
+import { useNavigate,  useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { axiosClient } from '../axios';
 import ReactPlayer from "react-player";
-import { createGlobalStyle } from 'styled-components';
-import { cardView, commentSave, confirmSave } from '../api';
 import { BASE_URL, USER_URL } from '../axios';
-import { FcVoicePresentation } from "react-icons/fc";
 import { FaUserCircle } from "react-icons/fa";
-import { FaRegCheckCircle } from "react-icons/fa";
 import { FaRegCalendarAlt } from "react-icons/fa";
-import { HiPencilSquare } from "react-icons/hi2";
 import { BsFillClipboard2CheckFill } from "react-icons/bs";
 import { toast } from "react-toastify";
 
@@ -584,22 +577,6 @@ const WorkerInput = styled.input`
 	margin: 10px 0px; 
 	height: 30px; 
 	width: 350px;
-`
-
-const DateStyle = createGlobalStyle`
-	.react-datepicker__input-container input {
-		border: 1px solid gray;
-		border-radius: 10px;
-		margin: 3px 2px;
-		padding: 5px 5px;
-		text-align: center;
-		cursor: pointer;
-		caret-color: transparent;
-	}
-	.react-datepicker__input-container input:disabled {
-		background-color: #f0f0f0; 
-		color: #a9a9a9; 
-	}
 `
 const VideoBox = styled.div`
 	margin-top:20px; 
