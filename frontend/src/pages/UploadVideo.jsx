@@ -4,7 +4,7 @@ import TopBar from "../components/TopBar";
 import ReactPlayer from "react-player";
 import styled from 'styled-components'
 import { BASE_URL } from '../axios';
-
+import { AiFillSetting } from "react-icons/ai";
 const UploadVideo = () => {
 
   const { projectId } = useParams();
@@ -37,7 +37,7 @@ const UploadVideo = () => {
   };
 
   const closeButton = () => {
-    navigate('/mainHomePage');
+    navigate(`/mainWorkPage/${projectId}`);
   }
 
   const uploadButton = async () => {
@@ -75,7 +75,9 @@ const UploadVideo = () => {
     <div>
       <TopBar title='영상 처리' logoutView={true}/>
       <RowContainer>
-        <div>영상 업로드</div>
+        <div style={{display:'flex', flexDirection:'row', alignItems:'center', fontWeight:'bold', fontSize:'16px', margin:'15px 0px'}}>
+          <AiFillSetting size={20}/>&nbsp;분석하기 위한 영상을 업로드 해주세요
+        </div>
         { fileURL 
         ? (
           <>
@@ -122,15 +124,17 @@ const UploadVideo = () => {
 }
 
 const RowContainer = styled.div`
-  border:4px dashed black;
-  width:90%;
-  padding:60px 10px;
-  height:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  margin:0 auto;
-  flex-direction:column;
+	width:60%; 
+	padding:60px 10px; 
+	height:100%; 
+	display:flex; 
+	justify-content:center; 
+	align-items:center; 
+	margin:30px auto; 
+	flex-direction:column;
+	border:1px solid #ccc;
+	box-shadow:0px 8px 7px rgba(0, 0, 0, 0.4);
+  border-radius:10px;
 `
 const UploadStyle = styled.label`
   cursor:pointer;
@@ -142,25 +146,25 @@ const UploadStyle = styled.label`
   font-weight:bold;
 `
 const WorkingButton = styled.button`
-  width:150px;
+  width:100px;
   border:none;
-  border-radius:5px;
+  border-radius:20px;
   padding:10px 20px;
   margin:10px 5px;
   background-color:black;
   color:white;
-  fontWeight:bold;
+  // fontWeight:bold;
   cursor:pointer;
 `
 const WorkingCloseButton = styled.button`
-  width:150px;
+  width:100px;
   border:none;
-  border-radius:5px;
+  border-radius:20px;
   padding:10px 20px;
   margin:10px 5px;
   background-color:gray;
   color:white;
-  fontWeight:bold;
+  // fontWeight:bold;
   cursor:pointer;
 `
 const LoadingMessage = styled.div`

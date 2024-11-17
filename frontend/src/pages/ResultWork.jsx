@@ -5,6 +5,7 @@ import ReactPlayer from "react-player";
 import styled from 'styled-components'
 import { axiosClient } from '../axios';
 import { USER_URL, BASE_URL } from '../axios';
+import logo from '../assets/images/logo.png'
 
 const ResultWork = () => {
 
@@ -80,6 +81,7 @@ const ResultWork = () => {
     <div>
       <TopBar title='최종 생성 영상 확인' logoutView={true}/>
       <RowContainer>
+        <img src={logo} alt="카드 이미지" style={{width:'30%', height:'200px',margin:'0px;'}}/>
         {fileURL
           ? (
           <ReactPlayer
@@ -87,10 +89,12 @@ const ResultWork = () => {
             playing={isPlaying} // 재생 여부
             controls={true}
             width="60%"
-            ref={playerRef} // 여기서 ref 사용
-            style={{width:"300px", border:"1px solid black"}}
+            ref={playerRef}
+            style={{width:"250px", 
+              position: "relative",  
+              boxShadow: "0 0 0 3px rgba(0, 0, 0, 0.3), 0 0 0 6px rgba(0, 0, 0, 0.6)",  }}
           />)
-          : <div style={{ padding:'200px', border:'1px solid black'}}>
+          : <div style={{ padding:'180px', border:'1px solid black'}}>
               영상 확인 중입니다
             </div>
         }
@@ -108,20 +112,23 @@ const ResultWork = () => {
 }
 
 const RowContainer = styled.div`
-  border:4px dashed black;
-  width:90%;
-  padding:60px 10px;
-  height:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  margin:0 auto;
-  flex-direction:column;
+	width:50%; 
+	padding:0px 10px; 
+	height:100%; 
+	display:flex; 
+	justify-content:center; 
+	align-items:center; 
+	margin:30px auto; 
+	flex-direction:column;
+	border:1px solid #FAF9F6;
+	box-shadow:0px 8px 7px rgba(0, 0, 0, 0.4);
+  border-radius:10px;
+  background-color:#FAF9F6;
 `
 const CloseButton = styled.button`
-  width:150px;
+  width:100px;
   border:none;
-  border-radius:5px;
+  border-radius:20px;
   padding:10px 20px;
   margin:10px 5px;
   background-color:gray;
@@ -130,9 +137,9 @@ const CloseButton = styled.button`
   cursor:pointer;
 `
 const WorkingButton = styled.button`
-  width:150px;
+  width:100px;
   border:none;
-  border-radius:5px;
+  border-radius:20px;
   padding:10px 20px;
   margin:10px 5px;
   background-color:black;
@@ -144,5 +151,6 @@ const ButtonContainer = styled.div`
   display:flex;
   flex-direction:row;
   justify-content:center;
+  margin:25px 0px 10px 0px;
 `
 export default ResultWork
