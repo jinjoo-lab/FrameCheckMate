@@ -9,6 +9,11 @@ import { cardView, commentSave, confirmSave } from '../api';
 import { BASE_URL, USER_URL } from '../axios';
 import { FcVoicePresentation } from "react-icons/fc";
 import { FaUserCircle } from "react-icons/fa";
+import { FaRegCheckCircle } from "react-icons/fa";
+import { FaRegCalendarAlt } from "react-icons/fa";
+import { HiPencilSquare } from "react-icons/hi2";
+import { BsFillClipboard2CheckFill } from "react-icons/bs";
+import { toast } from "react-toastify";
 
 const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 
@@ -62,7 +67,7 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 			}
 
       const text = await response.json();
-			alert('영상 업로드가 완료되었습니다')
+			toast.success(`영상 업로드가 완료되었습니다`)
 		}catch(error){
 			console.log(`영상 업로드 문제 ${error}`)
 		}
@@ -155,8 +160,7 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 				// alert('로그인이 만료되었습니다')
 				navigate('/loginSignup')
 			}
-
-				alert('컨펌 요청이 완료되었습니다')
+				toast.success(`컨펌 요청이 완료되었습니다`);
 				navigate(`/mainWorkPage/${projectId}`)
 			}catch(error){
 				console.log(error)
@@ -177,7 +181,7 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 				// alert('로그인이 만료되었습니다')
 				navigate('/loginSignup')
 			}
-				alert('컨펌 요청이 완료되었습니다')
+				toast.success(`컨펌 요청이 완료되었습니다`)
 				navigate(`/mainWorkPage/${projectId}`)
 			}catch(error){
 				console.log(error)
@@ -209,7 +213,7 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 				// alert('로그인이 만료되었습니다')
 				navigate('/loginSignup')
 			}
-				alert('코멘트 저장이 완료되었습니다')
+				toast.success(`코멘트 저장이 완료되었습니다`)
 				setComments('')
 			}catch(error){
 				console.log(`실패:${error}`)
@@ -321,33 +325,44 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 
 	return(
 		<FeedbackContainer>
-			<div style={{ width:'45%' }}>
-        <div>작업자</div>
+			<div style={{ width:'40%', padding:"0px 10px" }}>
+        <div style={{padding:"0px 5px", fontWeight:"bold"}}>작업자</div>
         <WorkView>
+					
           <div 
             style={{padding:"5px"}}>
-            {nowWorker}
+            {nowWorker ? nowWorker : '작업자 미배정'}
           </div>
         </WorkView>
 
-				<div>작업 내용</div>
+				<div style={{padding:"0px 5px", fontWeight:"bold"}}>작업 내용</div>
           <WorkView>
             <div 
               style={{padding:"5px"}}>
-              {nowContent}
+              {nowContent ? nowContent : '작업자 미배정'}
             </div>
           </WorkView>
 
-				<div>작업 기간</div>
+				<div style={{padding:"0px 5px", fontWeight:"bold"}}>작업 기간</div>
           <WorkView>
             <div
-							style={{fontSize:"13px", textAlign:"center", padding:"5px"}}>
-              {startDate} ~ 
-							{endDate}
+							style={{display:"flex", fontSize:"13px", padding:"5px", alignItems:"center"}}>
+								{startDate && endDate 
+								? 
+								(
+								<>
+								<div style={{padding:"0px 10px 0px 0px"}}>
+									<FaRegCalendarAlt size={15}/>
+								</div>
+							 	{startDate}&nbsp;~&nbsp;{endDate}
+								</>
+								) 
+								: 
+								(<div style={{fontSize:'17px'}}>작업자 미배정</div>)}
             </div>
           </WorkView>
 
-				<div>작업 영상</div>
+				<div style={{padding:"0px 5px", fontWeight:"bold"}}>작업 영상</div>
           <VideoBox>
             <ReactPlayer
               url={fileURL}
@@ -359,6 +374,8 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
               onDuration={goDuration}
             />
           </VideoBox>
+
+
 
 					<ButtonBox>
 						<DownloadButton onClick={downloadVideo}>
@@ -374,11 +391,11 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 							style={{ display: "none" }} 
 							onChange={videoUpload} />
 						</UploadStyle>
-							: <div style={{width:'150px'}}></div>}
+							: null}
 					</ButtonBox>
 			</div>
-			<div style={{ width:'45%' }}>
 
+			<div style={{ width:'35%' }}>
 			<div style={{ margin:'15px', fontWeight:"bold"}}>컨펌 내용</div>
 			<ReviewScroll>
 				{ confirmList.length == 0 
@@ -392,8 +409,16 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 						{ confirmList.map((list) => 
 							<ReviewAlign key={list.createdAt}>
 								<ReviewStyle>
-									<ReviewText>{list.createdAt}<br />{list.content}</ReviewText>
+									<div style={{ display:"flex", alignItems:"center", margin:"0px 10px"}}>
+										<BsFillClipboard2CheckFill size={25}/>
+									</div>
+									<ReviewText>
+										<div style={{padding:"1px 5px"}}> 
+										{list.createdAt}<br />{list.content}
+										</div>
+									</ReviewText>
 								</ReviewStyle>
+
 							</ReviewAlign>
 						)}
 						</>
@@ -474,12 +499,13 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 
 const FeedbackContainer = styled.div`
 	display:flex; 
-	justify-content:space-between; 
+	justify-content:center; 
 	align-items:center;
+	width:100%;
 `
 const ReviewScroll = styled.div`
 	border:1px solid #ccc;
-	width:90%; 
+	width:70%; 
 	border-radius:10px;
 	box-shadow:0 5px 5px rgba(0, 0, 0, 0.15);
 	height:200px; 
@@ -498,7 +524,6 @@ const ReviewScroll = styled.div`
     background: #ccc;
   }
 `
-
 const ReviewStyle = styled.div`
 	// border:1px solid gray; 
 	border-radius:10px;
@@ -522,32 +547,34 @@ const NoReview = styled.div`
 `
 const ReviewAlign = styled.div`
 	display:flex; 
-	justify-content:center; 
+	// justify-content:center; 
 	align-items:center; 
 	margin:15px 0px; 
 	width:90%; 
-	padding:0px 5px;
+	padding:0px 15px;
 `
 const ReviewInputContainer = styled.div`
 	display:flex; 
 	flex-direction:row; 
-	justify-content:center;
+	// justify-content:center;
+	padding:10px 10px;
 `
-
 const ReviewInput = styled.input`
-	width:70%;
-	padding:5px 10px; 
-	margin:10px 5px;
+	width:50%;
+	padding:10px 5px; 
+	margin:7px 0px;
+	border-radius:10px;
+	border:1px solid #ccc;
 `
 const ReviewButton = styled.button`
-	width:150px; 
+	width:20%; 
 	border:none; 
-	border-radius:5px; 
-	padding:5px 10px; 
-	margin:10px 5px; 
+	border-radius:10px;
+	padding:10px 5px; 
+	margin:7px 5px; 
 	background-color:black; 
 	color:white; 
-	font-weight:bold; 
+	// font-weight:bold; 
 	cursor:pointer;
 `
 
@@ -576,88 +603,70 @@ const DateStyle = createGlobalStyle`
 `
 const VideoBox = styled.div`
 	margin-top:20px; 
-	width:100%; 
+	width:60%; 
 	height:200px; 
-	border:1px solid black;
+	border:1px solid #ccc;
 `
 const WorkView = styled.div`
-	width:100%; 
-	height:30px; 
-	border:1px solid black; 
-	margin:10px 0px;
+	width:60%; 
+	height:30%; 
+	border:1px solid #ccc; 
+	margin:15px 0px;
+	border-radius:10px;
+	padding:3px 5px;
+	box-shadow:0 3px 3px rgba(0, 0, 0, 0.05);
+	white-space:normal
 `
-
 const ButtonBox = styled.div`
 	display:flex; 
 	flex-direction:row; 
 	justify-content:center;
 	align-items:center;
+	width:60%;
 `
-
 const DownloadButton = styled.button`
-	width:150px; 
+	width:100px; 
 	border:none; 
-	border-radius:5px; 
+	border-radius:30px; 
 	padding:10px 20px; 
 	margin:10px 5px; 
 	background-color:black; 
 	color:white; 
 	font-weight:bold; 
 	cursor:pointer;
-`
-
-const UploadButton = styled.button`
-	width:150px; 
-	border:none; 
-	border-radius:5px; 
-	padding:10px 20px; 
-	margin:10px 5px; 
-	background-color:gray; 
-	color:white; 
-	font-weight:bold; 
-	cursor:pointer;
+	box-sizing: border-box;
+	font-size:13px;
 `
 const UploadStyle = styled.label`
   cursor:pointer;
   display:block;
+	font-size:13px;
 	background-color:gray; 
-	border-radius:5px; 
+	border-radius:30px; 
 	text-align:center;
   border:none;
-	padding:10px 10px; 
+	padding:10px 20px; 
 	margin:10px 5px; 
-  width: 150px;
+  width: 100px;
   font-weight:bold;
 	color:white;
+	box-sizing: border-box;
 `
 const ButtonAlign = styled.div`
-	width:100%; 
+	width:75%; 
 	display:flex; 
 	justify-content:center; 
 	flex-direction:row;  
 `
-const FinishButton = styled.div`
-	width:150px; 
-	border:none; 
-	border-radius:5px; 
-	padding:10px 20px; 
-	margin:10px 5px; 
-	background-color:black; 
-	text-align:center; 
-	color:white; 
-	font-weight:bold; 
-	cursor:pointer;
-`
 const CloseButton = styled.div`
-	width:150px; 
+	width:100px; 
 	border:none; 
-	border-radius:5px; 
+	border-radius:20px; 
 	padding:10px 20px; 
 	margin:10px 5px; 
 	background-color:gray; 
 	text-align:center; 
 	color:white; 
-	font-weight:bold; 
 	cursor:pointer;
 `
 export default FeedbackAllocateWork

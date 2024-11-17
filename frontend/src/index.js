@@ -3,12 +3,25 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
-
+import "react-toastify/dist/ReactToastify.css"; 
+import { ToastContainer } from "react-toastify";
+import "./index.css";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>
     <BrowserRouter>
       <App />
+      <ToastContainer 
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar="true"
+        toastStyle={{
+          minHeight:"100px",
+          minWidth:"400px",
+          textAlign:"center",
+          fontWeight:"bold",
+        }}
+      />
     </BrowserRouter>
   // </React.StrictMode>
 );

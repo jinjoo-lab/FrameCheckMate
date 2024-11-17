@@ -7,6 +7,8 @@ import styled from 'styled-components';
 import { axiosClient } from '../axios';
 import { allowView } from '../axios';
 import { BASE_URL } from '../axios';
+import { TfiWrite } from "react-icons/tfi";
+import { BiLoader } from "react-icons/bi";
 
 const WorkingLog = () => {
   const { projectId, cardId } = useParams();
@@ -72,6 +74,15 @@ const WorkingLog = () => {
 
   const uploadButton = (event, fileURL) => {
     event.preventDefault() // 페이지 새로 고침 방지
+    const blob = fileURL.blob;
+      // Blob URL을 만들어서 다운로드
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'work-video.mp4'; 
+    link.click();
+
+    // 링크 제거
+    URL.revokeObjectURL(link.href);
   }
 
   const playVideo = (event, file) => {
@@ -92,10 +103,13 @@ const WorkingLog = () => {
           <LogContainer>
             <ListBox>
               <ListStyle key="primary-task">
-                <div>{logList.startDate}</div>
-                <div>{logList.description}</div>
+                <TfiWrite size={20}/>
+                <div style={{display:'flex', flexDirection:'column'}}>
+                  <div>{logList.startDate}</div>
+                  <div>{logList.description}</div>
+                </div>
                 <PlayButton onClick={(event) => playVideo(event, logList.originFrame)}>
-                  <GoVideo size={15} />
+                  <GoVideo size={20} />
                 </PlayButton>
               </ListStyle>
               {Array.isArray(logList.frameConfirmPairs) && logList.frameConfirmPairs.map((pair, index) => (
@@ -103,16 +117,29 @@ const WorkingLog = () => {
                   {pair.confirm ? (
                     // {pair.confirm.createAt} {pair.confirm.content}
                     <>
+                    <TfiWrite size={20}/>
+                    <div style={{display:'flex', flexDirection:'column'}}>
                       <div>{pair.confirm.createdAt}</div>
                       <div>{pair.confirm.content}</div>
+                    </div>
+                    <GoVideo size={20} style={{color:'gray', marginRight:'5px'}}/>
                     </>
                   ) : (
-                    <div>확인 대기중</div>
+                    <div style={{display:'flex', flexDirection:'column'}}>
+                      <BiLoader size={20}/>
+                      <div>확인 대기중</div>
+                      <div></div>
+                    </div>
                   )}
                   {/* TODO : pair.frame.createAt : 영상 upload 시간이 들어오면 추가할 것 */}
+                  {pair.frame ? (
                   <PlayButton onClick={(event) => playVideo(event, pair.frame)}>
-                    <GoVideo size={15} />
+                    <GoVideo size={20} />
                   </PlayButton>
+                  )
+                  :(
+                  <></>
+                  )}
                 </ListStyle>
               ))
               }
@@ -128,9 +155,9 @@ const WorkingLog = () => {
                 height="80%"
                 ref={playerRef} // 여기서 ref 사용
               />
-              <WorkingButton onClick={(event) => {uploadButton(event, fileURL)}}>
+              {/* <WorkingButton onClick={(event) => {uploadButton(event, fileURL)}}>
                 다운로드
-              </WorkingButton>
+              </WorkingButton> */}
             </LogContainer>
             )
             : <LogContainer>확인할 영상을 선택해주세요</LogContainer>
@@ -145,14 +172,17 @@ const WorkingLog = () => {
 }
 
 const RowContainer = styled.div`
-  border:4px dashed black;
-  width:90%;
-  padding:60px 10px;
+  border:1px solid #ccc;
+  	box-shadow:0px 8px 7px rgba(0, 0, 0, 0.4);
+  background-color:#f0f0f0;
+  border-radius:10px;
+  width:70%;
+  padding:15px 5px;
   height:100%;
   display:flex;
   justify-content:center;
   align-items:center;
-  margin:0 auto;
+  margin:30px auto;
   flex-direction:column;
 `
 const WorkingContainer = styled.div`
@@ -163,15 +193,17 @@ const WorkingContainer = styled.div`
   align-items:center;
 `
 const LogContainer = styled.div`
-  border:1px solid black;
   display:flex;
   flex-direction:column;
   width:40%;
-  height:300px;
+  height:400px;
   padding:10px;
-  margin:5px;
+  margin:30px;
   justify-content:center;
   align-items:center;
+	box-shadow:0 3px 6px rgba(0, 0, 62, 0.3);
+  border-radius:10px;
+  background-color:white;
 `
 const ListBox = styled.div`
   width:100%;
@@ -181,14 +213,27 @@ const ListBox = styled.div`
   display:flex;
   align-items:center;
   flex-direction:column;
+  &::-webkit-scrollbar {
+	padding:10px 5px;
+  border-radius: 10px;
+	width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #ccc;
+  }
 `
 const ListStyle = styled.div`
-  display:flex;
+	border-radius:10px;
+	box-shadow:0 3px 3px rgba(0, 0, 0, 0.10);
+  border:1px solid rgba(0, 0, 0, 0.10);
+	width:90%;
+	padding:10px 10px; 
+	display:flex; 
+	flex-direction:row; 
   justify-content:space-between;
   align-items:center;
-  border-bottom:1px solid black;
-  margin:5px 0px;
-  width:300px;
+  margin:10px 0px;
 `
 const PlayButton = styled.button`
   border:none;
@@ -202,9 +247,9 @@ const ButtonBox = styled.div`
   justify-content:center;
 `
 const WorkingButton = styled.button`
-  width:150px;
+  width:100px;
   border:none;
-  border-radius:5px;
+  border-radius:20px;
   padding:10px 20px;
   margin:10px 5px;
   background-color:black;

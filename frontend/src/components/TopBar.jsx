@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from 'styled-components'
+import { BiDoorOpen } from "react-icons/bi";
+import { toast } from "react-toastify";
 
 const TopBar = ({ title, logoutView }) => {
   
@@ -18,7 +20,7 @@ const TopBar = ({ title, logoutView }) => {
     localStorage.removeItem('myEmail')
     localStorage.removeItem('myId')
     localStorage.removeItem('managerId')
-    alert('로그아웃이 완료되었습니다')
+    toast.success(`로그아웃이 완료되었습니다`);
     navigate("/loginSignup");
   };
 
@@ -34,6 +36,8 @@ const TopBar = ({ title, logoutView }) => {
         { logoutView && (
           <LogoutButton
             onClick={logoutTry}>
+            <BiDoorOpen size={25}/>
+            &nbsp;
             로그아웃
           </LogoutButton>
         )}
@@ -61,11 +65,13 @@ const Banner = styled.div`
 `
 const TitleStyle = styled.a`
   font-weight:bold; 
-  font-size:30px; 
+  font-size:25px; 
   margin-left:15px; 
   cursor:pointer;
 `
 const LogoutButton = styled.button`
+  display:flex;
+  align-items:center;
   margin-right: 15px; 
   font-weight: bold; 
   background: none; 
@@ -73,17 +79,20 @@ const LogoutButton = styled.button`
   padding: 0; 
   color: inherit; 
   cursor:pointer;
+  font-size:13px;
 `
 const Header = styled.div`
   height:70px; 
-  margin:20px 0px; 
   justify-content:center; 
   align-items:center; 
   display:flex;
+  background-color:#EEEEEE;
+  border-bottom:1px solid #CCCCCC;
 `
 const HeaderText = styled.div`
-  font-size:30px; 
+  font-size:25px; 
   font-weight:bold; 
   text-align:center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.12) ;
 `
 export default TopBar;
