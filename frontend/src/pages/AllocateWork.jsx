@@ -4,7 +4,6 @@ import { createGlobalStyle } from 'styled-components';
 import { ko } from "date-fns/locale";
 import styled from 'styled-components';
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import ReactPlayer from "react-player";
 import { BASE_URL, USER_URL } from '../axios';
 import { toast } from "react-toastify";
@@ -293,7 +292,7 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 								placeholderText="시작 날짜"
 								isClearable
 								onKeyDown={(event) => event.preventDefault()}
-								renderCustomHeader={customHeader}
+								// renderCustomHeader={customHeader}
 							/>
 							<DatePicker
 								selected={endDate}
@@ -309,7 +308,7 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 								isClearable
 								onKeyDown={(event) => event.preventDefault()}
 								disabled={!startDate}
-								renderCustomHeader={customHeader}
+								// renderCustomHeader={customHeader}
 							/>
 						</div>
 					)
