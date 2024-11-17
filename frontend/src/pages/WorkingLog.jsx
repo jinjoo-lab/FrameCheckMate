@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'; // eslint-disable-line no-unused-vars
+import React, { useState, useEffect, useRef } from 'react'; 
 import TopBar from "../components/TopBar";
-import { useNavigate, Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ReactPlayer from "react-player";
 import { GoVideo } from "react-icons/go";
 import styled from 'styled-components';
-import { axiosClient } from '../axios';
-import { allowView } from '../axios';
 import { BASE_URL } from '../axios';
 import { TfiWrite } from "react-icons/tfi";
 import { BiLoader } from "react-icons/bi";

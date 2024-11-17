@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import TopBar from "../components/TopBar";
-import { loginUser, signupUser } from '../api';
 import { BASE_URL } from '../axios';
 import { USER_URL } from '../axios';
 import { jwtDecode } from 'jwt-decode';
