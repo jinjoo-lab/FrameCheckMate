@@ -1,6 +1,6 @@
-import React, { useState, useEffect} from 'react'; // eslint-disable-line no-unused-vars
+import React, { useState, useEffect } from 'react'; // eslint-disable-line no-unused-vars
 import TopBar from "../components/TopBar";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import AllocateWork from './AllocateWork';
 import styled from 'styled-components';
 import { axiosClient } from '../axios';
@@ -10,6 +10,7 @@ const BeforeWork = () => {
 	const navigate = useNavigate();
 
 	const { projectId, cardId } = useParams();
+
 
 	return(
 		<div>
@@ -22,15 +23,19 @@ const BeforeWork = () => {
 }
 
 const RowContainer = styled.div`
-	border:4px dashed black; 
-	width:90%; padding:60px 10px; 
+	width:60%; 
+	padding:60px 10px; 
 	height:100%; 
 	display:flex; 
 	justify-content:center; 
 	align-items:center; 
-	margin:0 auto; 
+	margin:10px auto; 
 	flex-direction:column;
+	border:1px solid #ccc;
+	box-shadow:0px 8px 7px rgba(0, 0, 0, 0.4);
+  border-radius:10px;
 `
+
 const BeforeCloseButton = styled.button`
 	width:150px; 
 	border:none; 

@@ -7,6 +7,10 @@ import ReactPlayer from "react-player";
 import { BASE_URL, FLASK_URL } from '../axios';
 // import axios from 'axios';
 // import { detectTime } from '../api';
+import { FaCrosshairs } from "react-icons/fa6";
+import { MdMoreTime } from "react-icons/md";
+import { IoIosTimer } from "react-icons/io";
+import { toast } from "react-toastify";
 
 const ImageProcessing = () => {
 
@@ -278,11 +282,11 @@ const ImageProcessing = () => {
 				// alert('로그인이 만료되었습니다')
 				navigate('/loginSignup')
 			}
-      alert('영상 분할이 완료되었습니다.')
+      toast.success(`영상 분할이 완료되었습니다`);
 			navigate(`/mainWorkPage/${projectId}`);
 		}catch(error){
       console.log(error)
-      alert('영상 분할에 실패했습니다.')
+      toast.error(`영상 분할에 실패했습니다`);
 		}
 	}
 
@@ -312,12 +316,14 @@ const ImageProcessing = () => {
 			<TopBar title='영상 분석 점검' logoutView={true}/>
 			<ColumnContainer>
 				<WorkingBox>
-					<h4>AI 분석 결과</h4>
+        <div style={{display:'flex', flexDirection:'row', alignItems:'center', fontWeight:'bold', fontSize:'16px', margin:'15px 0px'}}>
+        AI 분석 결과&nbsp;<FaCrosshairs size={20}/>
+        </div>
 					<div 
 						style={{ 
-							width:"100%",
+							width:"60%",
 							height:"200px", 
-							border:"1px solid black"}}>
+							border:"1px solid gray"}}>
 					<ReactPlayer
 						url={fileURL}
 						playing={isPlaying} // 재생 여부
@@ -329,9 +335,12 @@ const ImageProcessing = () => {
 						onDuration={goDuration}
 					/>
 					</div>
-
-					<h4>타임스탬프</h4>
+          <div style={{height:'20px'}}></div>
             <TimeScroll>
+            <div style={{display:'flex', flexDirection:'row', justifyContent:'center',alignItems:'center', fontWeight:'bold', fontSize:'16px', margin:'5px 0px'}}>
+					    <h4 style={{textAlign:'center'}}>탐지 시간</h4>&nbsp;
+              <IoIosTimer size={20}/>
+            </div>
               {loading ? (
                 <NoReview>
                   <p>분석 중입니다</p> {/* 로딩 중일 때 표시 */}
@@ -362,16 +371,23 @@ const ImageProcessing = () => {
 						</TimeScroll>
 					</WorkingBox>
 					<WorkingBox>
-						<h4>타임스탬프 생성</h4>
-            <div key={'timestamp'} style={{ padding: '10px 80px', border: '1px solid black' }}>
-              {splitTime.slice(0, -1).map((time, i) => (
-                <div key={i}>
-                  {formatTime(time)} ~ {formatTime(splitTime[i + 1])}
-                </div>
-              ))}
+            <div style={{display:'flex', flexDirection:'row', alignItems:'center', fontWeight:'bold', fontSize:'16px', margin:'15px 0px'}}>
+              <h4>타임스탬프 생성</h4>&nbsp;
+              <MdMoreTime size={20}/>
             </div>
+            <TimeScroll>
+                <div style={{display:'flex', alignItems:'center', flexDirection:'column'}}>
+              <ReviewStyle key={'timestamp'}>
+                  {splitTime.slice(0, -1).map((time, i) => (
+                    <div key={i} style={{margin:'5px 0px', color:'#333'}}>
+                      {formatTime(time)} ~ {formatTime(splitTime[i + 1])}
+                    </div>
+                  ))}
+              </ReviewStyle>
+                </div>
+            </TimeScroll>
             <br />
-						<div style={{display:'flex', width:'100%'}}>
+						<div style={{display:'flex', width:'50%', justifyContent:'center'}}>
 							<TimeInput 
 							type="number" 
 							value={hour}
@@ -390,7 +406,6 @@ const ImageProcessing = () => {
             <br />
             {/* 경고 메시지 표시 */}
             {warningMessage && <div style={{ color: 'red' }}>{warningMessage}</div>}
-
             <ButtonContainer>
               <WorkingButton onClick={addSplitTime}>
                 추가하기
@@ -400,14 +415,15 @@ const ImageProcessing = () => {
                 초기화
               </ResetButton>
             </ButtonContainer>
-
 						{/* <WorkingButton onClick={videoDownload}>
 							다운로드
 						</WorkingButton> */}
-						<WorkingButton 
-							onClick={imageSplit}>
-							영상 분할하기
-						</WorkingButton>
+            <div style={{height:"30px"}}>
+              <WorkingButton 
+                onClick={imageSplit}>
+                영상 분할
+              </WorkingButton>
+            </div>
 					</WorkingBox>
 			</ColumnContainer>
 		</div>
@@ -415,34 +431,42 @@ const ImageProcessing = () => {
 }
 
 const ColumnContainer = styled.div`
-  border:4px dashed black; 
-	width:90%; 
+	width:70%; 
 	padding:60px 10px; 
 	height:100%; 
 	display:flex; 
 	justify-content:center; 
 	align-items:center; 
-	margin:0 auto;
+	margin:0 auto; 
+	flex-direction:row;
+	border:1px solid #ccc;
+	box-shadow:0px 8px 7px rgba(0, 0, 0, 0.4);
+  border-radius:10px;
+  // background-color:rgba(0, 0, 180, 0.01);
+
 `
 const WorkingBox = styled.div`
   display:flex; 
 	flex-direction:column; 
 	font-weight:bold; 
 	align-items:center; 
-	margin:0px 5px; 
+	margin:0px 20px; 
 	padding:10px 30px; 
-	border:1px solid black; 
-	width:40%; 
+	// border:1px solid rgba(0, 0, 62, 0.3);
+	width:35%; 
 	height:600px;
+  box-shadow:0 3px 6px rgba(0, 0, 62, 0.3);
+  border-radius:10px;
+  background-color:white;
 `
 const ButtonContainer = styled.div`
   display:flex; 
 	flex-direction:row; 
 `
 const WorkingButton = styled.button`
-  width:150px; 
+  width:100px; 
 	border:none;
-	border-radius:5px; 
+	border-radius:20px; 
 	padding:10px 20px; 
 	margin:10px 5px; 
 	background-color:black; 
@@ -451,9 +475,9 @@ const WorkingButton = styled.button`
 	cursor:pointer;
 `
 const ResetButton = styled.button`
-  width:150px; 
+  width:100px; 
 	border:none;
-	border-radius:5px; 
+	border-radius:20px; 
 	padding:10px 20px; 
 	margin:10px 5px; 
 	background-color:gray; 
@@ -462,14 +486,26 @@ const ResetButton = styled.button`
 	cursor:pointer;
 `
 const TimeScroll = styled.div`
-  border:1px solid black; 
-	width:90%; 
+  // border:1px solid black; 
+	width:60%; 
 	height:200px; 
 	margin:5px; 
 	padding:10px; 
 	display:flex; 
 	flex-direction:column; 
+  // justify-content:center;
+  box-shadow:0 3px 3px rgba(0, 0, 0, 0.2);
+  background-color:rgba(0, 0, 50, 0.03);
 	overflow-y:auto;
+  &::-webkit-scrollbar {
+	padding:10px 5px;
+  border-radius: 10px;
+	width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #ccc;
+  }
 `
 const NoReview = styled.div`
   display:flex; 
@@ -481,19 +517,22 @@ const ReviewAlign = styled.div`
   display:flex; 
 	justify-content:center; 
 	align-items:center; 
-	margin:15px 0px; 
+	margin:10px 0px; 
 	width:90%; 
 	padding:0px 5px;
 `
 const ReviewStyle = styled.div`
-  border-bottom:1px solid black;
-	width:85%; 
+  box-shadow:0 3px 6px rgba(0, 0, 30, 0.3);
+  border-radius:10px;
+	width:70%; 
 	display:flex; 
 	flex-direction:row; 
 	justify-content:center;
+  padding:5px 8px;
+  background-color:white;
 `
 const TimeMove = styled.div`
-  font-size:20px; 
+  font-size:15px; 
 	font-weight:bold; 
 	white-space:normal; 
 	cursor:pointer;
@@ -503,9 +542,10 @@ const TimeInput = styled.input`
   margin-right: 3px;
   margin-left: 3px;
   height: 20px;
-	width: 30%;
+	width: 15%;
   font-size: 15px;
-
+  border:1px solid gray;
+  border-radius:5px;
   /* 숫자 조정 버튼 숨기기 */
   -moz-appearance: textfield;
   appearance: none;
