@@ -1,5 +1,6 @@
 package com.framecheckmate.notificationservice.controller
 
+import com.framecheckmate.notificationservice.config.KafkaProducer
 import com.framecheckmate.notificationservice.dto.request.NotificationSaveRequest
 import com.framecheckmate.notificationservice.dto.response.NotificationInfoResponse
 import com.framecheckmate.notificationservice.dto.response.NotificationSaveResponse
@@ -8,6 +9,7 @@ import com.framecheckmate.notificationservice.service.CustomMailSender
 import com.framecheckmate.notificationservice.service.NotificationService
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.http.ResponseEntity
+import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.web.bind.annotation.*
 
 @EnableDiscoveryClient
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("api/v1/notification")
 class NotificationController(
     val notificationService: NotificationService,
+    val kafkaProducer: KafkaProducer
 ) {
 
     @PostMapping()
@@ -28,6 +31,11 @@ class NotificationController(
             "drasgon@naver.com",
             NotificationType.ALLOCATION
         ))
+    }
+
+    @GetMapping("/go2")
+    fun send2Test() {
+        kafkaProducer.sendMessage("member-notification-topic","SIBAL")
     }
 
     @GetMapping("/{email}")
