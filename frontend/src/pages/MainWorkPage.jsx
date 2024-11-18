@@ -284,11 +284,17 @@ const MainWorkPage = () => {
       });
       // ★★★★★★★★★★★★★★★★★★★★★★★
       if (response.status === 400 || response.status === 401 || response.status === 500) {
+        // console.log('확인확이확인')
+        // console.log('미완성입니다')
         setFinalStatus('미완성')
       } else{
+        // console.log('확인확인확인')
+        // console.log('완성입니다')
         setFinalStatus('완성')
       }
-
+      // console.log('?@?>W#?RF>A0')
+      // console.log(response)
+      
     }catch(error){
       console.log(`최종 영상 에러 ${error}`)
     }
@@ -305,8 +311,8 @@ const MainWorkPage = () => {
   }, []); 
 
   useEffect(() => {
-    // finalView()
-  }, [managerCheck, myUUID])
+    finalView()
+  }, [managerCheck, myUUID, finalStatus])
 
   const getWorkerName = (workerId) => {
     const worker = memberData.find((worker) => worker.memberId == workerId);
@@ -630,17 +636,21 @@ const MainWorkPage = () => {
             )
           }
           <div></div>
-          { finalCreate == true
+          { finalCreate == true && managerCheck == 'ok' && finalStatus == '미완성'
           ? 
           <>       
-              <MakeButton onClick={resultPage}>
-                최종 생성
-              </MakeButton>
-              :
-              <MakeButton onClick={resultVideoPage}>
-                영상 확인
-              </MakeButton>
-            
+            <MakeButton onClick={resultPage}>
+              최종 생성
+            </MakeButton>
+          </>
+          :null
+          }
+          { finalStatus == '완성'
+          ?
+          <>
+            <MakeButton onClick={resultVideoPage}>
+              영상 확인
+            </MakeButton>
           </>
           :null
           }
