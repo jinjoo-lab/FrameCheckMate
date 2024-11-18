@@ -13,13 +13,6 @@ class NotificationKafkaConsumeService(
     private val notificationService: NotificationService
 ) {
 
-    @RetryableTopic(
-        attempts = "2",
-        backoff = Backoff(delay = 2000L),
-        dltStrategy = DltStrategy.FAIL_ON_ERROR,
-        dltTopicSuffix = ".dlt",
-        retryTopicSuffix = ".retry"
-    )
     @KafkaListener(topics = ["member-notification-topic"], groupId = "member-card-notification",
         containerFactory = "kafkaListenerContainerFactory")
     fun consumeMemberNotificationMessage(message : String) {
@@ -28,13 +21,6 @@ class NotificationKafkaConsumeService(
        notificationService.saveNotification(request)
     }
 
-    @RetryableTopic(
-        attempts = "2",
-        backoff = Backoff(delay = 2000L),
-        dltStrategy = DltStrategy.FAIL_ON_ERROR,
-        dltTopicSuffix = ".dlt",
-        retryTopicSuffix = ".retry"
-    )
     @KafkaListener(topics = ["card-notification-topic"], groupId = "member-card-notification",
         containerFactory = "kafkaListenerContainerFactory")
     fun consumeCardNotificationMessage(message : String) {
