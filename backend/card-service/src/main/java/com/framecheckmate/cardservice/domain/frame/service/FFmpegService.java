@@ -22,12 +22,12 @@ public class FFmpegService {
 
         return new String[]{
                 ffmpegConfig.getFFmpegPath().toString(),
-                "-i", ffmpegConfig.getInputPath() + "\\" + fileName,
+                "-i", ffmpegConfig.getInputPath() + File.separator + fileName,
                 "-ss", String.valueOf(startSeconds),
                 "-t", String.valueOf(duration),
                 "-c:v", "libx264",
                 "-crf", "18",
-                ffmpegConfig.getOutputPath() + "\\" + seq + "_" + fileName
+                ffmpegConfig.getOutputPath() + File.separator + seq + "_" + fileName
         };
     }
 
@@ -80,7 +80,7 @@ public class FFmpegService {
 
         File tempListFile = createFFmpegConcatFile(frameFiles);
         String mergedFileName = "merged_" + projectId + ".mp4";
-        String outputFilePath = ffmpegConfig.getOutputPath() + "\\" + mergedFileName;
+        String outputFilePath = ffmpegConfig.getOutputPath() + File.separator + mergedFileName;
         executeMergeProcess(tempListFile, outputFilePath);
         s3Service.uploadToS3(outputFilePath, mergedFileName, -1L);
 
@@ -88,10 +88,10 @@ public class FFmpegService {
     }
 
     public File createFFmpegConcatFile(List<String> frameFiles) throws IOException {
-        File tempListFile = new File(ffmpegConfig.getOutputPath() + "\\" + "file_list.txt");
+        File tempListFile = new File(ffmpegConfig.getOutputPath() + File.separator + "file_list.txt");
         try (FileWriter writer = new FileWriter(tempListFile)) {
             for (int i = 1; i < frameFiles.size(); i++) {
-                writer.write("file '" + ffmpegConfig.getInputPath() + "\\" + frameFiles.get(i) + "'\n");
+                writer.write("file '" + ffmpegConfig.getInputPath() + File.separator + frameFiles.get(i) + "'\n");
             }
         }
         return tempListFile;
@@ -105,7 +105,7 @@ public class FFmpegService {
     public String splitFrame(String fileName, String startTime, String endTime, Long seq) throws IOException, InterruptedException {
         String[] command = buildSplitFFmpegCommand(fileName, startTime, endTime, seq);
         runFFmpegCommand(command, "Failed to trim video.");
-        return ffmpegConfig.getOutputPath() + "\\" + seq + "_" + fileName;
+        return ffmpegConfig.getOutputPath() + File.separator + seq + "_" + fileName;
     }
 
     public void downloadFrames(List<String> frameFiles) throws IOException, InterruptedException {
@@ -116,9 +116,9 @@ public class FFmpegService {
     }
 
     public String reencodeFrame(String fileName) throws IOException, InterruptedException {
-        String inputFilePath = ffmpegConfig.getInputPath() + "\\" + fileName;
+        String inputFilePath = ffmpegConfig.getInputPath() + File.separator + fileName;
         String outputFileName = "reencoded_" + fileName;
-        String outputFilePath = ffmpegConfig.getInputPath() + "\\" + outputFileName;
+        String outputFilePath = ffmpegConfig.getInputPath() + File.separator + outputFileName;
 
         String[] command =reencodeFFmpegCommand(inputFilePath, outputFilePath);
         runFFmpegCommand(command, "Failed to reencode video: " + fileName);
