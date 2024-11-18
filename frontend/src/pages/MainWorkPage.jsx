@@ -630,9 +630,7 @@ const MainWorkPage = () => {
           <div></div>
           { finalCreate == true
           ? 
-          <>
-            { finalStatus == '미완성'
-              ?          
+          <>       
               <MakeButton onClick={resultPage}>
                 최종 생성
               </MakeButton>
@@ -640,7 +638,7 @@ const MainWorkPage = () => {
               <MakeButton onClick={resultVideoPage}>
                 영상 확인
               </MakeButton>
-            }
+            
           </>
           :null
           }

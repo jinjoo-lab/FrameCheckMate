@@ -80,7 +80,7 @@ const ResultWork = () => {
     <div>
       <TopBar title='최종 생성 영상 확인' logoutView={true}/>
       <RowContainer>
-        <img src={logo} alt="카드 이미지" style={{width:'30%', height:'200px',margin:'0px;'}}/>
+        <img src={logo} alt="카드 이미지" style={{width:'30%', height:'200px',margin:'0px'}}/>
         {fileURL
           ? (
           <ReactPlayer
