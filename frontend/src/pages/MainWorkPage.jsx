@@ -644,7 +644,6 @@ const MainWorkPage = () => {
           </>
           :null
           }
-
         </CardContainer>
       </BigContainer>
     </div>
