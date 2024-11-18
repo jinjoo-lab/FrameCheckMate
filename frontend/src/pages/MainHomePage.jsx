@@ -45,6 +45,8 @@ const MainHomePage = () => {
       groupImport()
 
     }catch(error){
+      alert(`프로젝트 생성에 실패했습니다`)
+      setIsOpen(false);
       console.log(`그룹 생성 실패:${error}`)
     }
   }
@@ -141,7 +143,8 @@ const MainHomePage = () => {
           : (
             <>
               { groupList.map((list) => 
-                <GroupView key={list.projectId}>
+                <GroupView  key={list.projectId}
+                            onClick={(event) => {workView(event, list.projectId, list.name, list.managerId, list.isFinished)}}>
                   &nbsp;&nbsp;<FcVideoFile size={30} />&nbsp;&nbsp;&nbsp;
                   <GroupText onClick={(event) => {workView(event, list.projectId, list.name, list.managerId, list.isFinished)}}>{list.name}</GroupText>
                   {/* <GroupText onClick={(event) => {workView(event, list.projectId)}}>{list.name}</GroupText> */}
@@ -224,6 +227,7 @@ const GroupView = styled.div`
 	padding:20px 20px; 
 	display:flex; 
 	flex-direction:row; 
+  cursor:pointer;
 `
 const GroupText = styled.p`
   font-size:20px;
