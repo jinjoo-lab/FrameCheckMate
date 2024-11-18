@@ -453,7 +453,7 @@ const WorkingBox = styled.div`
 	margin:0px 20px; 
 	padding:10px 30px; 
 	// border:1px solid rgba(0, 0, 62, 0.3);
-	width:35%; 
+	width:45%; 
 	height:600px;
   box-shadow:0 3px 6px rgba(0, 0, 62, 0.3);
   border-radius:10px;
@@ -487,7 +487,7 @@ const ResetButton = styled.button`
 `
 const TimeScroll = styled.div`
   // border:1px solid black; 
-	width:60%; 
+	width:90%; 
 	height:200px; 
 	margin:5px; 
 	padding:10px; 
@@ -546,10 +546,11 @@ const TimeInput = styled.input`
   font-size: 15px;
   border:1px solid gray;
   border-radius:5px;
+  padding:3px;
   /* 숫자 조정 버튼 숨기기 */
   -moz-appearance: textfield;
   appearance: none;
-  
+  text-align:center;
   /* Chrome, Safari, Edge용 숫자 조정 버튼 숨기기 */
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
