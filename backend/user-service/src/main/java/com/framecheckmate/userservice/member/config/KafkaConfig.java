@@ -13,7 +13,7 @@ public class KafkaConfig {
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = new HashMap<>();
-        configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "43.203.240.20:9092");
+        configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "3.38.201.188:9092");
         return new KafkaAdmin(configs);
     }
 }
