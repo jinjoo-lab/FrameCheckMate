@@ -12,7 +12,7 @@ class DeadLetterConsumeService(
 ) {
     @KafkaListener(
         topics = ["member-notification-topic.dlt", "card-notification-topic.dlt"],
-        groupId = "group-dlt"
+        groupId = "member-card-notification"
     )
     fun consumeDeadLetter(message: String) {
         slackWebHookSender.sendSlackMessage(
