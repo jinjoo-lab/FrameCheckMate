@@ -182,8 +182,10 @@ const MainWorkPage = () => {
         navigate('/loginSignup')
       }
       // toast.success(`영상 병합이 완료되었습니다`);
-      alert(`영상 병합이 완료되었습니다`)
-      navigate(`/resultWork/${projectId}`)
+      if (response.ok){
+        alert(`영상 병합이 완료되었습니다`)
+        navigate(`/resultWork/${projectId}`)
+      }
     }catch(error){
       // toast.error(`영상 병합에 실패했습니다`);
       alert(`영상 병합에 실패했습니다`)
