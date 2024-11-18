@@ -26,6 +26,7 @@ const DoneWork = () => {
 					commentView={false} 
 					uploadView={false}/>
 			</DoneContainer>
+			<div style={{margin:"30px 0px"}} />
 		</div>
 	)
 }

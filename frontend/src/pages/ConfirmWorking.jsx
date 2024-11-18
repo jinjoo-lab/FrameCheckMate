@@ -26,6 +26,7 @@ const ConfirmWorking = () => {
 					commentView={false} 
 					uploadView={false}/>
 			</RowContainer>
+			<div style={{margin:"30px 0px"}} />
 		</div>
 	)
 }

@@ -106,6 +106,7 @@ const ResultWork = () => {
           </CloseButton>
         </ButtonContainer>
       </RowContainer>
+			<div style={{margin:"30px 0px"}} />
     </div>
   )
 }
