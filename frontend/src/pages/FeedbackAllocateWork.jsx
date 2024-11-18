@@ -108,6 +108,8 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 	// 프로젝트 멤버 불러오기
 	const [memberData, setMemberData] = useState([])
 
+	const [confirmPossible, setConfirmPossible] = useState(false)
+
 	/* 컨펌 저장 */
 	const confirmSubmit = async (event, confirms) => {
 		try{
@@ -277,6 +279,16 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 		}
 	}
 
+	const confirmInputCheck = async() =>{
+		const myId = localStorage.getItem('myId')
+		const managerId = localStorage.getItem('managerId')
+		if (myId == managerId) {
+			setConfirmPossible(true)
+		}else{
+			setConfirmPossible(false)
+		}
+	}
+
 	/* 현재 속한 프로젝트의 멤버 목록 불러오기 */
 	const memberImport = async() => {
 		try{
@@ -318,6 +330,7 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 	
 	useEffect(() => {
 		memberImport()
+		confirmInputCheck()
 	}, [])
 
 	return(
@@ -423,7 +436,7 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 				}
 			</ReviewScroll>
 
-			{ confirmView 
+			{ confirmView && confirmPossible
 				? (
 					<ReviewInputContainer> 
 						<ReviewInput 
