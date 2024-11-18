@@ -6,23 +6,31 @@ import { BrowserRouter } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css"; 
 import 'react-datepicker/dist/react-datepicker.css';
 import { ToastContainer } from "react-toastify";
-import "./index.css";
+// import "./index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>
     <BrowserRouter>
-      <ToastContainer 
-        position="top-center"
-        autoClose={2000}
-        hideProgressBar={true}
-        toastStyle={{
-          minHeight:"100px",
-          minWidth:"400px",
-          textAlign:"center",
-          fontWeight:"bold",
-        }}
-      />
+      <style>
+        {`
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+
+          html, body {
+            height: 100%;
+            font-family: Arial, sans-serif;
+          }
+
+          body {
+            background-color: white;
+            color: #333;
+          }
+        `}
+      </style>
       <App />
     </BrowserRouter>
   // </React.StrictMode>
