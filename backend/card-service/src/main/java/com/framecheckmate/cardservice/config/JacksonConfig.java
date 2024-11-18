@@ -8,6 +8,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.TimeZone;
 
 @Configuration
 public class JacksonConfig {
@@ -20,7 +21,7 @@ public class JacksonConfig {
 
         module.addSerializer(LocalDateTime.class,
                 new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)));
-
+        objectMapper.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
         objectMapper.registerModule(module);
         return objectMapper;
     }
