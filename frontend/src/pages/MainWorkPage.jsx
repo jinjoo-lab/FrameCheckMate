@@ -666,7 +666,7 @@ const TitleContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding:0px 100px;
+  padding:0px 200px;
   background-color:#f2f2f2;
 `
 const Block = styled.div`
