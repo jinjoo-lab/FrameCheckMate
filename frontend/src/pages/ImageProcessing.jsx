@@ -10,7 +10,7 @@ import { BASE_URL, FLASK_URL } from '../axios';
 import { FaCrosshairs } from "react-icons/fa6";
 import { MdMoreTime } from "react-icons/md";
 import { IoIosTimer } from "react-icons/io";
-import { toast } from "react-toastify";
+import LoadingCircle from '../components/LoadingCircle';
 
 const ImageProcessing = () => {
 
@@ -42,6 +42,8 @@ const ImageProcessing = () => {
   const [warningMessage, setWarningMessage] = useState('');
   
   const [loading, setLoading] = useState(true); // 로딩 상태 변수 추가
+
+  const [splitLoading, setSplitLoading] = useState(false)
 
   const handleHourChange = (event) => {
     const value = Math.max(0, Number(event.target.value)); // 음수 방지
@@ -254,6 +256,7 @@ const ImageProcessing = () => {
   };
   // 영상 분할
 	const imageSplit = async() => {
+    setSplitLoading(true); // 로딩 시작
 		try{
       const Data = createSegments(splitTime, aiTime, projectId, fps)
 			// const Data = {
@@ -283,11 +286,12 @@ const ImageProcessing = () => {
 				navigate('/loginSignup')
 			}
       // toast.success(`영상 분할이 완료되었습니다`);
+      setSplitLoading(false); // 로딩 종료
       alert(`영상 분할이 완료되었습니다`)
 			navigate(`/mainWorkPage/${projectId}`);
 		}catch(error){
       console.log(error)
-      // toast.error(`영상 분할에 실패했습니다`);
+      setSplitLoading(false); // 로딩 종료
       alert(`영상 분할에 실패했습니다`)
 		}
 	}
@@ -344,9 +348,12 @@ const ImageProcessing = () => {
               <IoIosTimer size={20}/>
             </div>
               {loading ? (
-                <NoReview>
-                  <p>분석 중입니다</p> {/* 로딩 중일 때 표시 */}
-                </NoReview>
+                <>
+                  <NoReview>
+                    <p>분석 중입니다</p> {/* 로딩 중일 때 표시 */}
+                  </NoReview>
+                  <LoadingCircle />
+                </>
               ) : (
                 aiTime.length === 0 ? (
                   <NoReview>
@@ -424,6 +431,7 @@ const ImageProcessing = () => {
                 영상 분할
               </WorkingButton>
             </div>
+            {splitLoading ? <><LoadingCircle /></> : null}
 					</WorkingBox>
 			</ColumnContainer>
 		</div>
