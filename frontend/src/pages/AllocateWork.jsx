@@ -120,6 +120,7 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 			navigate('/loginSignup')
 		}
 		toast.success(`작업 배정이 완료되었습니다`);
+		alert(`작업 배정이 완료되었습니다`)
 		navigate(`/mainWorkPage/${projectId}`)
 
 		}catch(error){
@@ -273,6 +274,7 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 								display: "flex", 
 								alignItems:"center", 
 								margin:"10px 0px"}}>
+
 							<DateStyle />
 							<DatePicker
 								selected={startDate}

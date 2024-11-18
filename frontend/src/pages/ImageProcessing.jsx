@@ -282,11 +282,13 @@ const ImageProcessing = () => {
 				// alert('로그인이 만료되었습니다')
 				navigate('/loginSignup')
 			}
-      toast.success(`영상 분할이 완료되었습니다`);
+      // toast.success(`영상 분할이 완료되었습니다`);
+      alert(`영상 분할이 완료되었습니다`)
 			navigate(`/mainWorkPage/${projectId}`);
 		}catch(error){
       console.log(error)
-      toast.error(`영상 분할에 실패했습니다`);
+      // toast.error(`영상 분할에 실패했습니다`);
+      alert(`영상 분할에 실패했습니다`)
 		}
 	}
 
