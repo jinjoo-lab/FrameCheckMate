@@ -37,6 +37,8 @@ const MainWorkPage = () => {
 
   const [ finalStatus, setFinalStatus ] = useState('')
 
+  const [ videoUploadView, setVideoUploadView ] = useState(false)
+
   /* toDo로 상태 변경 */
   const toDoMove = async (event, card) => {
     event.preventDefault(); // 페이지 새로 고침 방지
@@ -203,14 +205,20 @@ const MainWorkPage = () => {
         // withCredentials: true,
         // headers: { access: `${accessToken}` },
       });
-    // ★★★★★★★★★★★★★★★★★★★★★★★
-    if (response.status === 401 || response.status === 500) {
-      console.log('???');
-      // alert('로그인이 만료되었습니다')
-      navigate('/loginSignup')
-    }
-      
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+      if (response.status === 401 || response.status === 500) {
+        console.log('???');
+        // alert('로그인이 만료되었습니다')
+        navigate('/loginSignup')
+      }
+        
       const answer = await response.json()
+
+      if (Object.keys(answer.cardsByStatus).length == 0){
+        setVideoUploadView(true)
+      } else{
+        setVideoUploadView(false)
+      }
       if (answer && answer.cardsByStatus && answer.cardsByStatus.TODO) {
         setBeforeList(answer.cardsByStatus.TODO);
       }
@@ -319,7 +327,10 @@ const MainWorkPage = () => {
           (
             <>
             <BigText onClick={memberCheck}>멤버 관리</BigText>
-            <BigText onClick={videoAdd}>영상 분석</BigText>
+            { videoUploadView == true
+            ? <BigText onClick={videoAdd}>영상 분석</BigText>
+            : null
+            }
             </>
           )
           :null
@@ -636,7 +647,17 @@ const MainWorkPage = () => {
           </MakeButton>
           }
           </>
-          : null
+          :
+          <>
+          { finalStatus == '미완성'
+          ?          
+          null
+          :
+          <MakeButton onClick={resultVideoPage}>
+            영상 확인
+          </MakeButton>
+          }
+          </>
           }
 
         </CardContainer>
