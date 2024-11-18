@@ -132,6 +132,7 @@ const LoginSignUp = () => {
       });
       if (response.ok){
         alert(`회원가입에 성공했습니다!`)
+        setNowView(true)
       }else{
         alert(`회원가입에 실패했습니다`)
       }
@@ -254,7 +255,7 @@ const FormStyle = styled.form`
   // width: 400px; display:flex; flex-direction:column; padding:50px 150px; border:4px dashed black; border-radius:20px; justify-content:center; align-items:center;
 `
 const LabelText = styled.label`
-  text-align:left; width:260px; font-weight:bold; color:#333333;
+  text-align:left; width:260px; font-weight:bold; color:#333333; padding:0px 10px;
 `
 const InputStyle = styled.input`
   border:1px solid #d3d3d3; border-radius:10px; margin:10px 0px; height:30px; width:250px; padding:0px 10px;

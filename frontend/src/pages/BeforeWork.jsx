@@ -17,6 +17,7 @@ const BeforeWork = () => {
 			<RowContainer>
 				<AllocateWork workingBefore={true}/>
 			</RowContainer>
+			<div style={{margin:"30px 0px"}} />
 		</div>
 	)
 }
