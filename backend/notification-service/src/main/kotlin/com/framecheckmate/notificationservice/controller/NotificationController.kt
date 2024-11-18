@@ -1,15 +1,14 @@
 package com.framecheckmate.notificationservice.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.framecheckmate.notificationservice.config.KafkaProducer
 import com.framecheckmate.notificationservice.dto.request.NotificationSaveRequest
 import com.framecheckmate.notificationservice.dto.response.NotificationInfoResponse
 import com.framecheckmate.notificationservice.dto.response.NotificationSaveResponse
 import com.framecheckmate.notificationservice.entity.NotificationType
-import com.framecheckmate.notificationservice.service.CustomMailSender
 import com.framecheckmate.notificationservice.service.NotificationService
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.http.ResponseEntity
-import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.web.bind.annotation.*
 
 @EnableDiscoveryClient
@@ -35,7 +34,13 @@ class NotificationController(
 
     @GetMapping("/go2")
     fun send2Test() {
-        kafkaProducer.sendMessage("member-notification-topic","SIBAL")
+        val not = NotificationSaveRequest(
+            "drasgon@naver.com",
+            NotificationType.PENDING_CONFIRMATION_REJECTED
+        )
+        val objectMapper = ObjectMapper()
+
+        kafkaProducer.sendMessage("member-notification-topic",objectMapper.writeValueAsString(not))
     }
 
     @GetMapping("/{email}")
