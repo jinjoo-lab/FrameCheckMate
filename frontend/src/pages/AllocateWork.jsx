@@ -103,11 +103,17 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 		try{
 			// const startDay = formatDate(startDate)
 			// const endDay = formatDate(endDate)
+			console.log(worker)
+			console.log(workerEmail)
+			console.log(startDate)
+			console.log(endDate)
+			console.log(workContent)
+
 			const Data = {
 				"workerId": worker,
 				"workerEmail": workerEmail,
-				"startDate": startDate,
-				"endDate": endDate,
+				"startDate": startDate + ":00",
+				"endDate": endDate + ":00",
 				"description": workContent,
 			}
 
