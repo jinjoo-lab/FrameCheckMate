@@ -1,4 +1,6 @@
 spring:
+  kafka:
+    bootstrap-servers: 3.38.201.188:9092
   application:
     name: CARD-SERVICE
   servlet:
