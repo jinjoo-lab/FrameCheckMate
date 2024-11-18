@@ -189,6 +189,9 @@ const MainWorkPage = () => {
         setLoading(false); 
         alert(`영상 병합이 완료되었습니다`)
         navigate(`/resultWork/${projectId}`)
+      }else{
+        setLoading(false); 
+        alert(`영상 병합에 실패했습니다`)
       }
     }catch(error){
       setLoading(false); 

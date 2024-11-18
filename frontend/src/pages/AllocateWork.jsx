@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import DatePicker from "react-datepicker";
 import ReactPlayer from "react-player";
 import { BASE_URL, USER_URL } from '../axios';
-import { toast } from "react-toastify";
 
 const AllocateWork = ({ workingBefore, uploadView }) => {
 
@@ -133,7 +132,6 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 			// alert('로그인이 만료되었습니다')
 			navigate('/loginSignup')
 		}
-		toast.success(`작업 배정이 완료되었습니다`);
 		alert(`작업 배정이 완료되었습니다`)
 		navigate(`/mainWorkPage/${projectId}`)
 
@@ -289,14 +287,14 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 								flexDirection:"column",
 								margin:"10px 0px"}}>
 
-						<div>
+						<div style={{marign:"10px 0px"}}>
 						<label>시작날짜</label>&nbsp;&nbsp;&nbsp;
 						<input	type="datetime-local" 
 										value={startDate}
 										style={{padding:"5px 10px", borderRadius:"10px", border:"1px solid gray", cursor:"pointer"}}
 										onChange={startChange} />
 						</div>
-						<div>
+						<div style={{marign:"10px 0px"}}>
 						<label>종료날짜</label>&nbsp;&nbsp;&nbsp;
 						<input	type="datetime-local" 
 						      	value={endDate}
@@ -381,6 +379,7 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 				: (
 					<></>
 				)}
+				<div style={{margin:"30px 0px"}} />
 		</div>
 	)
 }
@@ -390,7 +389,8 @@ const WorkerInput = styled.input`
 	border-radius: 10px; 
 	margin: 10px 0px; 
 	height: 30px; 
-	width: 360px;
+	width: 90%;
+	padding: 0px 10px;
 `
 
 const VideoBox = styled.div`
