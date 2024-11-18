@@ -281,20 +281,14 @@ const MainWorkPage = () => {
         withCredentials: true,
       });
       // ★★★★★★★★★★★★★★★★★★★★★★★
-      if (response.status === 400) {
+      if (response.status === 400 || response.status === 401 || response.status === 500) {
         setFinalStatus('미완성')
       } else{
         setFinalStatus('완성')
       }
-      // ★★★★★★★★★★★★★★★★★★★★★★★
-			if (response.status === 401 || response.status === 500) {
-				console.log('???');
-				// alert('로그인이 만료되었습니다')
-				navigate('/loginSignup')
-			}
 
     }catch(error){
-      console.log(`에러 ${error}`)
+      console.log(`최종 영상 에러 ${error}`)
     }
   }
 
@@ -309,6 +303,7 @@ const MainWorkPage = () => {
   }, []); 
 
   useEffect(() => {
+    // finalView()
   }, [managerCheck, myUUID])
 
   const getWorkerName = (workerId) => {
@@ -636,28 +631,18 @@ const MainWorkPage = () => {
           { finalCreate == true
           ? 
           <>
-          { finalStatus == '미완성'
-          ?          
-          <MakeButton onClick={resultPage}>
-            최종 생성
-          </MakeButton>
-          :
-          <MakeButton onClick={resultVideoPage}>
-            영상 확인
-          </MakeButton>
-          }
+            { finalStatus == '미완성'
+              ?          
+              <MakeButton onClick={resultPage}>
+                최종 생성
+              </MakeButton>
+              :
+              <MakeButton onClick={resultVideoPage}>
+                영상 확인
+              </MakeButton>
+            }
           </>
-          :
-          <>
-          { finalStatus == '미완성'
-          ?          
-          null
-          :
-          <MakeButton onClick={resultVideoPage}>
-            영상 확인
-          </MakeButton>
-          }
-          </>
+          :null
           }
 
         </CardContainer>

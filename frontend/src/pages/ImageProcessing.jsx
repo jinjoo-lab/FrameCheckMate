@@ -82,7 +82,7 @@ const ImageProcessing = () => {
 	
   const AiResult = async (fileURL) => {
     setLoading(true); // 로딩 시작
-    const response = await fetch(`${FLASK_URL}/predict`, {
+    const response = await fetch(`${BASE_URL}/api/ai/predict`, {
       method : 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -377,17 +377,15 @@ const ImageProcessing = () => {
               <h4>타임스탬프 생성</h4>&nbsp;
               <MdMoreTime size={20}/>
             </div>
-            <TimeScroll>
-                <div style={{display:'flex', alignItems:'center', flexDirection:'column'}}>
-              <ReviewStyle key={'timestamp'}>
+            <div>
+              <div key={'timestamp'}>
                   {splitTime.slice(0, -1).map((time, i) => (
                     <div key={i} style={{margin:'5px 0px', color:'#333'}}>
                       {formatTime(time)} ~ {formatTime(splitTime[i + 1])}
                     </div>
                   ))}
-              </ReviewStyle>
-                </div>
-            </TimeScroll>
+              </div>
+            </div>
             <br />
 						<div style={{display:'flex', width:'50%', justifyContent:'center'}}>
 							<TimeInput 
