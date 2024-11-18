@@ -177,10 +177,12 @@ const MainWorkPage = () => {
         // alert('로그인이 만료되었습니다')
         navigate('/loginSignup')
       }
-      toast.success(`영상 병합이 완료되었습니다`);
+      // toast.success(`영상 병합이 완료되었습니다`);
+      alert(`영상 병합이 완료되었습니다`)
       navigate(`/resultWork/${projectId}`)
     }catch(error){
-      toast.error(`영상 병합에 실패했습니다`);
+      // toast.error(`영상 병합에 실패했습니다`);
+      alert(`영상 병합에 실패했습니다`)
       console.log(`최종 영상 생성 실패:${error}`)
     }
   }

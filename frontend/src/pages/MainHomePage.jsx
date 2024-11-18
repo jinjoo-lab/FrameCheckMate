@@ -38,7 +38,8 @@ const MainHomePage = () => {
 				navigate('/loginSignup')
 			}
       if (response.ok){
-        toast.success(`프로젝트 생성이 완료되었습니다`);
+        // toast.success(`프로젝트 생성이 완료되었습니다`);
+        alert(`프로젝트 생성이 완료되었습니다`)
         setIsOpen(false);
       }
       groupImport()

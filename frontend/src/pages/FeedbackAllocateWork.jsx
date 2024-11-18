@@ -60,7 +60,8 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 			}
 
       const text = await response.json();
-			toast.success(`영상 업로드가 완료되었습니다`)
+			alert(`영상 업로드가 완료되었습니다`)
+			// toast.success(`영상 업로드가 완료되었습니다`)
 		}catch(error){
 			console.log(`영상 업로드 문제 ${error}`)
 		}
@@ -153,7 +154,8 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 				// alert('로그인이 만료되었습니다')
 				navigate('/loginSignup')
 			}
-				toast.success(`컨펌 요청이 완료되었습니다`);
+				// toast.success(`컨펌 요청이 완료되었습니다`);
+				alert(`컨펌 요청이 완료되었습니다`)
 				navigate(`/mainWorkPage/${projectId}`)
 			}catch(error){
 				console.log(error)
@@ -174,7 +176,8 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 				// alert('로그인이 만료되었습니다')
 				navigate('/loginSignup')
 			}
-				toast.success(`컨펌 요청이 완료되었습니다`)
+				// toast.success(`컨펌 요청이 완료되었습니다`)
+				alert(`컨펌 요청이 완료되었습니다`)
 				navigate(`/mainWorkPage/${projectId}`)
 			}catch(error){
 				console.log(error)
@@ -206,7 +209,8 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 				// alert('로그인이 만료되었습니다')
 				navigate('/loginSignup')
 			}
-				toast.success(`코멘트 저장이 완료되었습니다`)
+				// toast.success(`코멘트 저장이 완료되었습니다`)
+				alert(`코멘트 저장이 완료되었습니다`)
 				setComments('')
 			}catch(error){
 				console.log(`실패:${error}`)
