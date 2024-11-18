@@ -54,7 +54,7 @@ public class FFmpegService {
                 "-preset", "fast",
                 "-force_key_frames", "expr:gte(t,n_forced*0.5)",
                 outputFilePath,
-                "-fps_mode", "vfr"
+                "-r", "30"
         };
     }
 
