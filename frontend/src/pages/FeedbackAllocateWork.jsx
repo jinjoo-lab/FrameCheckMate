@@ -364,7 +364,8 @@ const FeedbackAllocateWork = ({ confirmView, commentView, uploadView }) => {
 								<div style={{padding:"0px 10px 0px 0px"}}>
 									<FaRegCalendarAlt size={15}/>
 								</div>
-							 	{startDate}&nbsp;~&nbsp;{endDate}
+							 	시작일 : {startDate}<br />
+								종료일 : {endDate}
 								</>
 								) 
 								: 
