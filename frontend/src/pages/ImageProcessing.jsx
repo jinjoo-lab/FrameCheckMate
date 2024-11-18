@@ -323,7 +323,7 @@ const ImageProcessing = () => {
         </div>
 					<div 
 						style={{ 
-							width:"60%",
+							width:"90%",
 							height:"200px", 
 							border:"1px solid gray"}}>
 					<ReactPlayer
