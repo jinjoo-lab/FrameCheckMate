@@ -28,7 +28,7 @@ public class S3Service {
     public void downloadFileFromS3(String fileName) throws IOException {
         S3Object s3Object = amazonS3.getObject(bucket, fileName);
         File downloadedFile = new File(fileName);
-        try (FileOutputStream fos = new FileOutputStream(ffmpegConfig.getInputPath() + "\\" +downloadedFile)) {
+        try (FileOutputStream fos = new FileOutputStream(ffmpegConfig.getInputPath() + File.separator +downloadedFile)) {
             IOUtils.copy(s3Object.getObjectContent(), fos);
         }
     }
