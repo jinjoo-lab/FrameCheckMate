@@ -82,7 +82,7 @@ const ImageProcessing = () => {
 	
   const AiResult = async (fileURL) => {
     setLoading(true); // 로딩 시작
-    const response = await fetch(`https://k11a607.p.ssafy.io:8090/api/ai/predict`, {
+    const response = await fetch(`${FLASK_URL}/api/ai/predict`, {
       method : 'POST',
       headers: {
         'Content-Type': 'application/json',
