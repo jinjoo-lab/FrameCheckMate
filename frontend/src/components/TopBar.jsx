@@ -20,7 +20,8 @@ const TopBar = ({ title, logoutView }) => {
     localStorage.removeItem('myEmail')
     localStorage.removeItem('myId')
     localStorage.removeItem('managerId')
-    toast.success(`로그아웃이 완료되었습니다`);
+    // toast.success(`로그아웃이 완료되었습니다`);
+    alert(`로그아웃이 완료되었습니다`)
     navigate("/loginSignup");
   };
 
