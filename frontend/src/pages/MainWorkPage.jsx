@@ -9,6 +9,7 @@ import { IoMdArrowDropleftCircle } from "react-icons/io";
 import { MdOutlineSlowMotionVideo } from "react-icons/md";
 import { toast } from "react-toastify";
 import { MdLocalMovies } from "react-icons/md";
+import LoadingCircle from '../components/LoadingCircle';
 
 const MainWorkPage = () => {
 
@@ -38,6 +39,8 @@ const MainWorkPage = () => {
   const [ finalStatus, setFinalStatus ] = useState('')
 
   const [ videoUploadView, setVideoUploadView ] = useState(false)
+
+  const [loading, setLoading] = useState(false); // 로딩 상태 변수 추가
 
   /* toDo로 상태 변경 */
   const toDoMove = async (event, card) => {
@@ -166,6 +169,7 @@ const MainWorkPage = () => {
 
   // 최종 작업 페이지
   const resultPage = async () => {
+    setLoading(true); // 로딩 시작
     try{
       //1번
       // const accessToken = localStorage.getItem('accessToken');
@@ -181,13 +185,13 @@ const MainWorkPage = () => {
         // alert('로그인이 만료되었습니다')
         navigate('/loginSignup')
       }
-      // toast.success(`영상 병합이 완료되었습니다`);
       if (response.ok){
+        setLoading(false); 
         alert(`영상 병합이 완료되었습니다`)
         navigate(`/resultWork/${projectId}`)
       }
     }catch(error){
-      // toast.error(`영상 병합에 실패했습니다`);
+      setLoading(false); 
       alert(`영상 병합에 실패했습니다`)
       console.log(`최종 영상 생성 실패:${error}`)
     }
@@ -636,6 +640,7 @@ const MainWorkPage = () => {
             )
           }
           <div></div>
+          { loading? (<><LoadingCircle /></>) : null}
           { finalCreate == true && managerCheck == 'ok' && finalStatus == '미완성'
           ? 
           <>       
