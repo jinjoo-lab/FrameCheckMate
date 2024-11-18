@@ -14,7 +14,7 @@ class NotificationKafkaConsumeService(
 ) {
 
     @KafkaListener(topics = ["member-notification-topic"], groupId = "member-card-notification",
-        containerFactory = "kafkaListenerContainerFactory")
+        concurrency = "3")
     fun consumeMemberNotificationMessage(message : String) {
         val request : NotificationSaveRequest = convert(message)
 
@@ -22,7 +22,7 @@ class NotificationKafkaConsumeService(
     }
 
     @KafkaListener(topics = ["card-notification-topic"], groupId = "member-card-notification",
-        containerFactory = "kafkaListenerContainerFactory")
+        concurrency = "3")
     fun consumeCardNotificationMessage(message : String) {
         val request : NotificationSaveRequest = convert(message)
 
