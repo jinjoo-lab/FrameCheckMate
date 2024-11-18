@@ -130,8 +130,11 @@ const LoginSignUp = () => {
         },
         body:JSON.stringify(Data),
       });
-      // toast.success(`회원가입에 성공했습니다!`);
-      alert(`회원가입에 성공했습니다!`)
+      if (response.ok){
+        alert(`회원가입에 성공했습니다!`)
+      }else{
+        alert(`회원가입에 실패했습니다`)
+      }
       setLoginId(signId)
       }catch(error){
         console.log(error)
