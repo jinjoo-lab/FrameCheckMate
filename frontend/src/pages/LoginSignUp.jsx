@@ -148,7 +148,7 @@ const LoginSignUp = () => {
             display:'flex', 
             justifyContent:'center',
             alignItems:'center'}}>
-      <img src={logo} alt="카드 이미지" style={{width:'25%', height:'240px',margin:'0px', }}/>
+      <img src={logo} alt="카드 이미지" style={{width:'20%', height:'240px',margin:'0px', }}/>
 
     </div>
 
