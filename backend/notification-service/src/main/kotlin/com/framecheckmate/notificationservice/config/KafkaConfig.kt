@@ -2,6 +2,7 @@ package com.framecheckmate.notificationservice.config
 
 import org.apache.kafka.clients.admin.NewTopic
 import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.kafka.annotation.RetryableTopic
@@ -12,10 +13,14 @@ import org.springframework.retry.annotation.Backoff
 
 @Configuration
 class KafkaConfig {
+
+    @Value("\${spring.kafka.bootstrap-servers}")
+    lateinit var KAFKA_URL : String
+
     @Bean
     fun kafkaAdmin(): KafkaAdmin {
         var configs : MutableMap<String, Any> = HashMap()
-        configs[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = "3.38.201.188:9092"
+        configs[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = KAFKA_URL
         return KafkaAdmin(configs)
     }
 
