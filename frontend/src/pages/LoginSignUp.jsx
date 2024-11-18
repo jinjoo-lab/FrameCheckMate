@@ -70,7 +70,8 @@ const LoginSignUp = () => {
       // }
 
     }catch(error){
-      toast.warning(`로그인 정보를 다시 확인해주세요`);
+      // toast.warning(`로그인 정보를 다시 확인해주세요`);
+      alert(`로그인 정보를 다시 확인해주세요`)
       setLoginCheck(false)
     }
   };
@@ -129,7 +130,8 @@ const LoginSignUp = () => {
         },
         body:JSON.stringify(Data),
       });
-      toast.success(`회원가입에 성공했습니다!`);
+      // toast.success(`회원가입에 성공했습니다!`);
+      alert(`회원가입에 성공했습니다!`)
       setLoginId(signId)
       }catch(error){
         console.log(error)

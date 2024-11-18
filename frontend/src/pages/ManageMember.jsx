@@ -57,10 +57,12 @@ const ManageMember = () => {
       setNameSearchData(prev => prev.filter(data => data.email !== search.email)); // 검색 결과에서 해당 회원 제거
     } else {
       if (inviteAdded){
-        toast.warning(`이미 초대 목록에 추가된 이메일입니다`)
+        // toast.warning(`이미 초대 목록에 추가된 이메일입니다`)
+        alert(`이미 초대 목록에 추가된 이메일입니다`)
       }
       if (memberAdded){
-        toast.warning(`이미 프로젝트에 있는 멤버입니다.`)
+        // toast.warning(`이미 프로젝트에 있는 멤버입니다.`)
+        alert(`이미 프로젝트에 있는 멤버입니다.`)
       }
     }
   };
@@ -90,7 +92,8 @@ const ManageMember = () => {
 				// alert('로그인이 만료되었습니다')
 				navigate('/loginSignup')
 			}
-      toast.success(`초대가 완료되었습니다`);
+      // toast.success(`초대가 완료되었습니다`);
+      alert(`초대가 완료되었습니다`)
       setInviteData([])
 
       memberImport()
