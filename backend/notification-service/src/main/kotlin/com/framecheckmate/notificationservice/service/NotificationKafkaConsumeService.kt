@@ -20,7 +20,7 @@ class NotificationKafkaConsumeService(
         dltTopicSuffix = ".dlt",
         retryTopicSuffix = ".retry"
     )
-    @KafkaListener(topics = ["member-notification-topic"], groupId = "member-notification")
+    @KafkaListener(topics = ["member-notification-topic"], groupId = "member-card-notification")
     fun consumeMemberNotificationMessage(message : String) {
         val request : NotificationSaveRequest = convert(message)
 
@@ -34,7 +34,7 @@ class NotificationKafkaConsumeService(
         dltTopicSuffix = ".dlt",
         retryTopicSuffix = ".retry"
     )
-    @KafkaListener(topics = ["card-notification-topic"], groupId = "card-notification")
+    @KafkaListener(topics = ["card-notification-topic"], groupId = "member-card-notification")
     fun consumeCardNotificationMessage(message : String) {
         val request : NotificationSaveRequest = convert(message)
 
