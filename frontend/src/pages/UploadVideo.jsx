@@ -5,6 +5,8 @@ import ReactPlayer from "react-player";
 import styled from 'styled-components'
 import { BASE_URL } from '../axios';
 import { AiFillSetting } from "react-icons/ai";
+import LoadingCircle from '../components/LoadingCircle';
+
 const UploadVideo = () => {
 
   const { projectId } = useParams();
@@ -92,7 +94,10 @@ const UploadVideo = () => {
               />
             </div>
             {loading ? (
+              <>
               <LoadingMessage>분석 중...</LoadingMessage> // 로딩 메시지 표시
+              <LoadingCircle />
+              </>
             ) : (
               <WorkingButton onClick={uploadButton}>
                 분석하기
