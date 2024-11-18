@@ -3,12 +3,23 @@ package com.framecheckmate.notificationservice.service
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.framecheckmate.notificationservice.dto.request.NotificationSaveRequest
 import org.springframework.kafka.annotation.KafkaListener
+import org.springframework.kafka.annotation.RetryableTopic
+import org.springframework.kafka.retrytopic.DltStrategy
+import org.springframework.retry.annotation.Backoff
 import org.springframework.stereotype.Service
 
 @Service
 class NotificationKafkaConsumeService(
     private val notificationService: NotificationService
 ) {
+
+    @RetryableTopic(
+        attempts = "2",
+        backoff = Backoff(delay = 2000L),
+        dltStrategy = DltStrategy.FAIL_ON_ERROR,
+        dltTopicSuffix = ".dlt",
+        retryTopicSuffix = ".retry"
+    )
     @KafkaListener(topics = ["member-notification-topic"], groupId = "member-notification")
     fun consumeMemberNotificationMessage(message : String) {
         val request : NotificationSaveRequest = convert(message)
@@ -16,6 +27,13 @@ class NotificationKafkaConsumeService(
        notificationService.saveNotification(request)
     }
 
+    @RetryableTopic(
+        attempts = "2",
+        backoff = Backoff(delay = 2000L),
+        dltStrategy = DltStrategy.FAIL_ON_ERROR,
+        dltTopicSuffix = ".dlt",
+        retryTopicSuffix = ".retry"
+    )
     @KafkaListener(topics = ["card-notification-topic"], groupId = "card-notification")
     fun consumeCardNotificationMessage(message : String) {
         val request : NotificationSaveRequest = convert(message)
