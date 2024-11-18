@@ -12,7 +12,7 @@ class KafkaConfig {
     @Bean
     fun kafkaAdmin(): KafkaAdmin {
         var configs : MutableMap<String, Any> = HashMap()
-        configs[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = "43.203.240.20:9092"
+        configs[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = "3.38.201.188:9092"
         return KafkaAdmin(configs)
     }
 
