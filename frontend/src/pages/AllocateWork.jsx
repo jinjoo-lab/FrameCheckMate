@@ -26,8 +26,8 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 	const [ workerEmail, setWorkerEmail ] = useState('')
 
 	// 작업 기간 - 시작 날짜 & 종료 날짜
-	const [ startDate, setStartDate ] = useState(null);
-	const [ endDate, setEndDate ] = useState(null);
+	const [ startDate, setStartDate ] = useState('2024-11-18T00:00');
+	const [ endDate, setEndDate ] = useState('2024-11-18T00:00');
 
 	// 현재 작업자 정보
 	const [ nowWorker, setNowWorker ] = useState('')
@@ -47,6 +47,14 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 	const closeButton = () => {
 		navigate(`/mainWorkPage/${projectId}`);
 	}
+
+	const startChange = (event) => {
+    setStartDate(event.target.value);
+  };
+
+	const endChange = (event) => {
+    setEndDate(event.target.value);
+  };
 
 	// 할당된 영상 정보
 	const showVideo = async() => {
@@ -93,13 +101,13 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 	// 작업 할당 요청
 	const workAllot = async() => {
 		try{
-			const startDay = formatDate(startDate)
-			const endDay = formatDate(endDate)
+			// const startDay = formatDate(startDate)
+			// const endDay = formatDate(endDate)
 			const Data = {
 				"workerId": worker,
 				"workerEmail": workerEmail,
-				"startDate": startDay,
-				"endDate": endDay,
+				"startDate": startDate,
+				"endDate": endDate,
 				"description": workContent,
 			}
 
@@ -272,10 +280,24 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 						<div 
 							style={{ 
 								display: "flex", 
-								alignItems:"center", 
+								flexDirection:"column",
 								margin:"10px 0px"}}>
 
-							<DateStyle />
+						<div>
+						<label>시작날짜</label>&nbsp;&nbsp;&nbsp;
+						<input	type="datetime-local" 
+										value={startDate}
+										style={{padding:"5px 10px", borderRadius:"10px", border:"1px solid gray", cursor:"pointer"}}
+										onChange={startChange} />
+						</div>
+						<div>
+						<label>종료날짜</label>&nbsp;&nbsp;&nbsp;
+						<input	type="datetime-local" 
+						      	value={endDate}
+										style={{padding:"5px 10px", borderRadius:"10px", border:"1px solid gray", cursor:"pointer"}}
+										onChange={endChange} />
+						</div>
+							{/* <DateStyle />
 							<DatePicker
 								selected={startDate}
 								onChange={(date) => {
@@ -311,7 +333,7 @@ const AllocateWork = ({ workingBefore, uploadView }) => {
 								onKeyDown={(event) => event.preventDefault()}
 								disabled={!startDate}
 								// renderCustomHeader={customHeader}
-							/>
+							/> */}
 						</div>
 					)
 					:(

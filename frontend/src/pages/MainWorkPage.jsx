@@ -35,6 +35,8 @@ const MainWorkPage = () => {
 
   const [ pjName, setPjName ] = useState('')
 
+  const [ finalStatus, setFinalStatus ] = useState('')
+
   /* toDo로 상태 변경 */
   const toDoMove = async (event, card) => {
     event.preventDefault(); // 페이지 새로 고침 방지
@@ -262,6 +264,31 @@ const MainWorkPage = () => {
         console.log(error)
       }
     }
+
+  /* 최종 영상 여부 확인 */
+  const finalView = async() => {
+		try{
+      const response = await fetch(`${BASE_URL}/api/frame/merged/${projectId}`, {
+        method: 'GET',
+        withCredentials: true,
+      });
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+      if (response.status === 400) {
+        setFinalStatus('미완성')
+      } else{
+        setFinalStatus('완성')
+      }
+      // ★★★★★★★★★★★★★★★★★★★★★★★
+			if (response.status === 401 || response.status === 500) {
+				console.log('???');
+				// alert('로그인이 만료되었습니다')
+				navigate('/loginSignup')
+			}
+
+    }catch(error){
+      console.log(`에러 ${error}`)
+    }
+  }
 
   /* 처음 접속 시 전체 카드 목록 불러오기 */
   useEffect(() => {
@@ -598,12 +625,16 @@ const MainWorkPage = () => {
           { finalCreate == true
           ? 
           <>
+          { finalStatus == '미완성'
+          ?          
           <MakeButton onClick={resultPage}>
             최종 생성
           </MakeButton>
+          :
           <MakeButton onClick={resultVideoPage}>
             영상 확인
           </MakeButton>
+          }
           </>
           : null
           }
