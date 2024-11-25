@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/8814869a-0c7b-42c6-b67f-d8cc55557f3a)![image](https://github.com/user-attachments/assets/fc95814b-58eb-4eff-bc5f-c56794cb04a0)
+![image](https://github.com/user-attachments/assets/8814869a-0c7b-42c6-b67f-d8cc55557f3a)
 
 # FrameCheckMate 👋
 
