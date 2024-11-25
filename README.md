@@ -38,7 +38,7 @@
 ![Architecture](https://github.com/user-attachments/assets/02154e42-cfd8-473b-9a11-07eeff0bf7f0)
 
 ## DB ERD
-<img src = "https://github.com/user-attachments/assets/1101a234-bf12-48b2-99aa-67b7bfa2b449" width ="550" height = "550">
+<img src = "https://github.com/user-attachments/assets/1101a234-bf12-48b2-99aa-67b7bfa2b449" width ="900" height = "400">
 
 ## 서비스 소개 영상
 [![FrameCheckMate](https://img.youtube.com/vi/-1keWKxLl7A/0.jpg)](https://www.youtube.com/watch?v=-1keWKxLl7A)
