@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/fc95814b-58eb-4eff-bc5f-c56794cb04a0)
+![image](https://github.com/user-attachments/assets/8814869a-0c7b-42c6-b67f-d8cc55557f3a)![image](https://github.com/user-attachments/assets/fc95814b-58eb-4eff-bc5f-c56794cb04a0)
 
 # FrameCheckMate 👋
 
@@ -67,4 +67,4 @@
 |:----:|:----:|:----:|:----:|:----:|:----:|
 |Backend|Backend|Backend|Backend/Infra|FrontEnd/AI|FrontEnd|
 |[@jinjoo-lab](https://github.com/jinjoo-lab)|[@ksb3458](https://github.com/ksb3458)|[@jooys130](https://github.com/jooys130)|[@menstoo121](https://github.com/menstoo121)|[@blackburi](https://github.com/blackburi)|[@hee0109](https://github.com/hee0109)|
- | <img src = "https://avatars.githubusercontent.com/u/84346055?v=4" width ="120" height = "150"> | <img src = "https://avatars.githubusercontent.com/u/155246172?v=4" width ="120" height = "150">| <img src = "https://avatars.githubusercontent.com/u/87296259?v=4" width ="120" height = "150">| <img src = "https://avatars.githubusercontent.com/u/84346055?v=4" width ="120" height = "150">| <img src = "https://github.com/user-attachments/assets/ef45be79-0342-4d18-bd78-bf86388824d4" width ="120" height = "150">| <img src = "https://github.com/user-attachments/assets/ef45be79-0342-4d18-bd78-bf86388824d4" width ="120" height = "150">|
+ | <img src = "https://avatars.githubusercontent.com/u/84346055?v=4" width ="120" height = "150"> | <img src = "https://github.com/user-attachments/assets/ea13a54c-8bed-4e34-8fc1-62592cd2dec7" width ="120" height = "150">| <img src = "https://avatars.githubusercontent.com/u/87296259?v=4" width ="120" height = "150">| <img src = "https://avatars.githubusercontent.com/u/84346055?v=4" width ="120" height = "150">| <img src = "https://github.com/user-attachments/assets/ef45be79-0342-4d18-bd78-bf86388824d4" width ="120" height = "150">| <img src = "https://github.com/user-attachments/assets/ef45be79-0342-4d18-bd78-bf86388824d4" width ="120" height = "150">|
