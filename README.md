@@ -1,10 +1,10 @@
-![image](https://github.com/user-attachments/assets/ac69f8ca-b122-46fe-95ff-ac2716bfd591)
+<img width="953" alt="image" src="https://github.com/user-attachments/assets/b092e1a9-bb0b-47b1-bdd0-a4e59fdaca86">![image](https://github.com/user-attachments/assets/ac69f8ca-b122-46fe-95ff-ac2716bfd591)
 
 # 엔터테이먼트 산업을 위한 영상 편집 협업 툴
 
 ## FRAME CHECKMATE
 - 엔터테인먼트 산업을 위한 B2B 영상 편집 협업 툴
-- 효율적인 영상 편집 환경과 체계적인 업무 분배 관리 제공
+- 효율적인 영상 편집 환경과 체계적인 업무 분배 관리 제공<br>
 쉽고 빠른 협업으로 영상 제작 워크플로우를 최적화하세요. 🎬✨
 
 ## 기능 소개
