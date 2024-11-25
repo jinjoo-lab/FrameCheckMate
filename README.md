@@ -40,7 +40,7 @@
 ![image](https://github.com/user-attachments/assets/e47e4d62-4975-4be6-b0af-432b978ef976)
 
 ## 앱 소개 영상
-[![Shinhan](https://img.youtube.com/vi/tEM3lSOQv_c/0.jpg)](https://www.youtube.com/watch?v=tEM3lSOQv_c)
+[![Shinhan](https://img.youtube.com/vi/-1keWKxLl7A/0.jpg)](https://www.youtube.com/watch?v=-1keWKxLl7A)
 
 ## 사용 기술
 |Frontend|Backend|Infra/DevOps|
