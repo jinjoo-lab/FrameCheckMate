@@ -1,4 +1,4 @@
-<img width="953" alt="image" src="https://github.com/user-attachments/assets/b092e1a9-bb0b-47b1-bdd0-a4e59fdaca86">![image](https://github.com/user-attachments/assets/ac69f8ca-b122-46fe-95ff-ac2716bfd591)
+<img width="953" alt="image" src="https://github.com/user-attachments/assets/b092e1a9-bb0b-47b1-bdd0-a4e59fdaca86">
 
 # 엔터테이먼트 산업을 위한 영상 편집 협업 툴
 
