@@ -1,3 +1,7 @@
+<img width="953" alt="image" src="https://github.com/user-attachments/assets/b092e1a9-bb0b-47b1-bdd0-a4e59fdaca86">
+
+# 엔터테이먼트 산업을 위한 영상 편집 협업 툴
+
 ## 기능 소개
 
 ### 👍 방송 심의 객체 탐지 (술, 담배, 칼)
