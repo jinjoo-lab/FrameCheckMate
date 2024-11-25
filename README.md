@@ -34,7 +34,7 @@
 
 
 ## 시스템 아키텍처
-![image](https://github.com/user-attachments/assets/43841537-53ea-4e56-a7c9-87d967188447)
+![Architecture](https://github.com/user-attachments/assets/02154e42-cfd8-473b-9a11-07eeff0bf7f0)
 
 ## DB ERD
 ![image](https://github.com/user-attachments/assets/e47e4d62-4975-4be6-b0af-432b978ef976)
