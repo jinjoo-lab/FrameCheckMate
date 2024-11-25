@@ -1,6 +1,6 @@
 ![image](https://github.com/user-attachments/assets/ac69f8ca-b122-46fe-95ff-ac2716bfd591)
 
-# FrameCheckMate: 엔터테이먼트 산업을 위한 영상 편집 협업 툴
+# 엔터테이먼트 산업을 위한 영상 편집 협업 툴
 
 - 소개 소개 소개 소개
 - 소개 소개 소개 소개
@@ -10,7 +10,7 @@
 ### 👍 방송 심의 객체 탐지 (술, 담배, 칼)
 
 - 사용자의 영상에서 AI를 활용하여 술, 담배, 칼이 포함된 화면 탐지
-- 감지된 화면을 (start sec ~ end sec)로 표ㅣ
+- 감지된 화면을 (start sec ~ end sec)로 표시
 
 ### 🎯 영상 분할 & 영상 병합
 
