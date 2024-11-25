@@ -60,5 +60,5 @@
 |진주원(팀장)|김수빈|주연수|김영표|김태경|이재희|
 |:----:|:----:|:----:|:----:|:----:|:----:|
 |Backend|Backend|Backend|Backend/Infra|FrontEnd/AI|FrontEnd|
-|[@jinjoo-lab](https://github.com/jinjoo-lab)|[@yoonha97](https://github.com/yoonha97)|[@kwakseongjae](https://github.com/kwakseongjae)|[@jinjoo-lab](https://github.com/jinjoo-lab)|[@yeondori](https://github.com/yeondori)|[@yeondori](https://github.com/yeondori)|
+|[@jinjoo-lab](https://github.com/jinjoo-lab)|[@ksb3458](https://github.com/ksb3458)|[@wndustn130](https://github.com/wndustn130)|[@menstoo121](https://github.com/menstoo121)|[@yeondori](https://github.com/yeondori)|[@yeondori](https://github.com/yeondori)|
  | <img src = "https://avatars.githubusercontent.com/u/100757599?v=4" width ="120" height = "150"> | <img src = "https://avatars.githubusercontent.com/u/155246172?v=4" width ="120" height = "150">| <img src = "https://avatars.githubusercontent.com/u/87296259?v=4" width ="120" height = "150">| <img src = "https://avatars.githubusercontent.com/u/84346055?v=4" width ="120" height = "150">| <img src = "https://github.com/user-attachments/assets/ef45be79-0342-4d18-bd78-bf86388824d4" width ="120" height = "150">| <img src = "https://github.com/user-attachments/assets/ef45be79-0342-4d18-bd78-bf86388824d4" width ="120" height = "150">|
