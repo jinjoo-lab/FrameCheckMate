@@ -38,6 +38,12 @@
 ## 서비스 소개 영상
 [![FrameCheckMate](https://img.youtube.com/vi/-1keWKxLl7A/0.jpg)](https://www.youtube.com/watch?v=-1keWKxLl7A)
 
+## 동작 화면
+![image](https://github.com/user-attachments/assets/1ed44a44-f5e6-459f-9409-a4d6f1abd645)
+![image](https://github.com/user-attachments/assets/84a91ec2-92ba-4d70-959e-c65740600be0)
+![image](https://github.com/user-attachments/assets/053e5375-75bf-4a58-912b-831bbc53017a)
+![image](https://github.com/user-attachments/assets/7c1dab78-2f49-418e-885a-67e8f1ff1a63)
+
 ## 사용 기술
 |Frontend|Backend|Infra/DevOps|
 |:---:|:---:|:---:|
