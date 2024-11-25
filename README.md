@@ -24,10 +24,10 @@
 - 
 - 
 
-### 📱 작업 상태 변경 시 알림 전송 / Dead Letter Slack 전송
+### 📱 작업 상태 변경 시 알림 전송 / Slack 전송
 
-- 
-- 
+- 카드 상태 변경시 (작업 할당, 컨펌 요청, 컨펌 반려, 최종 승인)상태에 따른 이메일 전송
+- 메일 전송 실패 시 개발자 관리 Slack에서 메일 메시지 분석
 
 ## 시스템 아키텍처
 ![Architecture](https://github.com/user-attachments/assets/02154e42-cfd8-473b-9a11-07eeff0bf7f0)
