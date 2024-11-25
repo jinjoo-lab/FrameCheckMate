@@ -1,4 +1,5 @@
-![image](https://github.com/user-attachments/assets/535b0945-5d9b-4847-a742-86794c89fdee)
+![image](https://github.com/user-attachments/assets/fc95814b-58eb-4eff-bc5f-c56794cb04a0)
+
 # FrameCheckMate 👋
 
 ## 엔터테이먼트 산업을 위한 영상 편집 협업 툴
