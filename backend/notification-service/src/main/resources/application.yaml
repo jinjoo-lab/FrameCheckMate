@@ -1,6 +1,4 @@
 spring:
-  kafka:
-    bootstrap-servers: 3.38.201.188:9092
   application:
     name: NOTIFICATION-SERVICE
   config:
@@ -9,9 +7,15 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: guest
-    password: guest
-
+    username: ${RABBIT_MQ_USERNAME}
+    password: ${RABBIT_MQ_PASSWORD}
+    listener:
+      simple:
+        acknowledge-mode: auto
+        retry:
+          enabled: true
+          initial-interval: 5s
+          max-attempts: 2
 
   datasource:
     url: jdbc:mysql://localhost:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true

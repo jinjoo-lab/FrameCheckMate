@@ -20,12 +20,12 @@ class NotificationController(
 
     @PostMapping()
     fun sendNotification(@RequestBody notificationSaveRequest: NotificationSaveRequest): ResponseEntity<NotificationSaveResponse> {
-        return ResponseEntity.ok(notificationService.saveNotification(notificationSaveRequest))
+        return ResponseEntity.ok(notificationService.sendNotification(notificationSaveRequest))
     }
 
     @GetMapping("/go")
     fun sendTest() {
-        notificationService.saveNotification(NotificationSaveRequest(
+        notificationService.sendNotification(NotificationSaveRequest(
             "drasgon@naver.com",
             NotificationType.ALLOCATION
         ))

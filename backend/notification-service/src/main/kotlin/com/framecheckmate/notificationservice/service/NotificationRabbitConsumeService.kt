@@ -14,11 +14,13 @@ class NotificationRabbitConsumeService (
     @RabbitListener(queues = ["member-notification-queue", "card-notification-queue"])
     fun consumeMemberNotificationMessage(message : String) {
         val request = convert(message)
-        notificationService.saveNotification(request)
+        notificationService.sendNotification(request)
     }
 
     fun convert(jsonString : String) : NotificationSaveRequest {
-        val notificationSaveRequest : NotificationSaveRequest = objectMapper.readValue(jsonString, NotificationSaveRequest::class.java)
+        val notificationSaveRequest : NotificationSaveRequest =
+            objectMapper.readValue(jsonString, NotificationSaveRequest::class.java)
         return notificationSaveRequest
     }
 }
+
