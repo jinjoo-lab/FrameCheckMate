@@ -6,6 +6,12 @@ spring:
   config:
     import:
       - optional:file:.env[.properties]
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 
   datasource:
     url: jdbc:mysql://localhost:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true
