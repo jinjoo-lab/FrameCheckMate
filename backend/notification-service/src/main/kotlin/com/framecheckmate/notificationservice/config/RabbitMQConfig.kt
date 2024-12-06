@@ -109,4 +109,33 @@ class RabbitMQConfig {
 
         return retryTemplate
     }
+
+    @Bean
+    fun cardDeadLetterQueue() : Queue {
+        return Queue("card-dead-letter-queue", true)
+    }
+
+    @Bean
+    fun deadLetterExchange() : DirectExchange {
+        return DirectExchange("dead-letter-exchange")
+    }
+
+    @Bean
+    fun cardDeadLetterBinding() :Binding {
+        return BindingBuilder.bind(cardDeadLetterQueue())
+            .to(deadLetterExchange())
+            .with("card-dead-key")
+    }
+
+    @Bean
+    fun memberDeadLetterQueue() : Queue {
+        return Queue("member-dead-letter-queue", true)
+    }
+
+    @Bean
+    fun memberDeadLetterBinding() :Binding {
+        return BindingBuilder.bind(memberDeadLetterQueue())
+            .to(deadLetterExchange())
+            .with("card-dead-key")
+    }
 }
