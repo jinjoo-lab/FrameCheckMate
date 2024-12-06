@@ -1,7 +1,6 @@
 package com.framecheckmate.notificationservice.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.framecheckmate.notificationservice.config.KafkaProducer
 import com.framecheckmate.notificationservice.dto.request.NotificationSaveRequest
 import com.framecheckmate.notificationservice.dto.response.NotificationInfoResponse
 import com.framecheckmate.notificationservice.dto.response.NotificationSaveResponse
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("api/v1/notification")
 class NotificationController(
     val notificationService: NotificationService,
-    val kafkaProducer: KafkaProducer
+
 ) {
 
     @PostMapping()
@@ -40,7 +39,7 @@ class NotificationController(
         )
         val objectMapper = ObjectMapper()
 
-        kafkaProducer.sendMessage("member-notification-topic",objectMapper.writeValueAsString(not))
+       // kafkaProducer.sendMessage("member-notification-topic",objectMapper.writeValueAsString(not))
     }
 
     @GetMapping("/{email}")

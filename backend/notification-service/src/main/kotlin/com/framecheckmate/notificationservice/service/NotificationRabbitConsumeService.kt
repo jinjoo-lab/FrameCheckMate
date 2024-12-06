@@ -10,6 +10,7 @@ class NotificationRabbitConsumeService (
     private val notificationService: NotificationService,
     private val objectMapper: ObjectMapper
 ){
+
     @RabbitListener(queues = ["member-notification-queue", "card-notification-queue"])
     fun consumeMemberNotificationMessage(message : String) {
         val request = convert(message)
