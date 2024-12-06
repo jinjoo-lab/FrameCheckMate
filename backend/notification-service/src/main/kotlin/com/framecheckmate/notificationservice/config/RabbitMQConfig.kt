@@ -45,8 +45,6 @@ class RabbitMQConfig {
     @Bean
     fun rabbitAdmin(connectionFactory: CachingConnectionFactory) : RabbitAdmin {
         val rabbitAdmin : RabbitAdmin = RabbitAdmin(connectionFactory)
-
-
         return rabbitAdmin
     }
 
