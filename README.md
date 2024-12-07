@@ -35,7 +35,7 @@
 <br>
 
 ## 시스템 아키텍처
-![Architecture](https://github.com/user-attachments/assets/02154e42-cfd8-473b-9a11-07eeff0bf7f0)
+![Architecture](https://github.com/user-attachments/assets/ea1aed79-b8f3-40d8-b899-c560d5689ff7)
 
 <br>
 
@@ -67,7 +67,7 @@
 
 ### Backend
 1. FFmpeg를 활용해 프레임 단위 분할과 병합, H.264 재인코딩으로 영상 처리 시스템 구축
-2. 로직 서버와 알림 서버간 통신을 Kafka를 통해 구현 (서버간 결합도를 낮춤)
+2. 로직 서버와 알림 서버간 통신을 RabbitMQ를 통해 구현 (서버간 결합도를 낮춤)
 3. 이메일 전송 실패 시 DLQ 전략 수립 (개발자 확인을 위한 SLACK 전송 구현)
 4. Amazon S3를 활용해 영상 데이터의 업로드와 다운로드를 효율적으로 관리
 
