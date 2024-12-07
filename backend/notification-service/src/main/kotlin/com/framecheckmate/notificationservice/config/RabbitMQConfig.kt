@@ -4,6 +4,7 @@ import org.springframework.amqp.core.Binding
 import org.springframework.amqp.core.BindingBuilder
 import org.springframework.amqp.core.DirectExchange
 import org.springframework.amqp.core.Queue
+import org.springframework.amqp.core.QueueBuilder
 import org.springframework.amqp.rabbit.annotation.EnableRabbit
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory
 import org.springframework.amqp.rabbit.connection.ConnectionFactory
@@ -50,7 +51,10 @@ class RabbitMQConfig {
 
     @Bean
     fun memberNotificationQueue() : Queue {
-        return Queue("member-notification-queue",true)
+        return QueueBuilder.durable("member-notification-queue")
+            .withArgument("x-dead-letter-exchange","dead-letter-exchange")
+            .withArgument("x-dead-letter-routing-key","member-dead-key")
+            .build()
     }
 
     @Bean
@@ -67,7 +71,10 @@ class RabbitMQConfig {
 
     @Bean
     fun cardNotificationQueue() : Queue {
-        return Queue("card-notification-queue", true)
+        return QueueBuilder.durable("card-notification-queue")
+            .withArgument("x-dead-letter-exchange","dead-letter-exchange")
+            .withArgument("x-dead-letter-routing-key","card-dead-key")
+            .build()
     }
 
     @Bean
@@ -116,15 +123,15 @@ class RabbitMQConfig {
     }
 
     @Bean
-    fun deadLetterExchange() : DirectExchange {
-        return DirectExchange("dead-letter-exchange")
-    }
-
-    @Bean
     fun cardDeadLetterBinding() :Binding {
         return BindingBuilder.bind(cardDeadLetterQueue())
             .to(deadLetterExchange())
             .with("card-dead-key")
+    }
+
+    @Bean
+    fun deadLetterExchange() : DirectExchange {
+        return DirectExchange("dead-letter-exchange")
     }
 
     @Bean
@@ -136,6 +143,6 @@ class RabbitMQConfig {
     fun memberDeadLetterBinding() :Binding {
         return BindingBuilder.bind(memberDeadLetterQueue())
             .to(deadLetterExchange())
-            .with("card-dead-key")
+            .with("member-dead-key")
     }
 }
