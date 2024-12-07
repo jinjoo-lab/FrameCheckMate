@@ -7,9 +7,7 @@ import com.framecheckmate.notificationservice.mapper.NotificationMapper
 import com.framecheckmate.notificationservice.repository.NotificationRepository
 import jakarta.transaction.Transactional
 import lombok.extern.slf4j.Slf4j
-import org.apache.kafka.common.requests.DeleteAclsResponse.log
 import org.springframework.stereotype.Service
-import kotlin.streams.toList
 
 @Slf4j
 @Service
@@ -20,7 +18,7 @@ class NotificationService(
 ) {
 
     @Transactional
-    fun saveNotification(notificationSaveRequest: NotificationSaveRequest) : NotificationSaveResponse {
+    fun sendNotification(notificationSaveRequest: NotificationSaveRequest) : NotificationSaveResponse {
         customMailSender.snedMail(notificationSaveRequest.email,notificationSaveRequest.type.koName,notificationSaveRequest.type.typeContent)
 
         return notificationMapper.entityToSaveResponse(
